@@ -10,6 +10,7 @@
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
 #import "fgDataAdapter.h"
+#import "View/fgTabuloDirector.h"
 
 @interface fgGameAdapter ()
 
@@ -27,7 +28,7 @@
     
     if (self != nil)
     {
-        director = [[f3GameDirector alloc] init:[fgViewAdapter class]];
+        director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
         adaptee = [[f3GameAdaptee alloc] init];
     }
     
@@ -51,7 +52,7 @@
         canvas = [canvas init:self.context scene:director.Scene];
         canvas.drawableDepthFormat = GLKViewDrawableDepthFormat24;
         
-        [director readFrom:nil];
+        [director loadScene:director producer:adaptee];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(viewOrientationDidChange:)

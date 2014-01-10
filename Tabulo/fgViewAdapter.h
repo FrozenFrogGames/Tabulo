@@ -17,6 +17,7 @@
     f3ViewAdaptee *view;
     CGPoint relativePosition;
     CGSize relativeScale;
+    float angleDegree;
 }
 
 - (void)updatePosition:(const CGSize)_resolution Scale:(const CGSize)_scale;

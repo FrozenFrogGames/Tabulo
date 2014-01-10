@@ -24,6 +24,7 @@
 		F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025101187DDEFB0029915C /* fgViewAdapter.m */; };
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
 		F6025110187DE06F0029915C /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F602510F187DE06F0029915C /* libFramework.a */; };
+		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,7 +52,9 @@
 		F6025101187DDEFB0029915C /* fgViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewAdapter.m; sourceTree = "<group>"; };
 		F6025102187DDEFB0029915C /* fgViewCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgViewCanvas.h; sourceTree = "<group>"; };
 		F6025103187DDEFB0029915C /* fgViewCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewCanvas.m; sourceTree = "<group>"; };
-		F602510F187DE06F0029915C /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = libFramework.a; path = "../Framework/build/Release-iphoneos/libFramework.a"; sourceTree = "<group>"; };
+		F602510F187DE06F0029915C /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../Framework/build/Release-iphoneos/libFramework.a"; sourceTree = "<group>"; };
+		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
+		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,7 @@
 				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
 				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
 				F6025103187DDEFB0029915C /* fgViewCanvas.m */,
+				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
 			name = FrozenfrogTabulo;
@@ -133,6 +137,15 @@
 				F60250E3187DDDC80029915C /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F6A6CA60187DF175006AAE57 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
+				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -208,6 +221,7 @@
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
+				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +348,7 @@
 				F60250F6187DDDC80029915C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -15,7 +15,6 @@
 
     bool currentOrientationIsPortrait, targetOrientationIsPortrait, haveTextureCoordinates;
     NSMutableDictionary *textureDictionnary;
-    enum f3DeviceFormat deviceFormat;
     CGSize screenSize, unitSize;
     f3ViewScene *scene;
 }

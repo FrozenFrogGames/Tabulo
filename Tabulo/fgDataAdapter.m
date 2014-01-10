@@ -31,7 +31,7 @@
     if (self != nil)
     {
         data = [NSMutableData dataWithContentsOfFile:[_filename stringByExpandingTildeInPath]];
-        
+        marker = malloc(sizeof(uint8_t));
         cursor = 0;
         
         NSLog(@"read binary file : %@", _filename);

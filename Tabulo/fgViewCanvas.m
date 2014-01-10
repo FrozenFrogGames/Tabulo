@@ -8,6 +8,7 @@
 
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
+#import "../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../Framework/Framework/View/f3ViewScene.h"
 
 @implementation fgViewCanvas
@@ -20,19 +21,15 @@
     {
         self.context = _context;
 
-        deviceFormat = FORMAT_MEDIUM;
         screenSize = CGSizeZero;
-        unitSize = CGSizeMake(96.f, 96.f);
+        unitSize = CGSizeMake(64.f, 64.f);
+        targetOrientationIsPortrait = false;
+        currentOrientationIsPortrait = false;
         textureDictionnary = [[NSMutableDictionary alloc] init];
         scene = _scene;
     }
 
     return self;
-}
-
-- (enum f3DeviceFormat) Format {
-    
-    return deviceFormat;
 }
 
 - (CGSize) Screen {
@@ -68,67 +65,19 @@
 
     if (CGSizeEqualToSize(screenSize, CGSizeZero))
     {
-        const UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
         const CGSize deviceResolution = [[UIScreen mainScreen] bounds].size;
         
-        if (UIDeviceOrientationIsPortrait(deviceOrientation))
-        {
-            screenSize = deviceResolution;
-            
-            targetOrientationIsPortrait = true;
-        }
-        else if (UIDeviceOrientationIsLandscape(deviceOrientation))
+        if (deviceResolution.height > deviceResolution.width)
         {
             screenSize.width = deviceResolution.height;
             screenSize.height = deviceResolution.width;
-
-            targetOrientationIsPortrait = false;
         }
-
-        currentOrientationIsPortrait = targetOrientationIsPortrait;
-
-        if (screenSize.width >= 1920.f && screenSize.height >= 1080.f)
+        else
         {
-            unitSize = CGSizeMake(192.f, 192.f);
-
-            deviceFormat = FORMAT_XXL;
+            screenSize = deviceResolution;
         }
-        else if (screenSize.width >= 1280.f && screenSize.height >= 720.f)
-        {
-            unitSize = CGSizeMake(128.f, 128.f);
-
-            deviceFormat = FORMAT_XL;
-        }
-        else if (screenSize.width >= 1020.f && screenSize.height >= 640.f)
-        {
-            unitSize = CGSizeMake(96.f, 96.f);
-
-            deviceFormat = FORMAT_LARGE;
-        }
-        else if (screenSize.width >= 960.f && screenSize.height >= 540.f)
-        {
-            unitSize = CGSizeMake(96.f, 96.f);
-
-            deviceFormat = FORMAT_MEDIUM;
-        }
-        else if (screenSize.width >= 800.f && screenSize.height >= 480.f)
-        {
-            unitSize = CGSizeMake(80.f, 80.f);
-
-            deviceFormat = FORMAT_SMALL;
-        }
-        else if (screenSize.width >= 480.f && screenSize.height >= 320.f)
-        {
-            unitSize = CGSizeMake(48.f, 48.f);
-
-            deviceFormat = FORMAT_XS;
-        }
-        else if (screenSize.width >= 320.f && screenSize.height >= 200.f)
-        {
-            unitSize = CGSizeMake(32.f, 32.f);
-
-            deviceFormat = FORMAT_XXS;
-        }
+        
+        unitSize = [[f3GameAdaptee Producer] computeUnitSize:screenSize];
     }
     else
     {

@@ -10,10 +10,15 @@
 #import "fgViewCanvas.h"
 #import "../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../Framework/Framework/View/f3ViewDecorator.h"
-#import "../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../Framework/Framework/View/f3TextureDecorator.h"
+#import "../../Framework/Framework/View/f3OffsetDecorator.h"
+#import "../../Framework/Framework/View/f3ScaleDecorator.h"
+#import "../../Framework/Framework/View/f3AngleDecorator.h"
 
 @implementation fgViewAdapter
+
+#define degreeToRadian( degree ) ( ( degree ) / 180.0 * M_PI )
+#define radianToDegree( radian ) ( ( radian ) * ( 180.0 / M_PI ) )
 
 @synthesize Next;
 
@@ -26,6 +31,7 @@
         ressource = [[GLKBaseEffect alloc] init];
         view = _view;
         texture = nil;
+        angleDegree = 0;
         relativePosition = CGPointMake(0.f, 0.f);
         relativeScale = CGSizeMake(1.f, 1.f);
     }
@@ -50,6 +56,22 @@
             relativePosition.y += decorator.Offset[1];
         }
     }
+    else if ([_decorator isKindOfClass:[f3ScaleDecorator class]])
+    {
+        f3ScaleDecorator *decorator = (f3ScaleDecorator *)_decorator;
+        
+        if (decorator.Scale != nil)
+        {
+            relativeScale.width += decorator.Scale[0];
+            relativeScale.height += decorator.Scale[1];
+        }
+    }
+    else if ([_decorator isKindOfClass:[f3AngleDecorator class]])
+    {
+        f3AngleDecorator *decorator = (f3AngleDecorator *)_decorator;
+        
+        angleDegree = decorator.Angle;
+    }
     else if ([_decorator isKindOfClass:[f3TextureDecorator class]])
     {
         texture = (f3TextureDecorator *)_decorator;
@@ -58,15 +80,23 @@
 
 - (void)updatePosition:(const CGSize)_resolution Scale:(const CGSize)_scale {
 
+    ressource.transform.projectionMatrix = GLKMatrix4MakeOrtho(0.0f, _resolution.width, 0.0f, _resolution.height, 0.0f, 1.0f);
+
     CGPoint absolutePosition = CGPointMake((_resolution.width / 2.f) + (_scale.width * relativePosition.x),
                                            (_resolution.height / 2.f) - (_scale.height * relativePosition.y) );
-    GLKMatrix4 translationMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
-    
-    CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
-    GLKMatrix4 scaleMatrix = GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f);
 
-    ressource.transform.projectionMatrix = GLKMatrix4MakeOrtho(0.0f, _resolution.width, 0.0f, _resolution.height, 0.0f, 1.0f);
-    ressource.transform.modelviewMatrix = GLKMatrix4Multiply(translationMatrix, scaleMatrix);
+    GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
+
+    if (angleDegree > 0)
+    {
+        modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeRotation(degreeToRadian(angleDegree), 0.f, 0.f, 1.f));
+    }
+
+    CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
+    
+    modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f));
+
+    ressource.transform.modelviewMatrix = modelMatrix;
 }
 
 - (void)drawItem:(NSObject<IViewCanvas> *)_canvas {
@@ -113,6 +143,7 @@
     texture = nil;
     relativePosition = CGPointMake(0.f, 0.f);
     relativeScale = CGSizeMake(1.f, 1.f);
+    angleDegree = 0;
 }
 
 @end
