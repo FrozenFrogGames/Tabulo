@@ -212,7 +212,7 @@
         [_producer.Grid appendNode:nodeA];
 
         f3GraphNode *nodeB = [[f3GraphNode alloc] initPosition:CGPointMake(-1.5f, 0.f) extend:CGSizeMake(0.75f, 0.75f)];
-        f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initForAdaptee:plank onNode:nodeB withFlag:TABULO_HaveSmallPlank];
+        f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initForView:plank onNode:nodeB withFlag:TABULO_HaveSmallPlank];
         [_producer.Grid appendNode:nodeB];
         [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
 
@@ -225,7 +225,7 @@
         f3GraphNode *nodeE = [[f3GraphNode alloc] initPosition:CGPointMake(3.f, 0.f) extend:CGSizeMake(0.6f, 0.6f)];
         [_producer.Grid appendNode:nodeE];
 
-        f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initForAdaptee:pawn onNode:nodeA withFlag:TABULO_HavePawn];
+        f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initForView:pawn onNode:nodeA withFlag:TABULO_HavePawn];
         [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:nodeE]];
 
         f3GraphEdge *edgeAC = [[f3GraphEdge alloc] initFromNode:nodeA toNode:nodeC];
@@ -248,19 +248,6 @@
         [edgeEC bindCondition:[[f3GraphCondition alloc] init:edgeEC.Target flag:TABULO_HavePawn value:false]];
         [edgeEC bindCondition:[[f3GraphCondition alloc] init:nodeD flag:TABULO_HaveSmallPlank value:true]];
 
-        f3ControlHeader *offsetHeaderA = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderA bindParam:[nodeA getPositionHandle]];
-        [edgeCA bindControlHeader:offsetHeaderA];
-
-        f3ControlHeader *offsetHeaderC = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderC bindParam:[nodeC getPositionHandle]];
-        [edgeAC bindControlHeader:offsetHeaderC];
-        [edgeEC bindControlHeader:offsetHeaderC];
-
-        f3ControlHeader *offsetHeaderE = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderE bindParam:[nodeE getPositionHandle]];
-        [edgeCE bindControlHeader:offsetHeaderE];
-
         f3GraphEdge *edgeBD = [[f3GraphEdge alloc] initFromNode:nodeB toNode:nodeD];
         [edgeBD bindCondition:[[f3GraphCondition alloc] init:edgeBD.Origin flag:TABULO_HaveSmallPlank value:true]];
         [edgeBD bindCondition:[[f3GraphCondition alloc] init:edgeBD.Target flag:TABULO_HaveSmallPlank value:false]];
@@ -271,13 +258,13 @@
         [edgeDB bindCondition:[[f3GraphCondition alloc] init:edgeDB.Target flag:TABULO_HaveSmallPlank value:false]];
         [edgeDB bindCondition:[[f3GraphCondition alloc] init:nodeC flag:TABULO_HavePawn value:true]];
 
-        f3ControlHeader *offsetHeaderD = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderD bindParam:[nodeD getPositionHandle]];
-        [edgeBD bindControlHeader:offsetHeaderD];
-
-        f3ControlHeader *offsetHeaderB = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderB bindParam:[nodeB getPositionHandle]];
-        [edgeDB bindControlHeader:offsetHeaderB];
+        f3ControlHeader *offsetHeader = [[f3ControlHeader alloc] initForType:0];
+        [edgeCA bindControlHeader:offsetHeader];
+        [edgeAC bindControlHeader:offsetHeader];
+        [edgeEC bindControlHeader:offsetHeader];
+        [edgeCE bindControlHeader:offsetHeader];
+        [edgeBD bindControlHeader:offsetHeader];
+        [edgeDB bindControlHeader:offsetHeader];
     }
     else
     {
@@ -420,7 +407,7 @@
         [_producer.Grid appendNode:nodeA];
 
         f3GraphNode *nodeB = [[f3GraphNode alloc] initPosition:CGPointMake(-1.5f, 1.5f) extend:CGSizeMake(0.75f, 0.75f)];
-        f3DragViewFromNode *controlMediumPlank = [[f3DragViewFromNode alloc] initForAdaptee:mediumPlank onNode:nodeB withFlag:TABULO_HaveMediumPlank];
+        f3DragViewFromNode *controlMediumPlank = [[f3DragViewFromNode alloc] initForView:mediumPlank onNode:nodeB withFlag:TABULO_HaveMediumPlank];
         [_producer.Grid appendNode:nodeB];
         [_producer appendComponent:[[f3Controller alloc] initState:controlMediumPlank]];
 
@@ -437,17 +424,17 @@
         [_producer.Grid appendNode:nodeF];
 
         f3GraphNode *nodeG = [[f3GraphNode alloc] initPosition:CGPointMake(2.1f, -1.5f) extend:CGSizeMake(0.75f, 0.75f)];
-        f3DragViewFromNode *controlSmallPlank = [[f3DragViewFromNode alloc] initForAdaptee:smallPlank onNode:nodeG withFlag:TABULO_HaveSmallPlank];
+        f3DragViewFromNode *controlSmallPlank = [[f3DragViewFromNode alloc] initForView:smallPlank onNode:nodeG withFlag:TABULO_HaveSmallPlank];
         [_producer.Grid appendNode:nodeG];
         [_producer appendComponent:[[f3Controller alloc] initState:controlSmallPlank]];
 
         f3GraphNode *nodeH = [[f3GraphNode alloc] initPosition:CGPointMake(3.6f, -1.5f) extend:CGSizeMake(0.6f, 0.6f)];
         [_producer.Grid appendNode:nodeH];
 
-        f3DragViewFromNode *controlBluePawn = [[f3DragViewFromNode alloc] initForAdaptee:bluePawn onNode:nodeA withFlag:TABULO_HavePawn];
+        f3DragViewFromNode *controlBluePawn = [[f3DragViewFromNode alloc] initForView:bluePawn onNode:nodeA withFlag:TABULO_HavePawn];
         [gameController appendComponent:[[fgPawnController alloc] initState:controlBluePawn Home:nodeH]];
 
-        f3DragViewFromNode *controlRedPawn = [[f3DragViewFromNode alloc] initForAdaptee:redPawn onNode:nodeH withFlag:TABULO_HavePawn];
+        f3DragViewFromNode *controlRedPawn = [[f3DragViewFromNode alloc] initForView:redPawn onNode:nodeH withFlag:TABULO_HavePawn];
         [gameController appendComponent:[[fgPawnController alloc] initState:controlRedPawn Home:nodeA]];
 
         f3GraphEdge *edgeAC = [[f3GraphEdge alloc] initFromNode:nodeA toNode:nodeC];
@@ -490,25 +477,15 @@
         [edgeHF bindCondition:[[f3GraphCondition alloc] init:edgeHF.Target flag:TABULO_HavePawn value:false]];
         [edgeHF bindCondition:[[f3GraphCondition alloc] init:nodeG flag:TABULO_HaveSmallPlank value:true]];
 
-        f3ControlHeader *offsetHeaderA = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderA bindParam:[nodeA getPositionHandle]];
-        [edgeCA bindControlHeader:offsetHeaderA];
-
-        f3ControlHeader *offsetHeaderC = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderC bindParam:[nodeC getPositionHandle]];
-        [edgeAC bindControlHeader:offsetHeaderC];
-        [edgeHC bindControlHeader:offsetHeaderC];
-        [edgeFC bindControlHeader:offsetHeaderC];
-
-        f3ControlHeader *offsetHeaderF = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderF bindParam:[nodeF getPositionHandle]];
-        [edgeCF bindControlHeader:offsetHeaderF];
-        [edgeHF bindControlHeader:offsetHeaderF];
-
-        f3ControlHeader *offsetHeaderH = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderH bindParam:[nodeH getPositionHandle]];
-        [edgeCH bindControlHeader:offsetHeaderH];
-        [edgeFH bindControlHeader:offsetHeaderH];
+        f3ControlHeader *offsetHeader = [[f3ControlHeader alloc] initForType:0];
+        [edgeCA bindControlHeader:offsetHeader];
+        [edgeAC bindControlHeader:offsetHeader];
+        [edgeHC bindControlHeader:offsetHeader];
+        [edgeFC bindControlHeader:offsetHeader];
+        [edgeCF bindControlHeader:offsetHeader];
+        [edgeHF bindControlHeader:offsetHeader];
+        [edgeCH bindControlHeader:offsetHeader];
+        [edgeFH bindControlHeader:offsetHeader];
 
         f3GraphEdge *edgeBE = [[f3GraphEdge alloc] initFromNode:nodeB toNode:nodeE];
         [edgeBE bindCondition:[[f3GraphCondition alloc] init:edgeBE.Origin flag:TABULO_HaveMediumPlank value:true]];
@@ -530,32 +507,24 @@
         [edgeGD bindCondition:[[f3GraphCondition alloc] init:edgeGD.Target flag:TABULO_HaveSmallPlank value:false]];
         [edgeGD bindCondition:[[f3GraphCondition alloc] init:nodeF flag:TABULO_HavePawn value:true]];
 
-        f3ControlHeader *offsetHeaderB = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderB bindParam:[nodeB getPositionHandle]];
         f3ControlHeader *angleHeaderB = [[f3ControlHeader alloc] initForType:1];
-        [angleHeaderB bindParam:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.f), nil]];
-        [edgeEB bindControlHeader:offsetHeaderB];
+        [angleHeaderB bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.f), nil]];
+        [edgeEB bindControlHeader:offsetHeader];
         [edgeEB bindControlHeader:angleHeaderB];
 
-        f3ControlHeader *offsetHeaderD = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderD bindParam:[nodeD getPositionHandle]];
         f3ControlHeader *angleHeaderD = [[f3ControlHeader alloc] initForType:1];
-        [angleHeaderD bindParam:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(90.f), nil]];
-        [edgeGD bindControlHeader:offsetHeaderD];
+        [angleHeaderD bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(90.f), nil]];
+        [edgeGD bindControlHeader:offsetHeader];
         [edgeGD bindControlHeader:angleHeaderD];
 
-        f3ControlHeader *offsetHeaderE = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderE bindParam:[nodeE getPositionHandle]];
         f3ControlHeader *angleHeaderE = [[f3ControlHeader alloc] initForType:1];
-        [angleHeaderE bindParam:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(135.f), nil]];
-        [edgeBE bindControlHeader:offsetHeaderE];
+        [angleHeaderE bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(135.f), nil]];
+        [edgeBE bindControlHeader:offsetHeader];
         [edgeBE bindControlHeader:angleHeaderE];
 
-        f3ControlHeader *offsetHeaderG = [[f3ControlHeader alloc] initForType:0];
-        [offsetHeaderG bindParam:[nodeG getPositionHandle]];
         f3ControlHeader *angleHeaderG = [[f3ControlHeader alloc] initForType:1];
-        [angleHeaderG bindParam:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.f), nil]];
-        [edgeDG bindControlHeader:offsetHeaderG];
+        [angleHeaderG bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.f), nil]];
+        [edgeDG bindControlHeader:offsetHeader];
         [edgeDG bindControlHeader:angleHeaderG];
     }
 }
