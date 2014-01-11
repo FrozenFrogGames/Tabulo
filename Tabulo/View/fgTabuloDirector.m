@@ -16,8 +16,22 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
+#import "../Control/fgPawnController.h"
 
 @implementation fgTabuloDirector
+
+- (id)init:(Class )_adapterType {
+    
+    self = [super init:_adapterType];
+    
+    if (self != nil)
+    {
+        gameController = [[fgTabuloController alloc] init];
+        displayFirstScene = true;
+    }
+    
+    return self;
+}
 
 - (bool)requestFocus:(f3GraphNode *)_node {
     
@@ -82,10 +96,29 @@
 
 - (void)loadScene:(f3GameDirector *)_director producer:(f3GameAdaptee *)_producer {
 
+    [_producer removeAllComponents];
+
     // TODO read local variable and builder instruction from data file
 
-//  [self loadFirstScene:_director producer:_producer];
-    [self loadSecondScene:_director producer:_producer];
+    if (displayFirstScene)
+    {
+        [self loadFirstScene:_director producer:_producer];
+    }
+    else
+    {
+        [self loadSecondScene:_director producer:_producer];
+    }
+    
+    [_producer appendComponent:gameController];
+}
+
+- (void)nextScene {
+    
+    [scene removeAllComposites];
+    
+    displayFirstScene = !displayFirstScene;
+    
+    [self loadScene:self producer:[f3GameAdaptee Producer]];
 }
 
 - (void)loadFirstScene:(f3GameDirector *)_director producer:(f3GameAdaptee *)_producer {
@@ -176,9 +209,7 @@
     if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // foreground layer
     {
         f3GraphNode *nodeA = [[f3GraphNode alloc] initPosition:CGPointMake(-3.f, 0.f) extend:CGSizeMake(0.6f, 0.6f)];
-        f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initForAdaptee:pawn onNode:nodeA withFlag:TABULO_HavePawn];
         [_producer.Grid appendNode:nodeA];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPawn]];
 
         f3GraphNode *nodeB = [[f3GraphNode alloc] initPosition:CGPointMake(-1.5f, 0.f) extend:CGSizeMake(0.75f, 0.75f)];
         f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initForAdaptee:plank onNode:nodeB withFlag:TABULO_HaveSmallPlank];
@@ -193,6 +224,9 @@
 
         f3GraphNode *nodeE = [[f3GraphNode alloc] initPosition:CGPointMake(3.f, 0.f) extend:CGSizeMake(0.6f, 0.6f)];
         [_producer.Grid appendNode:nodeE];
+
+        f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initForAdaptee:pawn onNode:nodeA withFlag:TABULO_HavePawn];
+        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:nodeE]];
 
         f3GraphEdge *edgeAC = [[f3GraphEdge alloc] initFromNode:nodeA toNode:nodeC];
         [edgeAC bindCondition:[[f3GraphCondition alloc] init:edgeAC.Origin flag:TABULO_HavePawn value:true]];
@@ -383,9 +417,7 @@
     if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // foreground layer
     {
         f3GraphNode *nodeA = [[f3GraphNode alloc] initPosition:CGPointMake(-3.6f, 1.5f) extend:CGSizeMake(0.6f, 0.6f)];
-        f3DragViewFromNode *controlBluePawn = [[f3DragViewFromNode alloc] initForAdaptee:bluePawn onNode:nodeA withFlag:TABULO_HavePawn];
         [_producer.Grid appendNode:nodeA];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlBluePawn]];
 
         f3GraphNode *nodeB = [[f3GraphNode alloc] initPosition:CGPointMake(-1.5f, 1.5f) extend:CGSizeMake(0.75f, 0.75f)];
         f3DragViewFromNode *controlMediumPlank = [[f3DragViewFromNode alloc] initForAdaptee:mediumPlank onNode:nodeB withFlag:TABULO_HaveMediumPlank];
@@ -410,9 +442,13 @@
         [_producer appendComponent:[[f3Controller alloc] initState:controlSmallPlank]];
 
         f3GraphNode *nodeH = [[f3GraphNode alloc] initPosition:CGPointMake(3.6f, -1.5f) extend:CGSizeMake(0.6f, 0.6f)];
-        f3DragViewFromNode *controlRedPawn = [[f3DragViewFromNode alloc] initForAdaptee:redPawn onNode:nodeH withFlag:TABULO_HavePawn];
         [_producer.Grid appendNode:nodeH];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlRedPawn]];
+
+        f3DragViewFromNode *controlBluePawn = [[f3DragViewFromNode alloc] initForAdaptee:bluePawn onNode:nodeA withFlag:TABULO_HavePawn];
+        [gameController appendComponent:[[fgPawnController alloc] initState:controlBluePawn Home:nodeH]];
+
+        f3DragViewFromNode *controlRedPawn = [[f3DragViewFromNode alloc] initForAdaptee:redPawn onNode:nodeH withFlag:TABULO_HavePawn];
+        [gameController appendComponent:[[fgPawnController alloc] initState:controlRedPawn Home:nodeA]];
 
         f3GraphEdge *edgeAC = [[f3GraphEdge alloc] initFromNode:nodeA toNode:nodeC];
         [edgeAC bindCondition:[[f3GraphCondition alloc] init:edgeAC.Origin flag:TABULO_HavePawn value:true]];

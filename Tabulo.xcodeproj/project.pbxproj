@@ -25,6 +25,8 @@
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
 		F6025110187DE06F0029915C /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F602510F187DE06F0029915C /* libFramework.a */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
+		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
+		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,10 @@
 		F602510F187DE06F0029915C /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../Framework/build/Release-iphoneos/libFramework.a"; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
+		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
+		F6A6CA821880971B006AAE57 /* fgPawnController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnController.m; path = Control/fgPawnController.m; sourceTree = "<group>"; };
+		F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloController.h; path = Control/fgTabuloController.h; sourceTree = "<group>"; };
+		F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloController.m; path = Control/fgTabuloController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +124,7 @@
 				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
 				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
 				F6025103187DDEFB0029915C /* fgViewCanvas.m */,
+				F6A6CA80188096F8006AAE57 /* Control */,
 				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
@@ -146,6 +153,17 @@
 				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
 			);
 			name = View;
+			sourceTree = "<group>";
+		};
+		F6A6CA80188096F8006AAE57 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				F6A6CA811880971B006AAE57 /* fgPawnController.h */,
+				F6A6CA821880971B006AAE57 /* fgPawnController.m */,
+				F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */,
+				F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */,
+			);
+			name = Control;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,6 +240,8 @@
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
+				F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */,
+				F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

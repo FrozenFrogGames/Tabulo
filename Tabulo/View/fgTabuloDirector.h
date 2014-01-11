@@ -8,6 +8,7 @@
 
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
+#import "../Control/fgTabuloController.h"
 
 enum f3TabuloFlagIndex {
     
@@ -20,6 +21,10 @@ enum f3TabuloFlagIndex {
 @interface fgTabuloDirector : f3GameDirector {
     
     f3GraphNode *focusNode;
+    fgTabuloController *gameController;
+    bool displayFirstScene;
 }
+
+- (void)nextScene;
 
 @end
