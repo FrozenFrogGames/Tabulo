@@ -29,6 +29,7 @@
     if (self != nil)
     {
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
+
         adaptee = [[f3GameAdaptee alloc] init];
     }
     
@@ -42,21 +43,17 @@
 
 - (void)viewDidLoad
 {
+    fgViewCanvas *canvas = nil;
+
     [super viewDidLoad];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
     if (self.context != nil)
     {
-        fgViewCanvas *canvas = (fgViewCanvas *)self.view;
+        canvas = (fgViewCanvas *)self.view;
         canvas = [canvas init:self.context scene:director.Scene];
         canvas.drawableDepthFormat = GLKViewDrawableDepthFormat24;
-        
-        [director loadScene:director producer:adaptee];
-
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(viewOrientationDidChange:)
-                                                     name:UIDeviceOrientationDidChangeNotification object:nil];
     }
     else
     {
@@ -64,6 +61,14 @@
     }
     
     [EAGLContext setCurrentContext:self.context];
+    
+    [director loadResource:canvas];
+
+    [director loadScene:adaptee];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(viewOrientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
 - (void)dealloc
@@ -154,6 +159,12 @@
 
     CGPoint absolutePoint = [_touch locationInView:self.view];
     
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
+    {
+        absolutePoint.x = absolutePoint.x * [[UIScreen mainScreen] scale];
+        absolutePoint.y = absolutePoint.y * [[UIScreen mainScreen] scale];
+    }
+
     float relativeX = (absolutePoint.x - (canvas.Screen.width / 2.f)) / canvas.Unit.width;
     float relativeY = ((canvas.Screen.height - absolutePoint.y) - (canvas.Screen.height / 2.f)) / canvas.Unit.height;
 

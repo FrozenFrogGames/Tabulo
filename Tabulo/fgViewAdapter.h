@@ -10,14 +10,17 @@
 #import "../../Framework/Framework/IViewAdapter.h"
 #import "../../Framework/Framework/IViewCanvas.h"
 
+@class f3TextureDecorator;
+
 @interface fgViewAdapter : NSObject<IViewAdapter> {
 
-    GLKBaseEffect *ressource;
-    f3ViewDecorator *texture;
-    f3ViewAdaptee *view;
-    CGPoint relativePosition;
-    CGSize relativeScale;
     float angleDegree;
+    CGSize relativeScale;
+    CGPoint relativePosition;
+    NSUInteger textureIndex;
+    const float *textureCoordinates;
+    GLKBaseEffect *ressource;
+    f3ViewAdaptee *view;
 }
 
 - (void)updatePosition:(const CGSize)_resolution Scale:(const CGSize)_scale;

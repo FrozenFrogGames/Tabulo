@@ -24,9 +24,11 @@
 		F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025101187DDEFB0029915C /* fgViewAdapter.m */; };
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
 		F6025110187DE06F0029915C /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F602510F187DE06F0029915C /* libFramework.a */; };
+		F61185F818877225004497C2 /* spritesheet_high.png in Resources */ = {isa = PBXBuildFile; fileRef = F61185F718877225004497C2 /* spritesheet_high.png */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
 		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
+		F6BB2A0C1884EE7700539286 /* background_high.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BB2A0A1884EE7700539286 /* background_high.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,12 +57,14 @@
 		F6025102187DDEFB0029915C /* fgViewCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgViewCanvas.h; sourceTree = "<group>"; };
 		F6025103187DDEFB0029915C /* fgViewCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewCanvas.m; sourceTree = "<group>"; };
 		F602510F187DE06F0029915C /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../Framework/build/Release-iphoneos/libFramework.a"; sourceTree = "<group>"; };
+		F61185F718877225004497C2 /* spritesheet_high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesheet_high.png; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
 		F6A6CA821880971B006AAE57 /* fgPawnController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnController.m; path = Control/fgPawnController.m; sourceTree = "<group>"; };
 		F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloController.h; path = Control/fgTabuloController.h; sourceTree = "<group>"; };
 		F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloController.m; path = Control/fgTabuloController.m; sourceTree = "<group>"; };
+		F6BB2A0A1884EE7700539286 /* background_high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_high.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,10 +139,12 @@
 		F60250D4187DDDC80029915C /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F60250D5187DDDC80029915C /* Tabulo-Info.plist */,
-				F60250D6187DDDC80029915C /* InfoPlist.strings */,
 				F60250D9187DDDC80029915C /* main.m */,
+				F60250D6187DDDC80029915C /* InfoPlist.strings */,
+				F60250D5187DDDC80029915C /* Tabulo-Info.plist */,
 				F60250DB187DDDC80029915C /* Tabulo-Prefix.pch */,
+				F6BB2A0A1884EE7700539286 /* background_high.png */,
+				F61185F718877225004497C2 /* spritesheet_high.png */,
 				F60250DF187DDDC80029915C /* Default.png */,
 				F60250E1187DDDC80029915C /* Default@2x.png */,
 				F60250E3187DDDC80029915C /* Default-568h@2x.png */,
@@ -221,8 +227,10 @@
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F60250E0187DDDC80029915C /* Default.png in Resources */,
 				F60250E2187DDDC80029915C /* Default@2x.png in Resources */,
+				F6BB2A0C1884EE7700539286 /* background_high.png in Resources */,
 				F60250E4187DDDC80029915C /* Default-568h@2x.png in Resources */,
 				F60250F9187DDEA60029915C /* fgGameAdapter.xib in Resources */,
+				F61185F818877225004497C2 /* spritesheet_high.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

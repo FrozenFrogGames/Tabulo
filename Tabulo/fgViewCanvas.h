@@ -14,7 +14,8 @@
 @interface fgViewCanvas : GLKView<IViewCanvas> {
 
     bool currentOrientationIsPortrait, targetOrientationIsPortrait, haveTextureCoordinates;
-    NSMutableDictionary *textureDictionnary;
+
+    NSMutableArray *textureLoaded;
     CGSize screenSize, unitSize;
     f3ViewScene *scene;
 }
@@ -25,6 +26,6 @@
 - (id)init:(EAGLContext *)_context scene:(f3ViewScene *)_scene;
 - (void)deviceOrientationDidChange;
 
-- (GLKTextureInfo *)getTextureByName:(NSString *)_name;
+- (GLKTextureInfo *)getTexture:(NSInteger)_index;
 
 @end

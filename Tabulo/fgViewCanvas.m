@@ -21,11 +21,12 @@
     {
         self.context = _context;
 
-        screenSize = CGSizeZero;
-        unitSize = CGSizeMake(64.f, 64.f);
         targetOrientationIsPortrait = false;
         currentOrientationIsPortrait = false;
-        textureDictionnary = [[NSMutableDictionary alloc] init];
+
+        screenSize = CGSizeZero;
+        unitSize = CGSizeMake(64.f, 64.f);
+        textureLoaded = [NSMutableArray array];
         scene = _scene;
     }
 
@@ -76,7 +77,13 @@
         {
             screenSize = deviceResolution;
         }
-        
+
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
+        {
+            screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];
+            screenSize.height = screenSize.height * [[UIScreen mainScreen] scale];
+        }
+
         unitSize = [[f3GameAdaptee Producer] computeUnitSize:screenSize];
     }
     else
@@ -97,6 +104,12 @@
                 screenSize.height = deviceResolution.width;
             }
 
+            if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
+            {
+                screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];
+                screenSize.height = screenSize.height * [[UIScreen mainScreen] scale];
+            }
+
             currentOrientationIsPortrait = targetOrientationIsPortrait;
         }
     }
@@ -113,27 +126,30 @@
     }
 }
 
-- (GLKTextureInfo *)getTextureByName:(NSString *)_name {
-    
-    GLKTextureInfo *textureInfo = [textureDictionnary objectForKey:_name];
-    
-    if (textureInfo == nil)
+- (NSUInteger)loadRessource:(NSString *)_name {
+
+    NSString *filepath = [[NSBundle mainBundle] pathForResource:_name ofType:nil];
+    NSError *fileerror;
+
+    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithContentsOfFile:filepath options:nil error:&fileerror];
+    if (textureInfo != nil)
     {
-        textureInfo = [GLKTextureLoader textureWithCGImage:[UIImage imageNamed:_name].CGImage options:nil error:nil];
-        
-        if (textureInfo != nil)
-        {
-            [textureDictionnary setObject:textureInfo forKey:_name];
-            
-            // TODO implement release mechanism to free unused textures
-        }
-        else
-        {
-            // TODO throw exception: texture not found
-        }
+        [textureLoaded addObject:textureInfo];
+
+        return [textureLoaded indexOfObject:textureInfo];
     }
-    
-    return textureInfo;
+
+    return NSUIntegerMax;
+}
+
+- (GLKTextureInfo *)getTexture:(NSInteger)_index {
+
+    if ([textureLoaded count] > _index)
+    {
+        return [textureLoaded objectAtIndex:_index];
+    }
+
+    return nil;
 }
 
 - (void)beginDraw {

@@ -11,9 +11,9 @@
 #import "../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../Framework/Framework/View/f3ViewDecorator.h"
 #import "../../Framework/Framework/View/f3TextureDecorator.h"
-#import "../../Framework/Framework/View/f3OffsetDecorator.h"
+#import "../../Framework/Framework/View/f3TranslationDecorator.h"
 #import "../../Framework/Framework/View/f3ScaleDecorator.h"
-#import "../../Framework/Framework/View/f3AngleDecorator.h"
+#import "../../Framework/Framework/View/f3RotationDecorator.h"
 
 @implementation fgViewAdapter
 
@@ -30,10 +30,11 @@
     {
         ressource = [[GLKBaseEffect alloc] init];
         view = _view;
-        texture = nil;
+        textureIndex = NSUIntegerMax;
+        textureCoordinates = nil;
+        relativePosition = CGPointZero;
+        relativeScale = CGSizeZero;
         angleDegree = 0;
-        relativePosition = CGPointMake(0.f, 0.f);
-        relativeScale = CGSizeMake(1.f, 1.f);
     }
 
     return self;
@@ -46,9 +47,9 @@
 
 - (void)bindDecorator:(f3ViewDecorator *)_decorator {
 
-    if ([_decorator isKindOfClass:[f3OffsetDecorator class]])
+    if ([_decorator isKindOfClass:[f3TranslationDecorator class]])
     {
-        f3OffsetDecorator *decorator = (f3OffsetDecorator *)_decorator;
+        f3TranslationDecorator *decorator = (f3TranslationDecorator *)_decorator;
 
         if (decorator.Offset != nil)
         {
@@ -66,15 +67,16 @@
             relativeScale.height += decorator.Scale[1];
         }
     }
-    else if ([_decorator isKindOfClass:[f3AngleDecorator class]])
+    else if ([_decorator isKindOfClass:[f3RotationDecorator class]])
     {
-        f3AngleDecorator *decorator = (f3AngleDecorator *)_decorator;
-        
+        f3RotationDecorator *decorator = (f3RotationDecorator *)_decorator;
         angleDegree = decorator.Angle;
     }
     else if ([_decorator isKindOfClass:[f3TextureDecorator class]])
     {
-        texture = (f3TextureDecorator *)_decorator;
+        f3TextureDecorator *decorator = (f3TextureDecorator *)_decorator;
+        textureIndex = decorator.Index;
+        textureCoordinates = decorator.Coordinates;
     }
 }
 
@@ -82,28 +84,35 @@
 
     ressource.transform.projectionMatrix = GLKMatrix4MakeOrtho(0.0f, _resolution.width, 0.0f, _resolution.height, 0.0f, 1.0f);
 
-    CGPoint absolutePosition = CGPointMake((_resolution.width / 2.f) + (_scale.width * relativePosition.x),
-                                           (_resolution.height / 2.f) - (_scale.height * relativePosition.y) );
-
-    GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
-
-    if (angleDegree > 0)
+    if (CGSizeEqualToSize(relativeScale, CGSizeZero))
     {
-        modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeRotation(degreeToRadian(angleDegree), 0.f, 0.f, 1.f));
+        ressource.transform.modelviewMatrix = GLKMatrix4Identity;
     }
+    else
+    {
+        CGPoint absolutePosition = CGPointMake((_resolution.width / 2.f) + (_scale.width * relativePosition.x),
+                                               (_resolution.height / 2.f) - (_scale.height * relativePosition.y) );
 
-    CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
+        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
+
+        if (angleDegree > 0)
+        {
+            modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeRotation(degreeToRadian(angleDegree), 0.f, 0.f, 1.f));
+        }
+
+        CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
     
-    modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f));
+        modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f));
 
-    ressource.transform.modelviewMatrix = modelMatrix;
+        ressource.transform.modelviewMatrix = modelMatrix;
+    }
 }
 
 - (void)drawItem:(NSObject<IViewCanvas> *)_canvas {
 
-    if (texture != nil)
+    if (textureIndex != NSUIntegerMax)
     {
-        GLKTextureInfo *textureInfo = [((fgViewCanvas *)_canvas) getTextureByName:@"debug_DefaultPose"/*texture.Name*/];
+        GLKTextureInfo *textureInfo = [((fgViewCanvas *)_canvas) getTexture:textureIndex];
 
         if (textureInfo != nil)
         {
@@ -120,9 +129,9 @@
 
     [_canvas beginDraw];
 
-    if (texture != nil)
+    if (textureCoordinates != nil)
     {
-//      [_canvas bindTextureCoordinates:texture.Coordinates];
+        [_canvas bindTextureCoordinates:textureCoordinates];
     }
     else
     {
@@ -139,10 +148,10 @@
     [_canvas drawItem:view.Type Vertex:view.Vertex Indices:view.Indices Count:view.Count];
 
     [_canvas endDraw];
-    
-    texture = nil;
-    relativePosition = CGPointMake(0.f, 0.f);
-    relativeScale = CGSizeMake(1.f, 1.f);
+
+    textureIndex = NSUIntegerMax;
+    relativePosition = CGPointZero;
+    relativeScale = CGSizeZero;
     angleDegree = 0;
 }
 

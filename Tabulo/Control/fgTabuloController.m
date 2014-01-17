@@ -79,7 +79,7 @@
         fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
         
         [components removeAllObjects];
-        
+
         [director nextScene];
     }
 }
