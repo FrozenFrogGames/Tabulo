@@ -126,6 +126,11 @@
     }
 }
 
+- (void)clearRessource {
+    
+    [textureLoaded removeAllObjects];
+}
+
 - (NSUInteger)loadRessource:(NSString *)_name {
 
     NSString *filepath = [[NSBundle mainBundle] pathForResource:_name ofType:nil];

@@ -9,6 +9,7 @@
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../Control/fgTabuloController.h"
+#import "fgViewCanvas.h"
 
 @class f3IntegerArray;
 @class f3FloatArray;
@@ -44,7 +45,9 @@ enum f3TabuloHoleType {
     fgTabuloController *gameController;
     f3IntegerArray *indicesHandle, *spritesheet, *background;
     f3FloatArray *vertexHandle;
-    unsigned int levelIndex;
+
+    unsigned int levelIndex, designIndex;
+    fgViewCanvas *gameCanvas;
 }
 
 - (void)nextScene;

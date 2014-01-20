@@ -179,7 +179,7 @@
     {
         CGPoint relativePoint = [self locationInRelative:touch];
 
-        [adaptee.Grid notifyInput:relativePoint type:INPUT_BEGAN];
+        [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
     }
 }
 
@@ -191,7 +191,7 @@
     {
         CGPoint relativePoint = [self locationInRelative:touch];
 
-        [adaptee.Grid notifyInput:relativePoint type:INPUT_MOVED];
+        [adaptee notifyInput:relativePoint type:INPUT_MOVED];
     }
 }
 
@@ -203,10 +203,8 @@
     {
         CGPoint relativePoint = [self locationInRelative:touch];
 
-        [adaptee.Grid notifyInput:relativePoint type:INPUT_ENDED];
+        [adaptee notifyInput:relativePoint type:INPUT_ENDED];
     }
-    
-    [adaptee setFocusController:nil];
 }
 
 @end

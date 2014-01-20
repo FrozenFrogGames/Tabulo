@@ -17,18 +17,21 @@
 		F60250E0187DDDC80029915C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F60250DF187DDDC80029915C /* Default.png */; };
 		F60250E2187DDDC80029915C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F60250E1187DDDC80029915C /* Default@2x.png */; };
 		F60250E4187DDDC80029915C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F60250E3187DDDC80029915C /* Default-568h@2x.png */; };
-		F60250F9187DDEA60029915C /* fgGameAdapter.xib in Resources */ = {isa = PBXBuildFile; fileRef = F60250F7187DDEA50029915C /* fgGameAdapter.xib */; };
 		F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F60250FB187DDEFB0029915C /* fgAppDelegate.m */; };
 		F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F60250FD187DDEFB0029915C /* fgDataAdapter.m */; };
 		F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F60250FF187DDEFB0029915C /* fgGameAdapter.m */; };
 		F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025101187DDEFB0029915C /* fgViewAdapter.m */; };
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
 		F6025110187DE06F0029915C /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F602510F187DE06F0029915C /* libFramework.a */; };
-		F61185F818877225004497C2 /* spritesheet_high.png in Resources */ = {isa = PBXBuildFile; fileRef = F61185F718877225004497C2 /* spritesheet_high.png */; };
+		F61185F818877225004497C2 /* spritesheet-techno.png in Resources */ = {isa = PBXBuildFile; fileRef = F61185F718877225004497C2 /* spritesheet-techno.png */; };
+		F61185FC188A2E8E004497C2 /* spritesheet-opengl.png in Resources */ = {isa = PBXBuildFile; fileRef = F61185FB188A2E8E004497C2 /* spritesheet-opengl.png */; };
+		F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860A188C4E42004497C2 /* fgTabuloEdge.m */; };
+		F611860F188C543F004497C2 /* fgDragPawnFromNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860E188C543F004497C2 /* fgDragPawnFromNode.m */; };
+		F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
 		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
-		F6BB2A0C1884EE7700539286 /* background_high.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BB2A0A1884EE7700539286 /* background_high.png */; };
+		F6BB2A0C1884EE7700539286 /* background-techno.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BB2A0A1884EE7700539286 /* background-techno.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,7 +48,6 @@
 		F60250DF187DDDC80029915C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F60250E1187DDDC80029915C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		F60250E3187DDDC80029915C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		F60250F8187DDEA60029915C /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/fgGameAdapter.xib; sourceTree = "<group>"; };
 		F60250FA187DDEFB0029915C /* fgAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgAppDelegate.h; sourceTree = "<group>"; };
 		F60250FB187DDEFB0029915C /* fgAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgAppDelegate.m; sourceTree = "<group>"; };
 		F60250FC187DDEFB0029915C /* fgDataAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgDataAdapter.h; sourceTree = "<group>"; };
@@ -57,14 +59,21 @@
 		F6025102187DDEFB0029915C /* fgViewCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgViewCanvas.h; sourceTree = "<group>"; };
 		F6025103187DDEFB0029915C /* fgViewCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewCanvas.m; sourceTree = "<group>"; };
 		F602510F187DE06F0029915C /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../Framework/build/Release-iphoneos/libFramework.a"; sourceTree = "<group>"; };
-		F61185F718877225004497C2 /* spritesheet_high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesheet_high.png; sourceTree = "<group>"; };
+		F61185F718877225004497C2 /* spritesheet-techno.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-techno.png"; sourceTree = "<group>"; };
+		F61185FB188A2E8E004497C2 /* spritesheet-opengl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-opengl.png"; sourceTree = "<group>"; };
+		F6118609188C4E42004497C2 /* fgTabuloEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEdge.h; path = Control/fgTabuloEdge.h; sourceTree = "<group>"; };
+		F611860A188C4E42004497C2 /* fgTabuloEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEdge.m; path = Control/fgTabuloEdge.m; sourceTree = "<group>"; };
+		F611860D188C543F004497C2 /* fgDragPawnFromNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPawnFromNode.h; path = Control/fgDragPawnFromNode.h; sourceTree = "<group>"; };
+		F611860E188C543F004497C2 /* fgDragPawnFromNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPawnFromNode.m; path = Control/fgDragPawnFromNode.m; sourceTree = "<group>"; };
+		F6118610188C545A004497C2 /* fgDragPawnOverEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPawnOverEdge.h; path = Control/fgDragPawnOverEdge.h; sourceTree = "<group>"; };
+		F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPawnOverEdge.m; path = Control/fgDragPawnOverEdge.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
 		F6A6CA821880971B006AAE57 /* fgPawnController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnController.m; path = Control/fgPawnController.m; sourceTree = "<group>"; };
 		F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloController.h; path = Control/fgTabuloController.h; sourceTree = "<group>"; };
 		F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloController.m; path = Control/fgTabuloController.m; sourceTree = "<group>"; };
-		F6BB2A0A1884EE7700539286 /* background_high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background_high.png; sourceTree = "<group>"; };
+		F6BB2A0A1884EE7700539286 /* background-techno.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-techno.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,7 +132,6 @@
 				F60250FD187DDEFB0029915C /* fgDataAdapter.m */,
 				F60250FE187DDEFB0029915C /* fgGameAdapter.h */,
 				F60250FF187DDEFB0029915C /* fgGameAdapter.m */,
-				F60250F7187DDEA50029915C /* fgGameAdapter.xib */,
 				F6025100187DDEFB0029915C /* fgViewAdapter.h */,
 				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
 				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
@@ -143,13 +151,34 @@
 				F60250D6187DDDC80029915C /* InfoPlist.strings */,
 				F60250D5187DDDC80029915C /* Tabulo-Info.plist */,
 				F60250DB187DDDC80029915C /* Tabulo-Prefix.pch */,
-				F6BB2A0A1884EE7700539286 /* background_high.png */,
-				F61185F718877225004497C2 /* spritesheet_high.png */,
+				F6BB2A0A1884EE7700539286 /* background-techno.png */,
+				F61185F718877225004497C2 /* spritesheet-techno.png */,
+				F61185FB188A2E8E004497C2 /* spritesheet-opengl.png */,
 				F60250DF187DDDC80029915C /* Default.png */,
 				F60250E1187DDDC80029915C /* Default@2x.png */,
 				F60250E3187DDDC80029915C /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F6118608188C4E22004497C2 /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				F6118609188C4E42004497C2 /* fgTabuloEdge.h */,
+				F611860A188C4E42004497C2 /* fgTabuloEdge.m */,
+			);
+			name = Graph;
+			sourceTree = "<group>";
+		};
+		F611860C188C4F46004497C2 /* State */ = {
+			isa = PBXGroup;
+			children = (
+				F611860D188C543F004497C2 /* fgDragPawnFromNode.h */,
+				F611860E188C543F004497C2 /* fgDragPawnFromNode.m */,
+				F6118610188C545A004497C2 /* fgDragPawnOverEdge.h */,
+				F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */,
+			);
+			name = State;
 			sourceTree = "<group>";
 		};
 		F6A6CA60187DF175006AAE57 /* View */ = {
@@ -168,6 +197,8 @@
 				F6A6CA821880971B006AAE57 /* fgPawnController.m */,
 				F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */,
 				F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */,
+				F6118608188C4E22004497C2 /* Graph */,
+				F611860C188C4F46004497C2 /* State */,
 			);
 			name = Control;
 			sourceTree = "<group>";
@@ -227,10 +258,10 @@
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F60250E0187DDDC80029915C /* Default.png in Resources */,
 				F60250E2187DDDC80029915C /* Default@2x.png in Resources */,
-				F6BB2A0C1884EE7700539286 /* background_high.png in Resources */,
+				F6BB2A0C1884EE7700539286 /* background-techno.png in Resources */,
 				F60250E4187DDDC80029915C /* Default-568h@2x.png in Resources */,
-				F60250F9187DDEA60029915C /* fgGameAdapter.xib in Resources */,
-				F61185F818877225004497C2 /* spritesheet_high.png in Resources */,
+				F61185FC188A2E8E004497C2 /* spritesheet-opengl.png in Resources */,
+				F61185F818877225004497C2 /* spritesheet-techno.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,12 +274,15 @@
 			files = (
 				F60250DA187DDDC80029915C /* main.m in Sources */,
 				F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */,
+				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
+				F611860F188C543F004497C2 /* fgDragPawnFromNode.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */,
+				F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */,
 				F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -262,14 +296,6 @@
 				F60250D7187DDDC80029915C /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		F60250F7187DDEA50029915C /* fgGameAdapter.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F60250F8187DDEA60029915C /* en */,
-			);
-			name = fgGameAdapter.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

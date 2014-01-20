@@ -25,8 +25,8 @@
 }
 
 - (bool)isHome {
-    
-    if ([currentState isKindOfClass:[f3DragViewFromNode class]])
+
+    if ([components count] == 0 && [currentState isKindOfClass:[f3DragViewFromNode class]])
     {
         f3DragViewFromNode *dragState = (f3DragViewFromNode *)currentState;
         
