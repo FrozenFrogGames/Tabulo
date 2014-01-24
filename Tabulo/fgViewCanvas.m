@@ -127,6 +127,13 @@
 }
 
 - (void)clearRessource {
+
+    for (NSUInteger index =0; index < [textureLoaded count]; ++index)
+    {
+        GLKTextureInfo *textureInfo = [textureLoaded objectAtIndex:index];
+        GLuint textureName = textureInfo.name;
+        glDeleteTextures(1, &textureName);
+    }
     
     [textureLoaded removeAllObjects];
 }
@@ -143,6 +150,7 @@
 
         return [textureLoaded indexOfObject:textureInfo];
     }
+    
 
     return NSUIntegerMax;
 }

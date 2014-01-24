@@ -28,6 +28,10 @@
 		F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860A188C4E42004497C2 /* fgTabuloEdge.m */; };
 		F611860F188C543F004497C2 /* fgDragPawnFromNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860E188C543F004497C2 /* fgDragPawnFromNode.m */; };
 		F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */; };
+		F6118614188DE77F004497C2 /* spritesheet-wood.png in Resources */ = {isa = PBXBuildFile; fileRef = F6118613188DE77F004497C2 /* spritesheet-wood.png */; };
+		F611861718908CF6004497C2 /* spritesheet-sea.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861518908CF6004497C2 /* spritesheet-sea.png */; };
+		F611861818908CF6004497C2 /* spritesheet-custom.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861618908CF6004497C2 /* spritesheet-custom.png */; };
+		F611861A18908DC8004497C2 /* background-sea.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861918908DC8004497C2 /* background-sea.png */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
 		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
@@ -67,6 +71,10 @@
 		F611860E188C543F004497C2 /* fgDragPawnFromNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPawnFromNode.m; path = Control/fgDragPawnFromNode.m; sourceTree = "<group>"; };
 		F6118610188C545A004497C2 /* fgDragPawnOverEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPawnOverEdge.h; path = Control/fgDragPawnOverEdge.h; sourceTree = "<group>"; };
 		F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPawnOverEdge.m; path = Control/fgDragPawnOverEdge.m; sourceTree = "<group>"; };
+		F6118613188DE77F004497C2 /* spritesheet-wood.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-wood.png"; sourceTree = "<group>"; };
+		F611861518908CF6004497C2 /* spritesheet-sea.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-sea.png"; sourceTree = "<group>"; };
+		F611861618908CF6004497C2 /* spritesheet-custom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-custom.png"; sourceTree = "<group>"; };
+		F611861918908DC8004497C2 /* background-sea.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-sea.png"; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
@@ -151,8 +159,12 @@
 				F60250D6187DDDC80029915C /* InfoPlist.strings */,
 				F60250D5187DDDC80029915C /* Tabulo-Info.plist */,
 				F60250DB187DDDC80029915C /* Tabulo-Prefix.pch */,
+				F611861918908DC8004497C2 /* background-sea.png */,
 				F6BB2A0A1884EE7700539286 /* background-techno.png */,
+				F611861518908CF6004497C2 /* spritesheet-sea.png */,
 				F61185F718877225004497C2 /* spritesheet-techno.png */,
+				F6118613188DE77F004497C2 /* spritesheet-wood.png */,
+				F611861618908CF6004497C2 /* spritesheet-custom.png */,
 				F61185FB188A2E8E004497C2 /* spritesheet-opengl.png */,
 				F60250DF187DDDC80029915C /* Default.png */,
 				F60250E1187DDDC80029915C /* Default@2x.png */,
@@ -257,11 +269,15 @@
 			files = (
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F60250E0187DDDC80029915C /* Default.png in Resources */,
+				F611861818908CF6004497C2 /* spritesheet-custom.png in Resources */,
+				F611861718908CF6004497C2 /* spritesheet-sea.png in Resources */,
 				F60250E2187DDDC80029915C /* Default@2x.png in Resources */,
 				F6BB2A0C1884EE7700539286 /* background-techno.png in Resources */,
 				F60250E4187DDDC80029915C /* Default-568h@2x.png in Resources */,
+				F6118614188DE77F004497C2 /* spritesheet-wood.png in Resources */,
 				F61185FC188A2E8E004497C2 /* spritesheet-opengl.png in Resources */,
 				F61185F818877225004497C2 /* spritesheet-techno.png in Resources */,
+				F611861A18908DC8004497C2 /* background-sea.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

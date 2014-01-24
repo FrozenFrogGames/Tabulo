@@ -16,11 +16,11 @@
 
 enum f3TabuloPawnType {
 
-    TABULO_CirclePawn   = 0,
-    TABULO_PentagonPawn = 1,
-    TABULO_TrianglePawn = 2,
-    TABULO_StarPawn     = 3,
-    TABULO_SquarePawn   = 4,
+    TABULO_PawnOne   = 0,
+    TABULO_PawnTwo   = 1,
+    TABULO_PawnThree = 2,
+    TABULO_PawnFour  = 3,
+    TABULO_PawnFive  = 4
 };
 
 enum f3TabuloPlankType {
@@ -32,11 +32,11 @@ enum f3TabuloPlankType {
 
 enum f3TabuloHoleType {
 
-    TABULO_CircleHole   = 8,
-    TABULO_PentagonHole = 9,
-    TABULO_TriangleHole = 10,
-    TABULO_StarHole     = 11,
-    TABULO_SquareHole   = 12
+    TABULO_HoleOne   = 8,
+    TABULO_HoleTwo   = 9,
+    TABULO_HoleThree = 10,
+    TABULO_HoleFour  = 11,
+    TABULO_HoleFive  = 12
 };
 
 @interface fgTabuloDirector : f3GameDirector {

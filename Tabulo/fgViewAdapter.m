@@ -90,6 +90,15 @@
     }
 }
 
+- (void)dealloc {
+
+    ressource = nil;
+    view = nil;
+    textureCoordinates = nil;
+    
+    [self setNext:nil];
+}
+
 - (void)updatePosition:(const CGSize)_resolution Scale:(const CGSize)_scale {
 
     ressource.transform.projectionMatrix = GLKMatrix4MakeOrtho(0.0f, _resolution.width, 0.0f, _resolution.height, 0.0f, 1.0f);
