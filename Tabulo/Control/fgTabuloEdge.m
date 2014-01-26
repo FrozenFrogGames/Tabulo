@@ -10,21 +10,40 @@
 
 @implementation fgTabuloEdge
 
-- (id)initFromNode:(f3GraphNode *)_origin toNode:(f3GraphNode *)_target plankNode:(f3GraphNode *)_plank {
+- (id)initFromNode:(f3GraphNode *)_origin toNode:(f3GraphNode *)_target inputNode:(f3GraphNode *)_input {
     
     self = [super initFromNode:_origin toNode:_target];
     
     if (self != nil)
     {
-        plankNode = _plank;
+        inputNode = _input;
     }
 
     return self;
 }
 
-- (f3GraphNode *)Plank {
+- (f3GraphNode *)Input {
     
-    return plankNode;
+    return inputNode;
+}
+
++ (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input {
+    
+    NSArray *edgesFrom = [self edgesFromNode:_node];
+    
+    NSMutableArray *edges = [NSMutableArray array];
+
+    for (NSUInteger i =0; i <[edgesFrom count]; ++i)
+    {
+        fgTabuloEdge *edge = (fgTabuloEdge *)[edgesFrom objectAtIndex:i];
+        
+        if (edge.Input == _input)
+        {
+            [edges addObject:edge];
+        }
+    }
+
+    return edges;
 }
 
 @end

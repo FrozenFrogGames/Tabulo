@@ -8,6 +8,6 @@
 
 #import "../../../Framework/Framework/Control/f3DragViewOverEdge.h"
 
-@interface fgDragPawnOverEdge : f3DragViewOverEdge
+@interface fgDragViewOverEdge : f3DragViewOverEdge
 
 @end

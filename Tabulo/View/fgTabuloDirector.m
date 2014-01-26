@@ -15,10 +15,9 @@
 #import "../../../Framework/Framework/Control/f3Controller.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
-#import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 #import "../Control/fgPawnController.h"
 #import "../Control/fgTabuloEdge.h"
-#import "../Control/fgDragPawnFromNode.h"
+#import "../Control/fgDragViewFromNode.h"
 
 @implementation fgTabuloDirector
 
@@ -28,7 +27,6 @@
     
     if (self != nil)
     {
-        designIndex =3;
         levelIndex = 1;
 
         focusNode = nil;
@@ -55,43 +53,11 @@
         gameCanvas = (fgViewCanvas *)_canvas;
     }
     
-    if (levelIndex == NSUIntegerMax)
-    {
-        spritesheet = nil;
-        background = nil;
-    }
-    else if (gameCanvas != nil)
-    {
-        [gameCanvas clearRessource];
+//  spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-debug.png"]), nil];
+//  background = nil;
 
-        switch (designIndex)
-        {
-            case 1:
-                spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-techno.png"]), nil];
-                background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-techno.png"]), nil];
-                break;
-
-            case 2:
-                spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-wood.png"]), nil];
-                background = nil;
-                break;
-
-            case 3:
-                spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-sea.png"]), nil];
-                background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-sea.png"]), nil];
-                break;
-
-            case 4:
-                spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-custom.png"]), nil];
-                background = nil;
-                break;
-                
-            default:
-                spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-opengl.png"]), nil];
-                background = nil;
-                break;
-        }
-    }
+    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-sea.png"]), nil];
+    background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-sea.png"]), nil];
 }
 
 - (void)loadScene:(f3GameAdaptee *)_producer {
@@ -136,26 +102,13 @@
 
     if (levelIndex < NSUIntegerMax)
     {
-        if (levelIndex < 6)
+        if (levelIndex < 5)
         {
             levelIndex++;
         }
         else
         {
             levelIndex = 1;
-        }
-        
-        if (levelIndex == 1)
-        {
-            designIndex =3;
-            
-            [self loadResource:gameCanvas];
-        }
-        else if (levelIndex == 6)
-        {
-            designIndex =0;
-            
-            [self loadResource:gameCanvas];
         }
 
         [scene removeAllComposites];
@@ -172,6 +125,40 @@
              FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(_position.y / _spritesheet.height),
              FLOAT_BOX(_position.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height),
              FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height), nil];
+}
+
+- (float)computeAbsoluteAngleBetween:(CGPoint)_pointA And:(CGPoint)_pointB {
+    
+    float deltaY = _pointA.y - _pointB.y, deltaX = _pointA.x - _pointB.x, result = M_PI_2;
+    
+    if (deltaY > 0.f)
+    {
+        if (deltaX >= 0.f)
+        {
+            result = atanf(deltaX / deltaY); // first quadrant
+        }
+        else
+        {
+            result = atanf(deltaY / -deltaX) +M_PI +M_PI_2; // fourth quadrant
+        }
+    }
+    else if (deltaY < 0.f)
+    {
+        if (deltaX <= 0.f)
+        {
+            result = atanf(fabsf(deltaX) / -deltaY) +M_PI; // third quadrant
+        }
+        else
+        {
+            result = atanf(-deltaY / deltaX) +M_PI_2; // second quadrant
+        }
+    }
+    else if (deltaX < 0.f)
+    {
+        result += M_PI;
+    }
+    
+    return result *180.f /M_PI; // radianToDegree
 }
 
 - (void)buildBackground {
@@ -229,11 +216,11 @@
 
     switch (_index) {
         case TABULO_PawnOne:
-            position = CGPointMake(0.f, designIndex == 3 ? 512.f : 0.f);
+            position = CGPointMake(0.f, 512.f);
             break;
 
         case TABULO_PawnTwo:
-            position = CGPointMake(0.f, designIndex == 3 ? 384.f : 128.f);
+            position = CGPointMake(0.f, 384.f);
             break;
 
         case TABULO_PawnThree:
@@ -241,11 +228,11 @@
             break;
 
         case TABULO_PawnFour:
-            position = CGPointMake(0.f, designIndex == 3 ? 128.f : 384.f);
+            position = CGPointMake(0.f, 128.f);
             break;
 
         case TABULO_PawnFive:
-            position = CGPointMake(0.f, designIndex == 3 ? 0.f : 512.f);
+            position = CGPointMake(0.f, 0.f);
             break;
     }
 
@@ -475,7 +462,7 @@
 
     for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
     {
-        fgTabuloEdge *edge = [[fgTabuloEdge alloc] initFromNode:_origin toNode:_target plankNode:_node];
+        fgTabuloEdge *edge = [[fgTabuloEdge alloc] initFromNode:_origin toNode:_target inputNode:_node];
         [edge bindControlHeader:translationHeader];
 
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:pawn value:true]];
@@ -513,40 +500,6 @@
     }
 }
 
-- (float)computeAbsoluteAngleBetween:(CGPoint)_pointA And:(CGPoint)_pointB {
-    
-    float deltaY = _pointA.y - _pointB.y, deltaX = _pointA.x - _pointB.x, result = M_PI_2;
-
-    if (deltaY > 0.f)
-    {
-        if (deltaX >= 0.f)
-        {
-            result = atanf(deltaX / deltaY); // first quadrant
-        }
-        else
-        {
-            result = atanf(deltaY / -deltaX) +M_PI +M_PI_2; // fourth quadrant
-        }
-    }
-    else if (deltaY < 0.f)
-    {
-        if (deltaX <= 0.f)
-        {
-            result = atanf(fabsf(deltaX) / -deltaY) +M_PI; // third quadrant
-        }
-        else
-        {
-            result = atanf(-deltaY / deltaX) +M_PI_2; // second quadrant
-        }
-    }
-    else if (deltaX < 0.f)
-    {
-        result += M_PI;
-    }
-
-    return result *180.f /M_PI; // radianToDegree
-}
-
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
 
     float targetAngle = [self computeAbsoluteAngleBetween:_target.Position And:_node.Position];
@@ -577,14 +530,27 @@
             break;
     }
 
+    f3GraphNode *inputNode = nil;
+
+    NSArray *targetEdge = [fgTabuloEdge edgesFromNode:_node withInput:_target];
+    if ([targetEdge count] > 0)
+    {
+        inputNode = ((fgTabuloEdge *)[targetEdge objectAtIndex:0]).Target;
+        
+        if ([targetEdge count] > 1)
+        {
+            // TODO test that all the edges have the same target node
+        }
+    }
+    
     f3ControlHeader *transformHeader = [[f3ControlHeader alloc] initForType:3];
     [transformHeader bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(targetAngle), nil]];
     [transformHeader bindModel:[f3FloatArray buildHandleForValues:2, FLOAT_BOX(deltaAngle), FLOAT_BOX(radius), nil]];
     [transformHeader bindModel:[_node getPositionHandle]];
-
+    
     for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
     {
-        f3GraphEdge *edge = [[f3GraphEdge alloc] initFromNode:_origin toNode:_target];
+        fgTabuloEdge *edge = [[fgTabuloEdge alloc] initFromNode:_origin toNode:_target inputNode:inputNode];
 
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:_type value:true]];
         [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:pawn value:true]];
@@ -595,7 +561,7 @@
 }
 
 - (void)loadSceneOne:(f3GameAdaptee *)_producer {
-    
+
     [self addPointFrom:0 Radius:1.75f Angle:90.f];
     [self addPointFrom:1 Radius:1.75f Angle:90.f];
     [self addPointFrom:2 Radius:1.75f Angle:90.f];
@@ -608,13 +574,15 @@
     [self buildBackground];
 
     [builder buildComposite:0];
-    
     [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay background
 
     f3ViewAdaptee *pawn = [self buildPawn:TABULO_PawnOne atPosition:[self getPointAt:0]];
     f3ViewAdaptee *plank = [self buildSmallPlank:270.f atPosition:[self getPointAt:1] withHole:0];
 
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
+
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
 
     f3GraphNode *node0 = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1 = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -624,28 +592,19 @@
 
     [self clearPoints];
     
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-//      [_producer.Grid sceneDidLoad:scene]; // debug purpose
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
 
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
 
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
-
-        f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initForView:plank onNode:node1 withFlag:TABULO_HaveSmallPlank];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
-        
-        fgDragPawnFromNode *controlPawn = [[fgDragPawnFromNode alloc] initForView:pawn onNode:node0 withFlag:TABULO_PawnOne];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node4]];
-    }
-    else
-    {
-        // TODO throw f3Exception
-    }
+    fgDragViewFromNode *controlPlank = [[fgDragViewFromNode alloc] initForView:plank onNode:node1 withFlag:TABULO_HaveSmallPlank];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
+    
+    fgDragViewFromNode *controlPawn = [[fgDragViewFromNode alloc] initForView:pawn onNode:node0 withFlag:TABULO_PawnOne];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node4]];
 }
 
 - (void)loadSceneTwo:(f3GameAdaptee *)_producer {
@@ -676,7 +635,10 @@
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:90.f atPosition:[self getPointAt:7] withHole:0];
     
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
     
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
+
     f3GraphNode *node0 = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1 = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node2 = [self buildNode:_producer atPosition:[self getPointAt:2] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -688,36 +650,31 @@
 
     [self clearPoints];
 
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-//      [_producer.Grid sceneDidLoad:scene]; // debug purpose
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node7];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node7];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node5];
 
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node7];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node7];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node3];
 
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node6];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node3];
-
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node6 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveMediumPlank];
-        
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-        
-        fgDragPawnFromNode *controlPawnTwo = [[fgDragPawnFromNode alloc] initForView:pawnTwo onNode:node0 withFlag:TABULO_PawnTwo];
-        fgDragPawnFromNode *controlPawnThree = [[fgDragPawnFromNode alloc] initForView:pawnThree onNode:node7 withFlag:TABULO_PawnThree];
-        
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node7]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnThree Home:node0]];
-    }
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node6 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveMediumPlank];
+    
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    
+    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node0 withFlag:TABULO_PawnTwo];
+    fgDragViewFromNode *controlPawnThree = [[fgDragViewFromNode alloc] initForView:pawnThree onNode:node7 withFlag:TABULO_PawnThree];
+    
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node7]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnThree Home:node0]];
 }
 
 - (void)loadSceneThree:(f3GameAdaptee *)_producer {
@@ -752,7 +709,10 @@
     f3ViewAdaptee *plankThree = [self buildMediumPlank:180.f atPosition:[self getPointAt:4] withHole:0];
 
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
     
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
+
     f3GraphNode *node0 = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1 = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node2 = [self buildNode:_producer atPosition:[self getPointAt:2] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -765,46 +725,40 @@
     f3GraphNode *node9 = [self buildNode:_producer atPosition:[self getPointAt:9] withExtend:CGSizeMake(0.75f, 0.75f)];
     
     [self clearPoints];
+
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node2 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node8 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node8 Target:node5];
+
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node9 Target:node1];
     
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-//      [_producer.Grid sceneDidLoad:scene]; // debug purpose
-
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node2 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node8 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node8 Target:node5];
-
-        
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node9];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node9 Target:node1];
-        
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
-        
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
-        
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node7 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node1 withFlag:TABULO_HaveMediumPlank];
-        f3DragViewFromNode *controlPlankThree = [[f3DragViewFromNode alloc] initForView:plankThree onNode:node4 withFlag:TABULO_HaveMediumPlank];
-        
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
-        
-        fgDragPawnFromNode *controlPawnFour = [[fgDragPawnFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
-        fgDragPawnFromNode *controlPawnFive = [[fgDragPawnFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
-        
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node5]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
-    }
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
+    
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node7 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node1 withFlag:TABULO_HaveMediumPlank];
+    fgDragViewFromNode *controlPlankThree = [[fgDragViewFromNode alloc] initForView:plankThree onNode:node4 withFlag:TABULO_HaveMediumPlank];
+    
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
+    
+    fgDragViewFromNode *controlPawnFour = [[fgDragViewFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
+    fgDragViewFromNode *controlPawnFive = [[fgDragViewFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
+    
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node5]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
 }
 
 - (void)loadSceneFour:(f3GameAdaptee *)_producer {
@@ -844,7 +798,10 @@
     f3ViewAdaptee *plankThree = [self buildMediumPlank:0.f atPosition:[self getPointAt:11] withHole:0];
 
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
     
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
+
     f3GraphNode *node0 = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1 = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node2 = [self buildNode:_producer atPosition:[self getPointAt:2] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -861,52 +818,47 @@
     
     [self clearPoints];
     
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-//      [_producer.Grid sceneDidLoad:scene]; // debug purpose
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node0 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node5 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node12 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node8 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node12 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node10 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node12 Target:node10];
 
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node0 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node5 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node5 Target:node12];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node12 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node8 Target:node12];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node12 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node10 Target:node12];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node12 Target:node10];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node7 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node4 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node7 Target:node11];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node11 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node8 Origin:node6 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node8 Origin:node9 Target:node6];
+    
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node4 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node9 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankThree = [[fgDragViewFromNode alloc] initForView:plankThree onNode:node11 withFlag:TABULO_HaveMediumPlank];
 
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node3 Target:node7];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node7 Target:node3];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node4];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node4 Target:node6];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node7 Target:node11];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node11 Target:node7];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node4];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node1];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node8 Origin:node6 Target:node9];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node8 Origin:node9 Target:node6];
-        
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node4 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node9 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankThree = [[f3DragViewFromNode alloc] initForView:plankThree onNode:node11 withFlag:TABULO_HaveMediumPlank];
-        
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
-        
-        fgDragPawnFromNode *controlPawnFour = [[fgDragPawnFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
-        fgDragPawnFromNode *controlPawnFive = [[fgDragPawnFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
-        fgDragPawnFromNode *controlPawnOne = [[fgDragPawnFromNode alloc] initForView:pawnOne onNode:node10 withFlag:TABULO_PawnOne];
-        
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node10]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node5]];
-    }
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
+    
+    fgDragViewFromNode *controlPawnFour = [[fgDragViewFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
+    fgDragViewFromNode *controlPawnFive = [[fgDragViewFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
+    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node10 withFlag:TABULO_PawnOne];
+    
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node10]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node5]];
 }
 
 - (void)loadSceneFive:(f3GameAdaptee *)_producer {
@@ -948,6 +900,9 @@
     f3ViewAdaptee *plankThree = [self buildMediumPlank:135.f atPosition:[self getPointAt:2] withHole:0];
 
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
+
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
 
     f3GraphNode *node0  = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1  = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -966,62 +921,57 @@
 
     [self clearPoints];
 
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-//      [_producer.Grid sceneDidLoad:scene]; // debug purpose
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node4 Target:node0];
 
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node4];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node0 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node5 Target:node0];
 
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node0 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node5 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node0 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node0];
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node4 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node4];
 
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node0 Target:node6];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node0];
-        
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node4 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node5 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node10 Target:node5];
 
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node5 Target:node10];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node10 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node5 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node11 Target:node5];
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node11 Target:node13];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node13 Target:node11];
 
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node5 Target:node11];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node11 Target:node5];
-        
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node11 Target:node13];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node13 Target:node11];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node2 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node3 Target:node2];
 
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node2 Target:node3];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node3 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node1 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node7 Target:node1];
 
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node1 Target:node7];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node7 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node8 Target:node7];
 
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node8];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node8 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node8 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node9 Target:node8];
 
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node8 Target:node9];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node9 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node12 Target:node9];
 
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node12];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node12 Target:node9];
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node12 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node8 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankThree = [[fgDragViewFromNode alloc] initForView:plankThree onNode:node2 withFlag:TABULO_HaveMediumPlank];
 
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node12 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node8 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankThree = [[f3DragViewFromNode alloc] initForView:plankThree onNode:node2 withFlag:TABULO_HaveMediumPlank];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
 
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
+    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node6 withFlag:TABULO_PawnOne];
+    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node13 withFlag:TABULO_PawnTwo];
+    fgDragViewFromNode *controlPawnThree = [[fgDragViewFromNode alloc] initForView:pawnThree onNode:node4 withFlag:TABULO_PawnThree];
 
-        fgDragPawnFromNode *controlPawnOne = [[fgDragPawnFromNode alloc] initForView:pawnOne onNode:node6 withFlag:TABULO_PawnOne];
-        fgDragPawnFromNode *controlPawnTwo = [[fgDragPawnFromNode alloc] initForView:pawnTwo onNode:node13 withFlag:TABULO_PawnTwo];
-        fgDragPawnFromNode *controlPawnThree = [[fgDragPawnFromNode alloc] initForView:pawnThree onNode:node4 withFlag:TABULO_PawnThree];
-
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node4]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node6]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnThree Home:node13]];
-    }
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node4]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node6]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnThree Home:node13]];
 }
 
 - (void)loadSceneSix:(f3GameAdaptee *)_producer {
@@ -1054,8 +1004,11 @@
     f3ViewAdaptee *plankOne = [self buildSmallPlank:0.f atPosition:[self getPointAt:7] withHole:0];
     f3ViewAdaptee *plankTwo = [self buildMediumPlank:90.f atPosition:[self getPointAt:1] withHole:4];
     f3ViewAdaptee *plankThree = [self buildMediumPlank:180.f atPosition:[self getPointAt:4] withHole:5];
-    
+
     [builder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]]; // gameplay elements
+    
+//  [_producer.Grid sceneDidLoad:scene]; // debug purpose
     
     f3GraphNode *node0 = [self buildNode:_producer atPosition:[self getPointAt:0] withExtend:CGSizeMake(0.75f, 0.75f)];
     f3GraphNode *node1 = [self buildNode:_producer atPosition:[self getPointAt:1] withExtend:CGSizeMake(0.75f, 0.75f)];
@@ -1069,46 +1022,41 @@
     f3GraphNode *node9 = [self buildNode:_producer atPosition:[self getPointAt:9] withExtend:CGSizeMake(0.75f, 0.75f)];
     
     [self clearPoints];
+
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node2 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node8 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node8 Target:node5];
     
-    if ([scene appendComposite:(f3ViewComposite *)[builder popComponent]]) // gameplay elements
-    {
-        //      [_producer.Grid sceneDidLoad:scene]; // debug purpose
-        
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node2 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node8 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node8];
-        [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node8 Target:node5];
-        
-        
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node9];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node9 Target:node1];
-        
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
-        [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
-        
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
-        [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
-        
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node7 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node1 withFlag:TABULO_HaveMediumPlank];
-        f3DragViewFromNode *controlPlankThree = [[f3DragViewFromNode alloc] initForView:plankThree onNode:node4 withFlag:TABULO_HaveMediumPlank];
-        
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-        [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
-        
-        fgDragPawnFromNode *controlPawnFour = [[fgDragPawnFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
-        fgDragPawnFromNode *controlPawnFive = [[fgDragPawnFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
-        
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node5]];
-        [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
-    }
+    
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node9 Target:node1];
+    
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
+    
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node7 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node1 withFlag:TABULO_HaveMediumPlank];
+    fgDragViewFromNode *controlPlankThree = [[fgDragViewFromNode alloc] initForView:plankThree onNode:node4 withFlag:TABULO_HaveMediumPlank];
+    
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankThree]];
+    
+    fgDragViewFromNode *controlPawnFour = [[fgDragViewFromNode alloc] initForView:pawnFour onNode:node0 withFlag:TABULO_PawnFour];
+    fgDragViewFromNode *controlPawnFive = [[fgDragViewFromNode alloc] initForView:pawnFive onNode:node5 withFlag:TABULO_PawnFive];
+    
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFour Home:node5]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnFive Home:node0]];
 }
 
 - (void)loadSceneSeven:(f3GameAdaptee *)_producer {
@@ -1150,8 +1098,8 @@
         [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node7 Target:node11];
         [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node12 Origin:node11 Target:node7];
         
-        f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initForView:plankOne onNode:node4 withFlag:TABULO_HaveSmallPlank];
-        f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initForView:plankTwo onNode:node9 withFlag:TABULO_HaveSmallPlank];
+        g3DragViewFromNode *controlPlankOne = [[g3DragViewFromNode alloc] initForView:plankOne onNode:node4 withFlag:TABULO_HaveSmallPlank];
+        g3DragViewFromNode *controlPlankTwo = [[g3DragViewFromNode alloc] initForView:plankTwo onNode:node9 withFlag:TABULO_HaveSmallPlank];
         
         [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
         [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];

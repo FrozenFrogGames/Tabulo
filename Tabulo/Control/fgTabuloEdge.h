@@ -10,11 +10,13 @@
 
 @interface fgTabuloEdge : f3GraphEdge {
     
-    f3GraphNode *plankNode;
+    f3GraphNode *inputNode;
 }
 
-@property (readonly) f3GraphNode *Plank;
++ (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input;
 
-- (id)initFromNode:(f3GraphNode *)_origin toNode:(f3GraphNode *)_target plankNode:(f3GraphNode *)_plank;
+@property (readonly) f3GraphNode *Input;
+
+- (id)initFromNode:(f3GraphNode *)_origin toNode:(f3GraphNode *)_target inputNode:(f3GraphNode *)_input;
 
 @end

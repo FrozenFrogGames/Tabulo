@@ -46,7 +46,7 @@ enum f3TabuloHoleType {
     f3IntegerArray *indicesHandle, *spritesheet, *background;
     f3FloatArray *vertexHandle;
 
-    unsigned int levelIndex, designIndex;
+    unsigned int levelIndex;
     fgViewCanvas *gameCanvas;
 }
 

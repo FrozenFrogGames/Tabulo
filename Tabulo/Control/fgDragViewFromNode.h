@@ -8,6 +8,6 @@
 
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 
-@interface fgDragPawnFromNode : f3DragViewFromNode
+@interface fgDragViewFromNode : f3DragViewFromNode
 
 @end
