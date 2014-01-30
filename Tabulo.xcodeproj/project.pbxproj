@@ -29,6 +29,8 @@
 		F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragViewOverEdge.m */; };
 		F611861718908CF6004497C2 /* spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861518908CF6004497C2 /* spritesheet.png */; };
 		F611861A18908DC8004497C2 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861918908DC8004497C2 /* background.png */; };
+		F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821858189733BA0041DA80 /* fgTabuloTutorial.m */; };
+		F682185C189733D70041DA80 /* fgTabuloEasy.m in Sources */ = {isa = PBXBuildFile; fileRef = F682185B189733D70041DA80 /* fgTabuloEasy.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
 		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
@@ -68,6 +70,11 @@
 		F6118611188C545A004497C2 /* fgDragViewOverEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragViewOverEdge.m; path = Control/fgDragViewOverEdge.m; sourceTree = "<group>"; };
 		F611861518908CF6004497C2 /* spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesheet.png; sourceTree = "<group>"; };
 		F611861918908DC8004497C2 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		F6821857189733BA0041DA80 /* fgTabuloTutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloTutorial.h; path = View/fgTabuloTutorial.h; sourceTree = "<group>"; };
+		F6821858189733BA0041DA80 /* fgTabuloTutorial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloTutorial.m; path = View/fgTabuloTutorial.m; sourceTree = "<group>"; };
+		F682185A189733D70041DA80 /* fgTabuloEasy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEasy.h; path = View/fgTabuloEasy.h; sourceTree = "<group>"; };
+		F682185B189733D70041DA80 /* fgTabuloEasy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEasy.m; path = View/fgTabuloEasy.m; sourceTree = "<group>"; };
+		F682185F189738EE0041DA80 /* ITabuloBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITabuloBuilder.h; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
@@ -126,16 +133,8 @@
 		F60250D3187DDDC80029915C /* FrozenfrogTabulo */ = {
 			isa = PBXGroup;
 			children = (
-				F60250FA187DDEFB0029915C /* fgAppDelegate.h */,
-				F60250FB187DDEFB0029915C /* fgAppDelegate.m */,
-				F60250FC187DDEFB0029915C /* fgDataAdapter.h */,
-				F60250FD187DDEFB0029915C /* fgDataAdapter.m */,
-				F60250FE187DDEFB0029915C /* fgGameAdapter.h */,
-				F60250FF187DDEFB0029915C /* fgGameAdapter.m */,
-				F6025100187DDEFB0029915C /* fgViewAdapter.h */,
-				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
-				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
-				F6025103187DDEFB0029915C /* fgViewCanvas.m */,
+				F682185E189736720041DA80 /* Adapter */,
+				F682185D1897366B0041DA80 /* Interface */,
 				F6A6CA80188096F8006AAE57 /* Control */,
 				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
@@ -181,11 +180,40 @@
 			name = State;
 			sourceTree = "<group>";
 		};
+		F682185D1897366B0041DA80 /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				F682185F189738EE0041DA80 /* ITabuloBuilder.h */,
+			);
+			name = Interface;
+			sourceTree = "<group>";
+		};
+		F682185E189736720041DA80 /* Adapter */ = {
+			isa = PBXGroup;
+			children = (
+				F60250FA187DDEFB0029915C /* fgAppDelegate.h */,
+				F60250FB187DDEFB0029915C /* fgAppDelegate.m */,
+				F60250FC187DDEFB0029915C /* fgDataAdapter.h */,
+				F60250FD187DDEFB0029915C /* fgDataAdapter.m */,
+				F60250FE187DDEFB0029915C /* fgGameAdapter.h */,
+				F60250FF187DDEFB0029915C /* fgGameAdapter.m */,
+				F6025100187DDEFB0029915C /* fgViewAdapter.h */,
+				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
+				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
+				F6025103187DDEFB0029915C /* fgViewCanvas.m */,
+			);
+			name = Adapter;
+			sourceTree = "<group>";
+		};
 		F6A6CA60187DF175006AAE57 /* View */ = {
 			isa = PBXGroup;
 			children = (
 				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
 				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
+				F6821857189733BA0041DA80 /* fgTabuloTutorial.h */,
+				F6821858189733BA0041DA80 /* fgTabuloTutorial.m */,
+				F682185A189733D70041DA80 /* fgTabuloEasy.h */,
+				F682185B189733D70041DA80 /* fgTabuloEasy.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -275,9 +303,11 @@
 				F60250DA187DDDC80029915C /* main.m in Sources */,
 				F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */,
 				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
+				F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
 				F611860F188C543F004497C2 /* fgDragViewFromNode.m in Sources */,
+				F682185C189733D70041DA80 /* fgTabuloEasy.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,

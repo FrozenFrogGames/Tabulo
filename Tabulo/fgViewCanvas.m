@@ -104,12 +104,14 @@
                 screenSize.height = deviceResolution.width;
             }
 
+            [[f3GameDirector Director] deviceOrientationDidChange:targetOrientationIsPortrait];
+            
             if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
             {
                 screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];
                 screenSize.height = screenSize.height * [[UIScreen mainScreen] scale];
             }
-
+            
             currentOrientationIsPortrait = targetOrientationIsPortrait;
         }
     }
@@ -194,8 +196,8 @@
             glDrawElements(_type, _count, GL_UNSIGNED_SHORT, _indices);
             break;
 
-        case DRAW_TRIANGLE_FAN:
         case DRAW_LINE_STRIP:
+        case DRAW_TRIANGLE_FAN:
             glDrawArrays(_type, 0, _count);
             break;
             
