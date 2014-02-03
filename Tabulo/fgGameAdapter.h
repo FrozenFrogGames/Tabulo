@@ -8,13 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
-#import "../../Framework/Framework/View/f3GameDirector.h"
+#import "View/fgTabuloDirector.h"
 #import "../../Framework/Framework/Control/f3GameAdaptee.h"
 
 @interface fgGameAdapter : GLKViewController {
     
-    f3GameDirector *director;
+    fgTabuloDirector *director;
     f3GameAdaptee *adaptee;
+    bool orientationHasChanged;
 }
 
 @end

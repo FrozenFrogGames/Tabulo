@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../ITabuloBuilder.h"
+#import "fgTabuloLevel.h"
 
-@interface fgTabuloEasy : NSObject<ITabuloBuilder>
+@interface fgTabuloEasy : fgTabuloLevel
 
 @end

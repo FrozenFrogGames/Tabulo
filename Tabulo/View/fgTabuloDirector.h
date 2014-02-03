@@ -39,19 +39,27 @@ enum f3TabuloHoleType {
     TABULO_HoleFive  = 12
 };
 
+enum f3TabuloResource {
+    
+    RESOURCE_UserInterface,
+    RESOURCE_SpriteSheet,
+    RESOURCE_Background
+};
+
 @interface fgTabuloDirector : f3GameDirector {
 
-    f3IntegerArray *spritesheet, *background;
+    fgViewCanvas *gameCanvas;
+    f3IntegerArray  *userinterface, *spritesheet, *background;
     f3RotationDecorator *backgroundRotation;
     f3IntegerArray *indicesHandle;
     f3FloatArray *vertexHandle;
-    fgViewCanvas *gameCanvas;
-    bool backgroundIsPortrait;
     NSUInteger levelIndex;
 }
 
-- (float)computeAbsoluteAngleBetween:(CGPoint)_pointA and:(CGPoint)_pointB;
-- (f3FloatArray *)getCoordonate:(CGSize)_spritesheet atPoint:(CGPoint)_position withExtend:(CGSize)_extend;
+- (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
+
+- (void)loadScene:(NSUInteger)_index;
+- (void)nextScene;
 
 - (void)buildBackground;
 - (void)buildPillar:(NSUInteger)_index;
@@ -60,11 +68,10 @@ enum f3TabuloHoleType {
 - (f3ViewAdaptee *)buildPawn:(NSUInteger)_index Type:(enum f3TabuloPawnType)_type;
 - (f3ViewAdaptee *)buildSmallPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
 - (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
-- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole1:(int)_hole1 Hole2:(int)_hole2;
 
 - (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
 
-- (void)nextScene;
+- (f3FloatArray *)computeCoordonate:(CGSize)_spritesheet atPoint:(CGPoint)_position withExtend:(CGSize)_extend;
 
 @end

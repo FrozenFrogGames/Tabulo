@@ -43,6 +43,11 @@
     return unitSize;
 }
 
+- (bool)OrientationIsPortrait {
+
+    return targetOrientationIsPortrait;
+}
+
 - (void)deviceOrientationDidChange {
 
     const UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
@@ -61,7 +66,8 @@
 
     [super drawRect:rect];
 
-    glClearColor(0.f, 0.f, 0.f, 1.f); // TODO get background color from the scene
+//  glClearColor(1.f, 0.f, 1.f, 1.f); // dev purpose : magenta
+    glClearColor(1.f, 1.f, 1.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     if (CGSizeEqualToSize(screenSize, CGSizeZero))
@@ -104,8 +110,6 @@
                 screenSize.height = deviceResolution.width;
             }
 
-            [[f3GameDirector Director] deviceOrientationDidChange:targetOrientationIsPortrait];
-            
             if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
             {
                 screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];

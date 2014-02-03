@@ -10,9 +10,8 @@
 
 @implementation fgTabuloEasy
 
-+ (fgTabuloController *)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
++ (void)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
 
-    return nil;
 }
 
 @end

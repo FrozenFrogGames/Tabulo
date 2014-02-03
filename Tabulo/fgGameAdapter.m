@@ -31,6 +31,8 @@
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
 
         adaptee = [[f3GameAdaptee alloc] init];
+        
+        orientationHasChanged = true;
     }
     
     return self;
@@ -64,7 +66,7 @@
     
     [director loadResource:canvas];
 
-    [director loadScene:adaptee];
+    [director loadScene:0];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)
@@ -88,7 +90,7 @@
 
 - (void)viewOrientationDidChange:(NSNotification *)notification {
     
-    [(fgViewCanvas *)self.view deviceOrientationDidChange];
+    orientationHasChanged = true;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -147,7 +149,18 @@
 - (void)update
 {
     [adaptee update:self.timeSinceLastUpdate];
+
+    if (orientationHasChanged)
+    {
+        orientationHasChanged = false;
+
+        fgViewCanvas *canvas = (fgViewCanvas *)self.view;
     
+        [canvas deviceOrientationDidChange];
+
+        [director deviceOrientationDidChange:[canvas OrientationIsPortrait]];
+    }
+
     [director.Scene refresh]; // TODO refresh adapter list only if the view tree has changed
 }
 

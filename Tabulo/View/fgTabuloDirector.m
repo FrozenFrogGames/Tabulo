@@ -17,40 +17,50 @@
 #import "../Control/fgPawnController.h"
 #import "../Control/fgTabuloEdge.h"
 #import "fgTabuloDirector.h"
+#import "fgTabuloMenu.h"
 #import "fgTabuloTutorial.h"
 #import "fgTabuloEasy.h"
 
 @implementation fgTabuloDirector
 
+const NSUInteger LEVEL_COUNT = 6;
+
 - (id)init:(Class )_adapterType {
-    
+
     self = [super init:_adapterType];
-    
+
     if (self != nil)
     {
-        levelIndex = 1;
-        
+        gameCanvas = nil;
+
+        userinterface = nil;
         spritesheet = nil;
-        
         background = nil;
         backgroundRotation = nil;
-        backgroundIsPortrait = false;
-        
+
         indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-        
+
         vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                         FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
-        
-        gameCanvas = nil;
+
+        levelIndex = 0;
     }
-    
+
     return self;
 }
 
 - (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {
+    
+    [super deviceOrientationDidChange:_orientationIsPortrait];
 
-    backgroundRotation.Ratio = (_orientationIsPortrait ? 1.f : 0.f);
-    backgroundIsPortrait = _orientationIsPortrait;
+    if (levelIndex == 0)
+    {
+        [self loadScene:0];
+    }
+    else
+    {
+        backgroundRotation.Ratio = (_orientationIsPortrait ? 1.f : 0.f);
+    }
 }
 
 - (void)loadResource:(NSObject<IViewCanvas> *)_canvas {
@@ -59,84 +69,67 @@
     {
         gameCanvas = (fgViewCanvas *)_canvas;
     }
-    
-//  spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-debug.png"]), nil];
-//  background = nil;
 
-    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-sea.png"]), nil];
-    background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-sea.png"]), nil];
+    userinterface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-ui.png"]), nil];
+
+//  spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-debug.png"]), nil];
+    background = nil;
+
+    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-prototype.png"]), nil];
+//  background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-prototype.png"]), nil];
 }
 
-- (void)loadScene:(f3GameAdaptee *)_producer {
+- (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
 
-    [_producer removeAllComponents];
+    switch (_resource) {
 
-    fgTabuloController *gameController = [fgTabuloTutorial buildLevel:levelIndex director:self producer:_producer];
+        case RESOURCE_UserInterface:
+            
+            return userinterface;
 
-    [_producer appendComponent:gameController];
+        case RESOURCE_SpriteSheet:
+            
+            return spritesheet;
+
+        case RESOURCE_Background:
+            
+            return background;
+    }
+}
+
+- (void)loadScene:(NSUInteger)_index {
+    
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+
+    [scene removeAllComposites];
+
+    [producer removeAllComponents];
+
+    levelIndex = _index;
+
+    if (levelIndex == 0)
+    {
+        [fgTabuloMenu buildMenu:LEVEL_COUNT director:self producer:producer];
+    }
+    else
+    {
+        [fgTabuloTutorial buildLevel:levelIndex director:self producer:producer];
+    }
 }
 
 - (void)nextScene {
 
-    if (levelIndex < NSUIntegerMax)
+    [self loadScene:0];
+/*
+    if (levelIndex < LEVEL_COUNT)
     {
-        if (levelIndex < 6)
-        {
-            levelIndex++;
-        }
-        else
-        {
-            levelIndex = 1;
-        }
- 
-        [scene removeAllComposites];
-
-        [self loadScene:[f3GameAdaptee Producer]];
+        [self loadScene:++levelIndex];
     }
-}
-
-- (float)computeAbsoluteAngleBetween:(CGPoint)_pointA and:(CGPoint)_pointB {
-    
-    float deltaY = _pointA.y - _pointB.y, deltaX = _pointA.x - _pointB.x, result = M_PI_2;
-    
-    if (deltaY > 0.f)
+    else
     {
-        if (deltaX >= 0.f)
-        {
-            result = atanf(deltaX / deltaY); // first quadrant
-        }
-        else
-        {
-            result = atanf(deltaY / -deltaX) +M_PI +M_PI_2; // fourth quadrant
-        }
+        [self loadScene:0];
     }
-    else if (deltaY < 0.f)
-    {
-        if (deltaX <= 0.f)
-        {
-            result = atanf(fabsf(deltaX) / -deltaY) +M_PI; // third quadrant
-        }
-        else
-        {
-            result = atanf(-deltaY / deltaX) +M_PI_2; // second quadrant
-        }
-    }
-    else if (deltaX < 0.f)
-    {
-        result += M_PI;
-    }
-    
-    return result *180.f /M_PI; // radianToDegree
-}
-
-- (f3FloatArray *)getCoordonate:(CGSize)_spritesheet atPoint:(CGPoint)_position withExtend:(CGSize)_extend {
-    
-    CGPoint lowerRight = CGPointMake(_position.x + _extend.width, _position.y + _extend.height);
-    
-    return  [f3FloatArray buildHandleForValues:8, FLOAT_BOX(_position.x / _spritesheet.width), FLOAT_BOX(_position.y / _spritesheet.height),
-             FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(_position.y / _spritesheet.height),
-             FLOAT_BOX(_position.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height),
-             FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height), nil];
+ */
 }
 
 - (void)buildBackground {
@@ -150,7 +143,7 @@
         [builder push:[f3FloatArray buildHandleForValues:8,
                        FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f),
                        FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
-        [builder push:background];
+        [builder push:[self getResourceIndex:RESOURCE_Background]];
         [builder buildDecorator:4];
 
         [builder push:[f3VectorHandle buildHandleForWidth:16.f height:12.f]];
@@ -161,7 +154,7 @@
     
         backgroundRotation = (f3RotationDecorator *)[builder top]; // keep reference on decorator to rotate the background
         [backgroundRotation applyAngle:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(90.f), nil]];
-        backgroundRotation.Ratio = (backgroundIsPortrait ? 1.f : 0.f);
+        backgroundRotation.Ratio = ([self OrientationIsPortrait] ? 1.f : 0.f);
     }
 }
 
@@ -173,10 +166,10 @@
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
 
-    [builder push:[self getCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[self computeCoordonate:CGSizeMake(2048.f, 896.f)
                               atPoint:CGPointMake(1664.f, 384.f)
                            withExtend:CGSizeMake(384.f, 384.f)]];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
 
     [builder push:[f3VectorHandle buildHandleForWidth:3.f height:3.f]];
@@ -194,10 +187,10 @@
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
 
-    [builder push:[self getCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[self computeCoordonate:CGSizeMake(2048.f, 896.f)
                               atPoint:CGPointMake(128.f +(_type *384.f), 0.f)
                            withExtend:CGSizeMake(384.f, 384.f)]];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
 
     [builder push:[f3VectorHandle buildHandleForWidth:3.f height:3.f]];
@@ -213,11 +206,11 @@
 
     switch (_type) {
         case TABULO_PawnOne:
-            type = CGPointMake(0.f, 512.f);
+            type = CGPointMake(0.f, 0.f);
             break;
 
         case TABULO_PawnTwo:
-            type = CGPointMake(0.f, 384.f);
+            type = CGPointMake(0.f, 128.f);
             break;
 
         case TABULO_PawnThree:
@@ -225,11 +218,11 @@
             break;
 
         case TABULO_PawnFour:
-            type = CGPointMake(0.f, 128.f);
+            type = CGPointMake(0.f, 384.f);
             break;
 
         case TABULO_PawnFive:
-            type = CGPointMake(0.f, 0.f);
+            type = CGPointMake(0.f, 512.f);
             break;
     }
 
@@ -239,10 +232,10 @@
 
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
 
-    [builder push:[self getCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[self computeCoordonate:CGSizeMake(2048.f, 896.f)
                               atPoint:CGPointMake(type.x, type.y)
                            withExtend:CGSizeMake(128.f, 128.f)]];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
 
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -298,7 +291,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
 
     [builder push:plankCoordonate];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
 
     [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
@@ -359,7 +352,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
     [builder push:plankCoordonate];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
 
     [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
@@ -376,8 +369,9 @@
     return result;
 }
 
-- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole1:(int)_hole1 Hole2:(int)_hole2 {
 /*
+- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole1:(int)_hole1 Hole2:(int)_hole2 {
+
     f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:30, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
@@ -441,7 +435,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
     [builder push:plankCoordonate];
-    [builder push:spritesheet];
+    [builder push:[self getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
     [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
     [builder buildDecorator:3];
@@ -449,9 +443,10 @@
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:_position.x y:_position.y]];
     [builder buildDecorator:1];
- */
-    return nil;
+
+    return result;
 }
+ */
 
 - (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
 
@@ -499,9 +494,9 @@
 
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
 
-    float targetAngle = [self computeAbsoluteAngleBetween:_target.Position and:_node.Position];
+    float targetAngle = [f3GameDirector computeAbsoluteAngleBetween:_target.Position and:_node.Position];
 
-    float deltaAngle = targetAngle - [self computeAbsoluteAngleBetween:_origin.Position and:_node.Position];
+    float deltaAngle = targetAngle - [f3GameDirector computeAbsoluteAngleBetween:_origin.Position and:_node.Position];
     if (deltaAngle > 180.f)
     {
         deltaAngle -= 360.f;
@@ -557,7 +552,207 @@
     }
 }
 
-/* - (void)loadSceneTemplate {
+- (f3FloatArray *)computeCoordonate:(CGSize)_spritesheet atPoint:(CGPoint)_position withExtend:(CGSize)_extend {
+    
+    CGPoint lowerRight = CGPointMake(_position.x + _extend.width, _position.y + _extend.height);
+    
+    return  [f3FloatArray buildHandleForValues:8, FLOAT_BOX(_position.x / _spritesheet.width), FLOAT_BOX(_position.y / _spritesheet.height),
+             FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(_position.y / _spritesheet.height),
+             FLOAT_BOX(_position.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height),
+             FLOAT_BOX(lowerRight.x / _spritesheet.width), FLOAT_BOX(lowerRight.y / _spritesheet.height), nil];
+}
+
+/*
+- (void)loadSceneUserInterface {
+    
+    CGPoint pointA1 = CGPointMake(-4.0f, 3.25f);
+    CGPoint pointB1 = CGPointMake(3.f, 2.5f);
+    CGPoint pointC1 = CGPointMake(-7.f, -0.5f);
+    CGPoint pointC2 = CGPointMake(-5.f, -0.5f);
+    CGPoint pointC3 = CGPointMake(-7.f, -2.5f);
+    CGPoint pointC4 = CGPointMake(-5.f, -2.5f);
+    CGPoint pointC5 = CGPointMake(-3.f, -2.5f);
+    CGPoint pointD1 = CGPointMake(7.f, 4.f);
+    CGPoint pointD2 = CGPointMake(7.f, 2.f);
+    CGPoint pointD3 = CGPointMake(-0.75f, -0.25f);
+    CGPoint pointD4 = CGPointMake(-2.25f, -0.25f);
+
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.6f), FLOAT_BOX(0.6f), FLOAT_BOX(0.6f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:8.f height:5.125f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointA1.x y:pointA1.y]];
+    [builder buildDecorator:1]; // panel portrait
+
+    f3IntegerArray *pawnIndices = [[f3IntegerArray alloc] init];
+    f3FloatArray *pawnVertex = [f3FloatArray buildHandleForCircle:32 scale:1.f];
+
+    [builder push:pawnIndices];
+    [builder push:pawnVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD1.x y:pointD1.y]];
+    [builder buildDecorator:1]; // button play
+    
+    [builder push:pawnIndices];
+    [builder push:pawnVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD2.x y:pointD2.y]];
+    [builder buildDecorator:1]; // button next
+    
+    [builder push:pawnIndices];
+    [builder push:pawnVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:0.75f height:0.75f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD3.x y:pointD3.y]];
+    [builder buildDecorator:1]; // button reset
+    
+    [builder push:pawnIndices];
+    [builder push:pawnVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:0.75f height:0.75f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD4.x y:pointD4.y]];
+    [builder buildDecorator:1]; // button menu
+
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:6.f height:7.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointB1.x y:pointB1.y]];
+    [builder buildDecorator:1]; // dialog box
+
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
+    [builder buildDecorator:1];
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.6f), FLOAT_BOX(0.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
+    [builder buildDecorator:1]; // level unlock icon
+
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
+    [builder buildDecorator:1];
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.6f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
+    [builder buildDecorator:1]; // level lock icon
+
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
+    [builder buildDecorator:1];
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.58824f), FLOAT_BOX(0.35294f), FLOAT_BOX(0.21961f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
+    [builder buildDecorator:1]; // level bronze icon
+    
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
+    [builder buildDecorator:1];
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
+    [builder buildDecorator:1]; // level silver icon
+    
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC5.x y:pointC5.y]];
+    [builder buildDecorator:1];
+    [builder push:indicesHandle];
+    [builder push:vertexHandle];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.78824f), FLOAT_BOX(0.53725f), FLOAT_BOX(0.06275f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointC5.x y:pointC5.y]];
+    [builder buildDecorator:1]; // level gold icon
+
+    [builder buildComposite:0];
+    
+    [scene appendComposite:(f3ViewComposite *)[builder popComponent]];
+}
+
+- (void)loadSceneTemplate {
 
     CGPoint pointA1 = CGPointMake(-7.5f, 5.5f);
     CGPoint pointA2 = CGPointMake(-7.5f, 4.5f);
@@ -978,6 +1173,7 @@
     [builder buildComposite:0];
     
     [scene appendComposite:(f3ViewComposite *)[builder popComponent]];
-} */
+}
+ */
 
 @end

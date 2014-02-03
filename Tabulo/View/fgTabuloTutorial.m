@@ -7,13 +7,15 @@
 //
 
 #import "fgTabuloTutorial.h"
+#import "../Control/fgTabuloController.h"
+#import "../Control/fgPawnController.h"
 #import "../Control/fgDragViewFromNode.h"
 
 @implementation fgTabuloTutorial
 
-+ (fgTabuloController *)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
++ (void)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
 
-    fgTabuloController *gameController;
+    fgTabuloController *gameController = nil;
 
     switch (_index)
     {
@@ -40,13 +42,12 @@
         case 6:
             gameController = [self loadTutorialSix:_director producer:_producer];
             break;
-
-        default:
-            gameController = nil;
-            break;
     }
 
-    return gameController;
+    if (gameController != nil)
+    {
+        [_producer appendComponent:gameController];
+    }
 }
 
 + (fgTabuloController *)loadTutorialOne:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
@@ -60,7 +61,7 @@
     [_director buildPillar:0];
     [_director buildHouse:2 Type:TABULO_PawnOne];
     [_director buildBackground];
-    
+
     [_director.Builder buildComposite:0];
     [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
     
@@ -280,6 +281,77 @@
     
     fgTabuloController* gameController = [[fgTabuloController alloc] init];
     
+    [_director addPointFrom:0 Radius:1.75f Angle:180.f];
+    [_director addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
+    [_director addPointFrom:2 Radius:1.75f Angle:225.f];
+    [_director addPointFrom:3 Radius:1.75f Angle:225.f]; // 4
+    [_director addPointFrom:2 Radius:1.75f Angle:135.f];
+    [_director addPointFrom:5 Radius:1.75f Angle:135.f]; // 6
+    [_director computePoints];
+    
+    [_director buildPillar:0];
+    [_director buildPillar:2];
+    [_director buildHouse:4 Type:TABULO_PawnFive];
+    [_director buildHouse:6 Type:TABULO_PawnThree];
+    [_director buildBackground];
+    
+    [_director.Builder buildComposite:0];
+    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    
+    f3ViewAdaptee *pawnOne = [_director buildPawn:6 Type:TABULO_PawnFive];
+    f3ViewAdaptee *pawnTwo = [_director buildPawn:4 Type:TABULO_PawnThree];
+    
+    f3ViewAdaptee *plankOne = [_director buildSmallPlank:1 Angle:0.f Hole:0];
+    f3ViewAdaptee *plankTwo = [_director buildSmallPlank:5 Angle:135.f Hole:0];
+    
+    [_director.Builder buildComposite:0];
+    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    
+    //  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+    
+    f3GraphNode *node0 = [_producer buildNode:[_director getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_producer buildNode:[_director getPointAt:1] withRadius:0.8f];
+    f3GraphNode *node2 = [_producer buildNode:[_director getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_producer buildNode:[_director getPointAt:3] withRadius:0.8f];
+    f3GraphNode *node4 = [_producer buildNode:[_director getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node5 = [_producer buildNode:[_director getPointAt:5] withRadius:0.8f];
+    f3GraphNode *node6 = [_producer buildNode:[_director getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
+    
+    [_director clearPoints];
+    
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node2 Target:node6];
+    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node2];
+    
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node5];
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node1];
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
+    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
+    
+    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveSmallPlank];
+    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node5 withFlag:TABULO_HaveSmallPlank];
+    
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    
+    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node6 withFlag:TABULO_PawnOne];
+    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node4 withFlag:TABULO_PawnTwo];
+    
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node4]];
+    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node6]];
+    
+    return gameController;
+}
+
++ (fgTabuloController *)loadTutorialSix:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+    
+    fgTabuloController* gameController = [[fgTabuloController alloc] init];
+    
     [_director addPointFrom:0 Radius:1.75f Angle:90.f];
     [_director addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
     [_director addPointFrom:2 Radius:1.75f Angle:180.f];
@@ -350,77 +422,6 @@
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node0]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node4]];
     
-    return gameController;
-}
-
-+ (fgTabuloController *)loadTutorialSix:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
-    
-    [_director addPointFrom:0 Radius:1.75f Angle:180.f];
-    [_director addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
-    [_director addPointFrom:2 Radius:1.75f Angle:225.f];
-    [_director addPointFrom:3 Radius:1.75f Angle:225.f]; // 4
-    [_director addPointFrom:2 Radius:1.75f Angle:135.f];
-    [_director addPointFrom:5 Radius:1.75f Angle:135.f]; // 6
-    [_director computePoints];
-
-    [_director buildPillar:0];
-    [_director buildPillar:2];
-    [_director buildHouse:4 Type:TABULO_PawnFive];
-    [_director buildHouse:6 Type:TABULO_PawnThree];
-    [_director buildBackground];
-
-    [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
-    
-    f3ViewAdaptee *pawnOne = [_director buildPawn:6 Type:TABULO_PawnFive];
-    f3ViewAdaptee *pawnTwo = [_director buildPawn:4 Type:TABULO_PawnThree];
-    
-    f3ViewAdaptee *plankOne = [_director buildSmallPlank:1 Angle:0.f Hole:0];
-    f3ViewAdaptee *plankTwo = [_director buildSmallPlank:5 Angle:135.f Hole:0];
-
-    [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
-
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
-
-    f3GraphNode *node0 = [_producer buildNode:[_director getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[_director getPointAt:1] withRadius:0.8f];
-    f3GraphNode *node2 = [_producer buildNode:[_director getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[_director getPointAt:3] withRadius:0.8f];
-    f3GraphNode *node4 = [_producer buildNode:[_director getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node5 = [_producer buildNode:[_director getPointAt:5] withRadius:0.8f];
-    f3GraphNode *node6 = [_producer buildNode:[_director getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
-
-    [_director clearPoints];
-
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node2 Target:node6];
-    [_director buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node2];
-
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node5];
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node1];
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
-    [_director buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
-
-    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveSmallPlank];
-    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node5 withFlag:TABULO_HaveSmallPlank];
-
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
-
-    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node6 withFlag:TABULO_PawnOne];
-    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node4 withFlag:TABULO_PawnTwo];
-
-    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node4]];
-    [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node6]];
-
     return gameController;
 }
 

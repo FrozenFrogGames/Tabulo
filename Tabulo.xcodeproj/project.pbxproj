@@ -27,10 +27,14 @@
 		F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860A188C4E42004497C2 /* fgTabuloEdge.m */; };
 		F611860F188C543F004497C2 /* fgDragViewFromNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F611860E188C543F004497C2 /* fgDragViewFromNode.m */; };
 		F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragViewOverEdge.m */; };
-		F611861718908CF6004497C2 /* spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861518908CF6004497C2 /* spritesheet.png */; };
-		F611861A18908DC8004497C2 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861918908DC8004497C2 /* background.png */; };
+		F611861A18908DC8004497C2 /* background-prototype.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861918908DC8004497C2 /* background-prototype.png */; };
 		F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821858189733BA0041DA80 /* fgTabuloTutorial.m */; };
 		F682185C189733D70041DA80 /* fgTabuloEasy.m in Sources */ = {isa = PBXBuildFile; fileRef = F682185B189733D70041DA80 /* fgTabuloEasy.m */; };
+		F6821860189DA64F0041DA80 /* spritesheet-prototype.png in Resources */ = {isa = PBXBuildFile; fileRef = F611861518908CF6004497C2 /* spritesheet-prototype.png */; };
+		F6821862189DEAA10041DA80 /* spritesheet-ui.png in Resources */ = {isa = PBXBuildFile; fileRef = F6821861189DEAA10041DA80 /* spritesheet-ui.png */; };
+		F6821865189EDF2E0041DA80 /* fgTabuloMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821864189EDF2E0041DA80 /* fgTabuloMenu.m */; };
+		F6821868189F26EC0041DA80 /* fgTabuloLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821867189F26EC0041DA80 /* fgTabuloLevel.m */; };
+		F682186E189F444D0041DA80 /* fgClickViewOnLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgClickViewOnLevel.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
 		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
@@ -68,13 +72,19 @@
 		F611860E188C543F004497C2 /* fgDragViewFromNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragViewFromNode.m; path = Control/fgDragViewFromNode.m; sourceTree = "<group>"; };
 		F6118610188C545A004497C2 /* fgDragViewOverEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragViewOverEdge.h; path = Control/fgDragViewOverEdge.h; sourceTree = "<group>"; };
 		F6118611188C545A004497C2 /* fgDragViewOverEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragViewOverEdge.m; path = Control/fgDragViewOverEdge.m; sourceTree = "<group>"; };
-		F611861518908CF6004497C2 /* spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spritesheet.png; sourceTree = "<group>"; };
-		F611861918908DC8004497C2 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		F611861518908CF6004497C2 /* spritesheet-prototype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-prototype.png"; sourceTree = "<group>"; };
+		F611861918908DC8004497C2 /* background-prototype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-prototype.png"; sourceTree = "<group>"; };
 		F6821857189733BA0041DA80 /* fgTabuloTutorial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloTutorial.h; path = View/fgTabuloTutorial.h; sourceTree = "<group>"; };
 		F6821858189733BA0041DA80 /* fgTabuloTutorial.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloTutorial.m; path = View/fgTabuloTutorial.m; sourceTree = "<group>"; };
 		F682185A189733D70041DA80 /* fgTabuloEasy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEasy.h; path = View/fgTabuloEasy.h; sourceTree = "<group>"; };
 		F682185B189733D70041DA80 /* fgTabuloEasy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEasy.m; path = View/fgTabuloEasy.m; sourceTree = "<group>"; };
-		F682185F189738EE0041DA80 /* ITabuloBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ITabuloBuilder.h; sourceTree = "<group>"; };
+		F6821861189DEAA10041DA80 /* spritesheet-ui.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-ui.png"; sourceTree = "<group>"; };
+		F6821863189EDF2E0041DA80 /* fgTabuloMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloMenu.h; path = View/fgTabuloMenu.h; sourceTree = "<group>"; };
+		F6821864189EDF2E0041DA80 /* fgTabuloMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloMenu.m; path = View/fgTabuloMenu.m; sourceTree = "<group>"; };
+		F6821866189F26EC0041DA80 /* fgTabuloLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloLevel.h; path = View/fgTabuloLevel.h; sourceTree = "<group>"; };
+		F6821867189F26EC0041DA80 /* fgTabuloLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloLevel.m; path = View/fgTabuloLevel.m; sourceTree = "<group>"; };
+		F682186C189F444D0041DA80 /* fgClickViewOnLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgClickViewOnLevel.h; path = Control/fgClickViewOnLevel.h; sourceTree = "<group>"; };
+		F682186D189F444D0041DA80 /* fgClickViewOnLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgClickViewOnLevel.m; path = Control/fgClickViewOnLevel.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
@@ -153,8 +163,9 @@
 				F60250DF187DDDC80029915C /* Default.png */,
 				F60250E1187DDDC80029915C /* Default@2x.png */,
 				F60250E3187DDDC80029915C /* Default-568h@2x.png */,
-				F611861918908DC8004497C2 /* background.png */,
-				F611861518908CF6004497C2 /* spritesheet.png */,
+				F6821861189DEAA10041DA80 /* spritesheet-ui.png */,
+				F611861518908CF6004497C2 /* spritesheet-prototype.png */,
+				F611861918908DC8004497C2 /* background-prototype.png */,
 				F61185FB188A2E8E004497C2 /* spritesheet-debug.png */,
 			);
 			name = "Supporting Files";
@@ -172,6 +183,8 @@
 		F611860C188C4F46004497C2 /* State */ = {
 			isa = PBXGroup;
 			children = (
+				F682186C189F444D0041DA80 /* fgClickViewOnLevel.h */,
+				F682186D189F444D0041DA80 /* fgClickViewOnLevel.m */,
 				F611860D188C543F004497C2 /* fgDragViewFromNode.h */,
 				F611860E188C543F004497C2 /* fgDragViewFromNode.m */,
 				F6118610188C545A004497C2 /* fgDragViewOverEdge.h */,
@@ -183,7 +196,6 @@
 		F682185D1897366B0041DA80 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
-				F682185F189738EE0041DA80 /* ITabuloBuilder.h */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -210,6 +222,10 @@
 			children = (
 				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
 				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
+				F6821863189EDF2E0041DA80 /* fgTabuloMenu.h */,
+				F6821864189EDF2E0041DA80 /* fgTabuloMenu.m */,
+				F6821866189F26EC0041DA80 /* fgTabuloLevel.h */,
+				F6821867189F26EC0041DA80 /* fgTabuloLevel.m */,
 				F6821857189733BA0041DA80 /* fgTabuloTutorial.h */,
 				F6821858189733BA0041DA80 /* fgTabuloTutorial.m */,
 				F682185A189733D70041DA80 /* fgTabuloEasy.h */,
@@ -283,13 +299,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6821862189DEAA10041DA80 /* spritesheet-ui.png in Resources */,
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F60250E0187DDDC80029915C /* Default.png in Resources */,
-				F611861718908CF6004497C2 /* spritesheet.png in Resources */,
 				F60250E2187DDDC80029915C /* Default@2x.png in Resources */,
 				F60250E4187DDDC80029915C /* Default-568h@2x.png in Resources */,
+				F6821860189DA64F0041DA80 /* spritesheet-prototype.png in Resources */,
+				F611861A18908DC8004497C2 /* background-prototype.png in Resources */,
 				F61185FC188A2E8E004497C2 /* spritesheet-debug.png in Resources */,
-				F611861A18908DC8004497C2 /* background.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,12 +323,15 @@
 				F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
+				F6821868189F26EC0041DA80 /* fgTabuloLevel.m in Sources */,
 				F611860F188C543F004497C2 /* fgDragViewFromNode.m in Sources */,
 				F682185C189733D70041DA80 /* fgTabuloEasy.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */,
+				F6821865189EDF2E0041DA80 /* fgTabuloMenu.m in Sources */,
+				F682186E189F444D0041DA80 /* fgClickViewOnLevel.m in Sources */,
 				F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */,
 				F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */,
 			);

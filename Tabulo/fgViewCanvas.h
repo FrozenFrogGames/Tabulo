@@ -22,6 +22,7 @@
 
 @property (readonly) CGSize Screen;
 @property (readonly) CGSize Unit;
+@property (readonly) bool OrientationIsPortrait;
 
 - (id)init:(EAGLContext *)_context scene:(f3ViewScene *)_scene;
 - (void)deviceOrientationDidChange;
