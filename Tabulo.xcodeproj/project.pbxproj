@@ -222,10 +222,10 @@
 			children = (
 				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
 				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
-				F6821863189EDF2E0041DA80 /* fgTabuloMenu.h */,
-				F6821864189EDF2E0041DA80 /* fgTabuloMenu.m */,
 				F6821866189F26EC0041DA80 /* fgTabuloLevel.h */,
 				F6821867189F26EC0041DA80 /* fgTabuloLevel.m */,
+				F6821863189EDF2E0041DA80 /* fgTabuloMenu.h */,
+				F6821864189EDF2E0041DA80 /* fgTabuloMenu.m */,
 				F6821857189733BA0041DA80 /* fgTabuloTutorial.h */,
 				F6821858189733BA0041DA80 /* fgTabuloTutorial.m */,
 				F682185A189733D70041DA80 /* fgTabuloEasy.h */,

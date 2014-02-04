@@ -80,7 +80,7 @@
         
         [components removeAllObjects];
 
-        [director nextScene];
+        [director showDialog:DIALOG_Next];
     }
 }
 

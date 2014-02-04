@@ -27,7 +27,7 @@
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
-    [director loadScene:levelIndex];
+    [director showDialog:DIALOG_Play forScene:levelIndex];
 }
 
 @end

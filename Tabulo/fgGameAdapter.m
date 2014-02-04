@@ -65,8 +65,6 @@
     [EAGLContext setCurrentContext:self.context];
     
     [director loadResource:canvas];
-
-    [director loadScene:0];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)

@@ -46,32 +46,24 @@ enum f3TabuloResource {
     RESOURCE_Background
 };
 
+enum f3TabuloDialogOptions {
+    
+    DIALOG_Play = 0,
+    DIALOG_Next,
+    DIALOG_Pause
+};
+
 @interface fgTabuloDirector : f3GameDirector {
 
     fgViewCanvas *gameCanvas;
     f3IntegerArray  *userinterface, *spritesheet, *background;
     f3RotationDecorator *backgroundRotation;
-    f3IntegerArray *indicesHandle;
-    f3FloatArray *vertexHandle;
     NSUInteger levelIndex;
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
 
-- (void)loadScene:(NSUInteger)_index;
-- (void)nextScene;
-
-- (void)buildBackground;
-- (void)buildPillar:(NSUInteger)_index;
-- (void)buildHouse:(NSUInteger)_index Type:(unsigned int)_type;
-
-- (f3ViewAdaptee *)buildPawn:(NSUInteger)_index Type:(enum f3TabuloPawnType)_type;
-- (f3ViewAdaptee *)buildSmallPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
-- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
-
-- (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
-- (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
-
-- (f3FloatArray *)computeCoordonate:(CGSize)_spritesheet atPoint:(CGPoint)_position withExtend:(CGSize)_extend;
+- (void)showDialog:(enum f3TabuloDialogOptions)_options forScene:(NSUInteger)_index;
+- (void)showDialog:(enum f3TabuloDialogOptions)_options;
 
 @end

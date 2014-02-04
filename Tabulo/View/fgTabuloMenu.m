@@ -21,6 +21,10 @@ enum TabuloLevelState {
     LEVELSTATE_gold
 };
 
++ (void)buildDialog:(enum f3TabuloDialogOptions)_options director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+
+}
+
 + (void)buildMenu:(NSUInteger)_count director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
 
     NSUInteger index = 1;
@@ -67,7 +71,7 @@ enum TabuloLevelState {
         [builder push:vertexHandle];
         [builder buildAdaptee:DRAW_TRIANGLES];
         
-        [builder push:[_director computeCoordonate:CGSizeMake(2048.f, 2048.f)
+        [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 2048.f)
                                            atPoint:CGPointMake(0.f, 768.f)
                                         withExtend:CGSizeMake(1024.f, 704.f)]];
         [builder push:[_director getResourceIndex:RESOURCE_UserInterface]];
@@ -94,7 +98,7 @@ enum TabuloLevelState {
         [builder push:vertexHandle];
         [builder buildAdaptee:DRAW_TRIANGLES];
         
-        [builder push:[_director computeCoordonate:CGSizeMake(2048.f, 2048.f)
+        [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 2048.f)
                                            atPoint:CGPointMake(0.f, 384.f)
                                         withExtend:CGSizeMake(1920.f, 384.f)]];
         [builder push:[_director getResourceIndex:RESOURCE_UserInterface]];
@@ -150,7 +154,7 @@ enum TabuloLevelState {
             break;
     }
 
-    [builder push:[_director computeCoordonate:CGSizeMake(2048.f, 2048.f)
+    [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 2048.f)
                                        atPoint:coordonatePoint
                                     withExtend:CGSizeMake(256.f, 256.f)]];
     [builder push:[_director getResourceIndex:RESOURCE_UserInterface]];
@@ -182,7 +186,7 @@ enum TabuloLevelState {
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
     
-    [builder push:[_director computeCoordonate:CGSizeMake(2048.f, 2048.f)
+    [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 2048.f)
                                        atPoint:CGPointMake(0.f, 0.f)
                                     withExtend:CGSizeMake(2048.f, 384.f)]];
     [builder push:[_director getResourceIndex:RESOURCE_UserInterface]];
