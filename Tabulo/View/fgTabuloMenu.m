@@ -8,7 +8,8 @@
 
 #import "fgTabuloMenu.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
-#import "../Control/fgClickViewOnLevel.h"
+#import "../../../Framework/Framework/View/f3GameLevel.h"
+#import "../Control/fgClickOnLevel.h"
 
 @implementation fgTabuloMenu
 
@@ -29,7 +30,7 @@ enum TabuloLevelState {
 
     NSUInteger index = 1;
 
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+    [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
     
     while (index < _count)
     {
@@ -127,8 +128,6 @@ enum TabuloLevelState {
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
 
-    f3ViewAdaptee *view = (f3ViewAdaptee *)[builder top];
-
     CGPoint coordonatePoint;
 
     switch (state) {
@@ -168,7 +167,7 @@ enum TabuloLevelState {
     
     f3GraphNode *node = [_producer buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
 
-    fgClickViewOnLevel *controlView = [[fgClickViewOnLevel alloc] initForView:view onNode:node forLevel:_index];
+    fgClickOnLevel *controlView = [[fgClickOnLevel alloc] initWithNode:node useLevel:_index];
 
     [_producer appendComponent:[[f3Controller alloc] initState:controlView]];
 }

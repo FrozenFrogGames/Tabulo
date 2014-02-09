@@ -8,9 +8,8 @@
 
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../../Framework/Framework/View/f3GameLevel.h"
 
-@interface fgTabuloMenu : f3GameLevel
+@interface fgTabuloMenu : NSObject
 
 + (void)buildDialog:(enum f3TabuloDialogOptions)_options director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
 

@@ -7,9 +7,10 @@
 //
 
 #import "fgTabuloTutorial.h"
+#import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
+#import "fgDragViewOverEdge.h"
 #import "../Control/fgTabuloController.h"
 #import "../Control/fgPawnController.h"
-#import "../Control/fgDragViewFromNode.h"
 
 @implementation fgTabuloTutorial
 
@@ -44,7 +45,7 @@
             break;
     }
 
-    if (gameController != nil)
+    if (gameController != nil) // TODO push game state that will trigger the dialog box once that controller is finished 
     {
         [_producer appendComponent:gameController];
     }
@@ -70,7 +71,7 @@
 
     [_director.Builder buildComposite:0];
     [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
-    
+
 //  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
@@ -82,10 +83,10 @@
     [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
     [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
 
-    fgDragViewFromNode *controlPlank = [[fgDragViewFromNode alloc] initForView:plank onNode:node1 withFlag:TABULO_HaveMediumPlank];
+    f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plank useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
 
-    fgDragViewFromNode *controlPawn = [[fgDragViewFromNode alloc] initForView:pawn onNode:node0 withFlag:TABULO_PawnOne];
+    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node2]];
     
     return gameController;
@@ -133,10 +134,10 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
 
-    fgDragViewFromNode *controlPlank = [[fgDragViewFromNode alloc] initForView:plank onNode:node1 withFlag:TABULO_HaveSmallPlank];
+    f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plank useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
     
-    fgDragViewFromNode *controlPawn = [[fgDragViewFromNode alloc] initForView:pawn onNode:node0 withFlag:TABULO_PawnOne];
+    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node4]];
     
     return gameController;
@@ -189,20 +190,16 @@
     [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node2 Target:node6];
     [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node2];
 
-    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
-    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
-    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node5];
-    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node1];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
 
-    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveMediumPlank];
-    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node3 withFlag:TABULO_HaveSmallPlank];
+    f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node3 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
 
-    fgDragViewFromNode *controlPawn = [[fgDragViewFromNode alloc] initForView:pawn onNode:node0 withFlag:TABULO_PawnOne];
+    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node6]];
     
@@ -262,14 +259,14 @@
     [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node3];
 
-    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveMediumPlank];
-    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node5 withFlag:TABULO_HaveMediumPlank];
+    f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
 
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
-    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node2 withFlag:TABULO_PawnOne];
-    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node0 withFlag:TABULO_PawnTwo];
+    f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node2 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];
 
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node0]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node2]];
@@ -307,7 +304,7 @@
     [_director.Builder buildComposite:0];
     [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
     
-    //  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
@@ -333,14 +330,14 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
     
-    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node1 withFlag:TABULO_HaveSmallPlank];
-    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node5 withFlag:TABULO_HaveSmallPlank];
+    f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
-    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node6 withFlag:TABULO_PawnOne];
-    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node4 withFlag:TABULO_PawnTwo];
+    f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node6 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];
     
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node4]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node6]];
@@ -410,14 +407,14 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node7];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node5];
 
-    fgDragViewFromNode *controlPlankOne = [[fgDragViewFromNode alloc] initForView:plankOne onNode:node3 withFlag:TABULO_HaveSmallPlank];
-    fgDragViewFromNode *controlPlankTwo = [[fgDragViewFromNode alloc] initForView:plankTwo onNode:node5 withFlag:TABULO_HaveSmallPlank];
+    f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node3 forView:plankOne useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
     [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
-    fgDragViewFromNode *controlPawnOne = [[fgDragViewFromNode alloc] initForView:pawnOne onNode:node4 withFlag:TABULO_PawnOne];
-    fgDragViewFromNode *controlPawnTwo = [[fgDragViewFromNode alloc] initForView:pawnTwo onNode:node0 withFlag:TABULO_PawnTwo];
+    f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];
     
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node0]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnTwo Home:node4]];

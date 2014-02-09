@@ -7,78 +7,70 @@
 //
 
 #import "fgDragViewOverEdge.h"
-#import "fgDragViewFromNode.h"
 #import "fgTabuloEdge.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 
 @implementation fgDragViewOverEdge
 
-- (void)notifyInput:(enum f3InputType)_type fromNode:(f3GraphNode *)_node {
+- (void)attachListener {
     
-    if (actionCount == 0 && edgeSelect == nil && _type == INPUT_MOVED && [nodeListening containsObject:_node])
-    {
-        for (fgTabuloEdge *edge in edges)
-        {
-            if (edge.Target == _node || edge.Input == _node)
-            {
-                if ([edge evaluateConditions])
-                {
-                    edgeSelect = edge;
-                    
-                    break;
-                }
-            }
-        }
-    }
-}
-
-- (void)gainFocus {
-
     if (nodeListening == nil)
     {
         nodeListening = [NSMutableArray array];
-
+        
         for (fgTabuloEdge *edge in edges)
         {
             if (![nodeListening containsObject:edge.Target])
             {
                 [nodeListening addObject:edge.Target];
             }
-
+            
             if (![nodeListening containsObject:edge.Input])
             {
                 [nodeListening addObject:edge.Input];
             }
         }
-
+        
         for (f3GraphNode *nodeItem in nodeListening)
         {
             if (![nodeItem appendListener:self])
             {
-                // TODO throw f3Eception
+                NSLog(@"Error! Already listenning node: %@", nodeItem);
             }
         }
     }
 }
 
-- (void)actionCompleted:(f3ControlComponent *)_action owner:(f3Controller *)_owner {
-    
-    if (_action == nil)
+- (void)notifyInput:(enum f3InputType)_type fromNode:(f3GraphNode *)_node {
+
+    if ([nodeListening containsObject:_node])
     {
-        [_owner switchState:[[fgDragViewFromNode alloc] initForView:view onNode:node withFlag:flagIndex]];
-    }
-    else if (--actionCount == 0)
-    {
-        f3GameAdaptee *producer = [f3GameAdaptee Producer];
-        
-        if ([producer haveFocus:_owner])
+        if (_type == INPUT_MOVED || _type == INPUT_ENDED)
         {
-            [producer requestFocus:nil];
+            if (haveFocus && !releaseFocus && currentEdge == nil)
+            {
+                for (fgTabuloEdge *edge in edges)
+                {
+                    if (edge.Target == _node || edge.Input == _node)
+                    {
+                        if ([edge evaluateConditions])
+                        {
+                            currentEdge = edge;
+//                          NSLog(@"State: %@, target: %@", self, edge.Target);
+                            break;
+                        }
+                        else
+                        {
+                            // TODO notify player with visual feedback if relevant
+                        }
+                    }
+                }
+            }
         }
-        
-        [_owner switchState:[[fgDragViewFromNode alloc] initForView:view onNode:edgeSelect.Target withFlag:flagIndex]];
-        
-        edgeSelect = nil;
+    }
+    else
+    {
+        NSLog(@"Error! Listenning unrelated node: %@", _node);
     }
 }
 

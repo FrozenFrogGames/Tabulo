@@ -12,19 +12,7 @@
 
 @implementation fgTabuloController
 
-- (void)update:(NSTimeInterval)_elapsed {
-
-    int appendCount = [pendingAppend count];
-
-    if (appendCount > 0)
-    {
-        for (int i = 0; i < appendCount; ++i)
-        {
-            [components addObject:[pendingAppend objectAtIndex:i]];
-        }
-
-        [pendingAppend removeAllObjects];
-    }
+- (void)updateComponents:(NSTimeInterval)_elapsed {
 
     int componentCount = [components count];
 
@@ -39,25 +27,11 @@
         
         if (component.finished)
         {
-            if ([pendingRemove containsObject:component])
+            if (![pendingRemove containsObject:component])
             {
-                [pendingRemove removeObject:component];
+                [pendingRemove addObject:component];
             }
-            
-            [components removeObjectAtIndex:i];
         }
-    }
-    
-    int removeCount = [pendingRemove count];
-    
-    if (removeCount > 0)
-    {
-        for (int i = 0; i < removeCount; ++i)
-        {
-            [components removeObject:[pendingRemove objectAtIndex:i]];
-        }
-        
-        [pendingRemove removeAllObjects];
     }
 
     int componentAtHome = 0;
@@ -74,12 +48,14 @@
         }
     }
     
-    if (componentAtHome == componentCount)
+    hasFinished = (componentAtHome == componentCount);
+
+    if (hasFinished) // TODO notify TabuloState (that replace GameState when into a level?) that the game is over
     {
         fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
         
-        [components removeAllObjects];
-
+        [self removeAllComponents];
+        
         [director showDialog:DIALOG_Next];
     }
 }
