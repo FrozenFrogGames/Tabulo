@@ -8,7 +8,8 @@
 
 #import "fgTabuloController.h"
 #import "fgPawnController.h"
-#import "../View/fgTabuloDirector.h"
+#import "fgTabuloEvent.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 
 @implementation fgTabuloController
 
@@ -47,16 +48,14 @@
             break;
         }
     }
-    
+
     hasFinished = (componentAtHome == componentCount);
 
     if (hasFinished) // TODO notify TabuloState (that replace GameState when into a level?) that the game is over
     {
-        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-        
         [self removeAllComponents];
-        
-        [director showDialog:DIALOG_Next];
+
+        [[f3GameAdaptee Producer] notifyEvent:[[fgTabuloEvent alloc] init:EVENT_GameOver]];
     }
 }
 

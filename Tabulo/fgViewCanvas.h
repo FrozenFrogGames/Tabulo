@@ -17,14 +17,14 @@
 
     NSMutableArray *textureLoaded;
     CGSize screenSize, unitSize;
-    f3ViewScene *scene;
 }
+
+@property (readonly) bool OrientationIsPortrait;
 
 @property (readonly) CGSize Screen;
 @property (readonly) CGSize Unit;
-@property (readonly) bool OrientationIsPortrait;
 
-- (id)init:(EAGLContext *)_context scene:(f3ViewScene *)_scene;
+- (id)init:(EAGLContext *)_context;
 - (void)deviceOrientationDidChange;
 
 - (GLKTextureInfo *)getTexture:(NSInteger)_index;

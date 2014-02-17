@@ -15,13 +15,8 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "fgTabuloDirector.h"
-#import "fgTabuloMenu.h"
-#import "fgTabuloTutorial.h"
-#import "fgTabuloEasy.h"
 
 @implementation fgTabuloDirector
-
-const NSUInteger LEVEL_COUNT = 6;
 
 - (id)init:(Class )_adapterType {
 
@@ -31,29 +26,12 @@ const NSUInteger LEVEL_COUNT = 6;
     {
         gameCanvas = nil;
 
-        userinterface = nil;
+        interface = nil;
         spritesheet = nil;
         background = nil;
-        backgroundRotation = nil;
-
-        levelIndex = 0;
     }
 
     return self;
-}
-
-- (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {
-    
-    [super deviceOrientationDidChange:_orientationIsPortrait];
-
-    if (levelIndex == 0)
-    {
-        [self loadScene:0];
-    }
-    else
-    {
-        backgroundRotation.Ratio = (_orientationIsPortrait ? 1.f : 0.f);
-    }
 }
 
 - (void)loadResource:(NSObject<IViewCanvas> *)_canvas {
@@ -63,24 +41,18 @@ const NSUInteger LEVEL_COUNT = 6;
         gameCanvas = (fgViewCanvas *)_canvas;
     }
 
-    userinterface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-ui.png"]), nil];
-
-//  spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-debug.png"]), nil];
-    background = nil;
-
-    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-prototype.png"]), nil];
-//  background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-prototype.png"]), nil];
-    
-    [self loadScene:levelIndex];
+    interface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-interface.png"]), nil];
+    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
+    background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
 
     switch (_resource) {
 
-        case RESOURCE_UserInterface:
+        case RESOURCE_Interface:
             
-            return userinterface;
+            return interface;
 
         case RESOURCE_SpriteSheet:
             
@@ -92,26 +64,27 @@ const NSUInteger LEVEL_COUNT = 6;
     }
 }
 
-- (void)showDialog:(enum f3TabuloDialogOptions)_options forScene:(NSUInteger)_index {
+/*
+- (void)showDialog:(enum f3TabuloDialogOption)_options forScene:(NSUInteger)_index {
 
     levelIndex = _index;
 
     [self showDialog:_options];
 }
 
-- (void)showDialog:(enum f3TabuloDialogOptions)_options {
+- (void)showDialog:(enum f3TabuloDialogOption)_options {
 
     switch (_options) {
 
-        case DIALOG_Play:
+        case DIALOGOPTION_Play:
 
             [self loadScene:levelIndex];
             break;
 
-        case DIALOG_Next:
+        case DIALOGOPTION_Next:
 
             [self loadScene:0];
-/*
+
             if (levelIndex < LEVEL_COUNT)
             {
                 [self loadScene:++levelIndex];
@@ -120,38 +93,42 @@ const NSUInteger LEVEL_COUNT = 6;
             {
                 [self loadScene:0];
             }
- */
+ 
             break;
             
-        case DIALOG_Pause:
+        case DIALOGOPTION_Pause:
             break;
     }
 }
 
 - (void)loadScene:(NSUInteger)_index {
-    
+
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
     [scene removeAllComposites];
 
     [producer removeAllComponents];
 
+    f3GameScene *level = nil;
+
     levelIndex = _index;
 
     if (levelIndex == 0)
     {
-        [fgTabuloMenu buildMenu:LEVEL_COUNT director:self producer:producer];
+        level = [[fgTabuloMenu alloc] init];
+
+        [(fgTabuloMenu *)level buildMenu:LEVEL_COUNT director:self producer:producer];
     }
     else
     {
-        fgTabuloTutorial *tutorial = [[fgTabuloTutorial alloc] init];
+        level = [[fgTabuloTutorial alloc] init];
         
-        [tutorial buildLevel:levelIndex director:self producer:producer];
-        
-        backgroundRotation = [tutorial getBackgroundRotation];
+        [(fgTabuloTutorial *)level buildLevel:levelIndex director:self producer:producer];
     }
+    
+    backgroundRotation = [level getBackgroundRotation];
 }
-
+ */
 /*
 - (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole1:(int)_hole1 Hole2:(int)_hole2 {
 
@@ -230,76 +207,49 @@ const NSUInteger LEVEL_COUNT = 6;
     return result;
 }
 
-- (void)loadSceneUserInterface {
+- (void)loadInterfaceTemplate {
     
-    CGPoint pointA1 = CGPointMake(-4.0f, 3.25f);
-    CGPoint pointB1 = CGPointMake(3.f, 2.5f);
-    CGPoint pointC1 = CGPointMake(-7.f, -0.5f);
-    CGPoint pointC2 = CGPointMake(-5.f, -0.5f);
-    CGPoint pointC3 = CGPointMake(-7.f, -2.5f);
-    CGPoint pointC4 = CGPointMake(-5.f, -2.5f);
-    CGPoint pointC5 = CGPointMake(-3.f, -2.5f);
-    CGPoint pointD1 = CGPointMake(7.f, 4.f);
-    CGPoint pointD2 = CGPointMake(7.f, 2.f);
-    CGPoint pointD3 = CGPointMake(-0.75f, -0.25f);
-    CGPoint pointD4 = CGPointMake(-2.25f, -0.25f);
+    CGPoint pointA1 = CGPointMake(-0.5f, 4.75f);
+    CGPoint pointB1 = CGPointMake(-5.f, 0.f);
+    CGPoint pointC1 = CGPointMake(-0.75f, -0.25f);
+    CGPoint pointC2 = CGPointMake(1.75f, -0.25f);
+    CGPoint pointC3 = CGPointMake(-0.75f, 2.25f);
+    CGPoint pointC4 = CGPointMake(1.75f, 2.25f);
+    CGPoint pointC5 = CGPointMake(4.25f, 2.25f);
+    CGPoint pointD1 = CGPointMake(6.f, -0.5f);
+    CGPoint pointD2 = CGPointMake(4.f, -0.5f);
+    CGPoint pointD3 = CGPointMake(6.25f, 2.75f);
+    CGPoint pointD4 = CGPointMake(6.25f, 1.25f);
+    CGPoint pointE1 = CGPointMake(7.5f, 5.5f);
+    CGPoint pointE2 = CGPointMake(7.5f, 4.5f);
+    CGPoint pointE3 = CGPointMake(7.5f, 3.5f);
+    CGPoint pointE4 = CGPointMake(7.5f, 2.5f);
+    CGPoint pointF1 = CGPointMake(7.5f, 1.5f);
+    CGPoint pointF2 = CGPointMake(7.5f, 0.5f);
+    CGPoint pointF3 = CGPointMake(7.5f, -0.5f);
+    CGPoint pointF4 = CGPointMake(7.5f, -1.5f);
+    CGPoint pointH1 = CGPointMake(0.f, -4.75f);
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    f3IntegerArray *circlesIndices = [[f3IntegerArray alloc] init];
+    f3IntegerArray *squareIndices = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    
+    f3FloatArray *circlesVertex = [f3FloatArray buildHandleForCircle:32 scale:0.5f];
+    f3FloatArray *squareVertex = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.6f), FLOAT_BOX(0.6f), FLOAT_BOX(0.6f), nil]];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.7f), nil]];
     [builder buildProperty:1];
     [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:8.f height:5.125f]];
+    [builder push:[f3VectorHandle buildHandleForWidth:15.0f height:2.5f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointA1.x y:pointA1.y]];
-    [builder buildDecorator:1]; // panel portrait
-
-    f3IntegerArray *pawnIndices = [[f3IntegerArray alloc] init];
-    f3FloatArray *pawnVertex = [f3FloatArray buildHandleForCircle:32 scale:1.f];
-
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
-    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointD1.x y:pointD1.y]];
-    [builder buildDecorator:1]; // button play
+    [builder buildDecorator:1]; // panel
     
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
-    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointD2.x y:pointD2.y]];
-    [builder buildDecorator:1]; // button next
-    
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
-    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder push:[f3VectorHandle buildHandleForWidth:0.75f height:0.75f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointD3.x y:pointD3.y]];
-    [builder buildDecorator:1]; // button reset
-    
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
-    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder push:[f3VectorHandle buildHandleForWidth:0.75f height:0.75f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointD4.x y:pointD4.y]];
-    [builder buildDecorator:1]; // button menu
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -309,18 +259,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointB1.x y:pointB1.y]];
     [builder buildDecorator:1]; // dialog box
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
-    [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.6f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -329,19 +269,9 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
     [builder buildDecorator:1]; // level unlock icon
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
-    [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.6f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -350,19 +280,9 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
     [builder buildDecorator:1]; // level lock icon
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
-    [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.58824f), FLOAT_BOX(0.35294f), FLOAT_BOX(0.21961f), nil]];
     [builder buildProperty:1];
@@ -372,18 +292,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
     [builder buildDecorator:1]; // level bronze icon
     
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
-    [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), nil]];
     [builder buildProperty:1];
@@ -393,18 +303,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
     [builder buildDecorator:1]; // level silver icon
     
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
-    [builder buildProperty:1];
-    [builder buildDecorator:4];
-    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-    [builder buildDecorator:2];
-    [builder push:[f3VectorHandle buildHandleForX:pointC5.x y:pointC5.y]];
-    [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.78824f), FLOAT_BOX(0.53725f), FLOAT_BOX(0.06275f), nil]];
     [builder buildProperty:1];
@@ -413,13 +313,144 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC5.x y:pointC5.y]];
     [builder buildDecorator:1]; // level gold icon
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD1.x y:pointD1.y]];
+    [builder buildDecorator:1]; // button play
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:2.f height:2.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD2.x y:pointD2.y]];
+    [builder buildDecorator:1]; // button next
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.5f height:1.5f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD3.x y:pointD3.y]];
+    [builder buildDecorator:1]; // button reset
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.5f height:1.5f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointD4.x y:pointD4.y]];
+    [builder buildDecorator:1]; // button menu
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointE1.x y:pointE1.y]];
+    [builder buildDecorator:1]; // star empty
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.58824f), FLOAT_BOX(0.35294f), FLOAT_BOX(0.21961f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointE2.x y:pointE2.y]];
+    [builder buildDecorator:1]; // star bronze
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), FLOAT_BOX(0.65882f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointE3.x y:pointE3.y]];
+    [builder buildDecorator:1]; // star silver
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.78824f), FLOAT_BOX(0.53725f), FLOAT_BOX(0.06275f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointE4.x y:pointE4.y]];
+    [builder buildDecorator:1]; // star gold
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointF1.x y:pointF1.y]];
+    [builder buildDecorator:1]; // button undo
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointF2.x y:pointF2.y]];
+    [builder buildDecorator:1]; // button pause
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointF3.x y:pointF3.y]];
+    [builder buildDecorator:1]; // sound on
+    
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointF4.x y:pointF4.y]];
+    [builder buildDecorator:1]; // sound off
+    
+    [builder push:squareIndices];
+    [builder push:squareVertex];
+    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
+    [builder buildProperty:1];
+    [builder buildDecorator:4];
+    [builder push:[f3VectorHandle buildHandleForWidth:16.0f height:2.5f]];
+    [builder buildDecorator:2];
+    [builder push:[f3VectorHandle buildHandleForX:pointH1.x y:pointH1.y]];
+    [builder buildDecorator:1]; // header
 
     [builder buildComposite:0];
     
     [scene appendComposite:(f3ViewComposite *)[builder popComponent]];
 }
 
-- (void)loadSceneTemplate {
+- (void)loadGameplaySpritesheet {
 
     CGPoint pointA1 = CGPointMake(-7.5f, 5.5f);
     CGPoint pointA2 = CGPointMake(-7.5f, 4.5f);
@@ -445,12 +476,16 @@ const NSUInteger LEVEL_COUNT = 6;
     CGPoint pointC5 = CGPointMake( 4.0f, 2.0f);
     CGPoint pointD5 = CGPointMake( 4.0f, 0.0f);
 
-    f3IntegerArray *pawnIndices = [[f3IntegerArray alloc] init];
-    f3FloatArray *pawnVertex = [f3FloatArray buildHandleForCircle:32];
+    f3IntegerArray *circlesIndices = [[f3IntegerArray alloc] init];
+    f3IntegerArray *squareIndices = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+
+    f3FloatArray *circlesVertex = [f3FloatArray buildHandleForCircle:32 scale:0.5f];
+    f3FloatArray *squareVertex = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+                    FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
 
     // pawn
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -459,9 +494,9 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointA1.x y:pointA1.y]];
     [builder buildDecorator:1];
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -469,8 +504,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointA2.x y:pointA2.y]];
     [builder buildDecorator:1];
 
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -479,9 +514,9 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointA3.x y:pointA3.y]];
     [builder buildDecorator:1];
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -489,8 +524,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointA4.x y:pointA4.y]];
     [builder buildDecorator:1];
     
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.5f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -500,8 +535,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:1];
     
     // house
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -509,8 +544,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointB1.x y:pointB1.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -520,17 +555,17 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointB1.x y:pointB1.y]];
     [builder buildDecorator:1];
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointB2.x y:pointB2.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -540,8 +575,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointB2.x y:pointB2.y]];
     [builder buildDecorator:1];
 
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -549,8 +584,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointB3.x y:pointB3.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -560,17 +595,17 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointB3.x y:pointB3.y]];
     [builder buildDecorator:1];
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointB4.x y:pointB4.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -580,8 +615,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointB4.x y:pointB4.y]];
     [builder buildDecorator:1];
 
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -589,8 +624,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointB5.x y:pointB5.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.5f), FLOAT_BOX(0.f), nil]];
     [builder buildProperty:1];
@@ -601,8 +636,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:1];
     
     // pillar
-    [builder push:pawnIndices];
-    [builder push:[f3FloatArray buildHandleForCircle:8]];
+    [builder push:circlesIndices];
+    [builder push:[f3FloatArray buildHandleForCircle:8 scale:0.5f]];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -614,8 +649,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:1];
 
     // small plank
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -625,8 +660,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointC0.x y:pointC0.y]];
     [builder buildDecorator:1];
 
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -634,8 +669,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -645,17 +680,17 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointC1.x y:pointC1.y]];
     [builder buildDecorator:1];
 
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -664,9 +699,9 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC2.x y:pointC2.y]];
     [builder buildDecorator:1];
-    
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -674,8 +709,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -684,18 +719,18 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC3.x y:pointC3.y]];
     [builder buildDecorator:1];
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -705,8 +740,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointC4.x y:pointC4.y]];
     [builder buildDecorator:1];
     
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -714,8 +749,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointC5.x y:pointC5.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), FLOAT_BOX(0.75f), nil]];
     [builder buildProperty:1];
@@ -726,8 +761,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:1];
     
     // medium plank
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -737,8 +772,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointD0.x y:pointD0.y]];
     [builder buildDecorator:1];
 
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -746,8 +781,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD1.x y:pointD1.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -756,18 +791,18 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD1.x y:pointD1.y]];
     [builder buildDecorator:1];
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD2.x y:pointD2.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -777,8 +812,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointD2.x y:pointD2.y]];
     [builder buildDecorator:1];
     
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -786,8 +821,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD3.x y:pointD3.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -796,18 +831,18 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD3.x y:pointD3.y]];
     [builder buildDecorator:1];
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
+
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
+    [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
     [builder push:[f3VectorHandle buildHandleForWidth:1.15625f height:1.15625f]];
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD4.x y:pointD4.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -817,8 +852,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder push:[f3VectorHandle buildHandleForX:pointD4.x y:pointD4.y]];
     [builder buildDecorator:1];
     
-    [builder push:pawnIndices];
-    [builder push:pawnVertex];
+    [builder push:circlesIndices];
+    [builder push:circlesVertex];
     [builder buildAdaptee:DRAW_TRIANGLE_FAN];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(1.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), nil]];
     [builder buildProperty:1];
@@ -826,8 +861,8 @@ const NSUInteger LEVEL_COUNT = 6;
     [builder buildDecorator:2];
     [builder push:[f3VectorHandle buildHandleForX:pointD5.x y:pointD5.y]];
     [builder buildDecorator:1];
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+    [builder push:squareIndices];
+    [builder push:squareVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     [builder push:[f3FloatArray buildHandleForValues:3, FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), nil]];
     [builder buildProperty:1];
@@ -842,5 +877,4 @@ const NSUInteger LEVEL_COUNT = 6;
     [scene appendComposite:(f3ViewComposite *)[builder popComponent]];
 }
  */
-
 @end

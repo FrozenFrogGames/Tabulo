@@ -8,11 +8,11 @@
 
 #import "../../../Framework/Framework/Control/f3ClickOnNode.h"
 
-@interface fgClickOnLevel : f3ClickOnNode {
+@interface fgEventOnClick : f3ClickOnNode {
 
     NSUInteger levelIndex;
 }
 
-- (id)initWithNode:(f3GraphNode *)_node useLevel:(NSUInteger)_index;
+- (id)initWithNode:(f3GraphNode *)_node useLevel:(NSUInteger)_index; // TODO store TabuloEvent to trigger rather and level index
 
 @end

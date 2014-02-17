@@ -8,9 +8,9 @@
 
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../../Framework/Framework/View/f3GameLevel.h"
+#import "../../../Framework/Framework/View/f3GameScene.h"
 
-@interface fgTabuloLevel : f3GameLevel {
+@interface fgTabuloLevel : f3GameScene {
     
     f3RotationDecorator *backgroundRotation;
     f3IntegerArray *indicesHandle;
@@ -29,7 +29,5 @@
 
 - (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
-
-- (f3RotationDecorator *)getBackgroundRotation;
 
 @end

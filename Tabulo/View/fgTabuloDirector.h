@@ -10,7 +10,6 @@
 #import "../../../Framework/Framework/Model/f3IntegerArray.h"
 #import "../../../Framework/Framework/Model/f3FloatArray.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
-#import "../../../Framework/Framework/View/f3RotationDecorator.h"
 #import "../Control/fgTabuloController.h"
 #import "fgViewCanvas.h"
 
@@ -41,29 +40,24 @@ enum f3TabuloHoleType {
 
 enum f3TabuloResource {
     
-    RESOURCE_UserInterface,
+    RESOURCE_Interface,
     RESOURCE_SpriteSheet,
     RESOURCE_Background
 };
 
-enum f3TabuloDialogOptions {
+enum f3TabuloDialogOption {
     
-    DIALOG_Play = 0,
-    DIALOG_Next,
-    DIALOG_Pause
+    DIALOGOPTION_Play = 0,
+    DIALOGOPTION_Next,
+    DIALOGOPTION_Pause
 };
 
 @interface fgTabuloDirector : f3GameDirector {
 
     fgViewCanvas *gameCanvas;
-    f3IntegerArray  *userinterface, *spritesheet, *background;
-    f3RotationDecorator *backgroundRotation;
-    NSUInteger levelIndex;
+    f3IntegerArray  *interface, *spritesheet, *background;
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
-
-- (void)showDialog:(enum f3TabuloDialogOptions)_options forScene:(NSUInteger)_index;
-- (void)showDialog:(enum f3TabuloDialogOptions)_options;
 
 @end

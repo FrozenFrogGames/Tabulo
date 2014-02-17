@@ -28,13 +28,13 @@
     
     if (self != Nil)
     {
-        ressource = [[GLKBaseEffect alloc] init];
-        view = _view;
+        angleDegree = 0;
+        relativeScale = CGSizeZero;
+        relativePosition = CGPointZero;
         textureIndex = NSUIntegerMax;
         textureCoordinates = nil;
-        relativePosition = CGPointZero;
-        relativeScale = CGSizeZero;
-        angleDegree = 0;
+        ressource = [[GLKBaseEffect alloc] init];
+        view = _view;
     }
 
     return self;
@@ -92,10 +92,10 @@
 
 - (void)dealloc {
 
+    textureCoordinates = nil;
     ressource = nil;
     view = nil;
-    textureCoordinates = nil;
-    
+
     [self setNext:nil];
 }
 
@@ -168,10 +168,10 @@
 
     [_canvas endDraw];
 
-    textureIndex = NSUIntegerMax;
-    relativePosition = CGPointZero;
-    relativeScale = CGSizeZero;
     angleDegree = 0;
+    relativeScale = CGSizeZero;
+    relativePosition = CGPointZero;
+    textureIndex = NSUIntegerMax;
 }
 
 @end

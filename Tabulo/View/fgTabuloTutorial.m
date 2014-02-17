@@ -64,15 +64,15 @@
     [self buildBackground];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnOne];
     f3ViewAdaptee *plank = [self buildMediumPlank:1 Angle:270.f Hole:0];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
@@ -108,15 +108,15 @@
     [self buildBackground];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnTwo];
     f3ViewAdaptee *plank = [self buildSmallPlank:1 Angle:270.f Hole:0];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
 
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
@@ -162,16 +162,16 @@
     [self buildBackground];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnThree];
     f3ViewAdaptee *plankOne = [self buildMediumPlank:1 Angle:90.f Hole:0];
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:3 Angle:45.f Hole:0];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
 
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:1.5f];
@@ -223,7 +223,7 @@
     [self buildBackground];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
 
     f3ViewAdaptee *pawnOne = [self buildPawn:2 Type:TABULO_PawnOne];
     f3ViewAdaptee *pawnTwo = [self buildPawn:0 Type:TABULO_PawnTwo];
@@ -232,9 +232,9 @@
     f3ViewAdaptee *plankTwo = [self buildMediumPlank:5 Angle:150.f Hole:0];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:1.5f];
@@ -293,7 +293,7 @@
     [self buildBackground];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
 
     f3ViewAdaptee *pawnOne = [self buildPawn:6 Type:TABULO_PawnFive];
     f3ViewAdaptee *pawnTwo = [self buildPawn:4 Type:TABULO_PawnThree];
@@ -302,9 +302,9 @@
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:5 Angle:135.f Hole:0];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
-    
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
@@ -365,7 +365,7 @@
     [self buildBackground];
     
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [self buildPawn:4 Type:TABULO_PawnFour];
     f3ViewAdaptee *pawnTwo = [self buildPawn:0 Type:TABULO_PawnThree];
@@ -374,9 +374,9 @@
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:5 Angle:270.f Hole:0];
 
     [_director.Builder buildComposite:0];
-    [_director.Scene appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
     
-//  [_producer.Grid sceneDidLoad:_director.Scene]; // debug purpose
+//  [_producer.Grid sceneDidLoad:self]; // debug purpose
     
     f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];

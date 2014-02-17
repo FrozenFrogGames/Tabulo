@@ -33,6 +33,16 @@
     
 }
 
+- (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {
+
+    [super deviceOrientationDidChange:_orientationIsPortrait];
+    
+    if (backgroundRotation != nil)
+    {
+        backgroundRotation.Ratio = (_orientationIsPortrait ? 1.f : 0.f);
+    }
+}
+
 - (void)buildBackground {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
@@ -61,7 +71,7 @@
         
         backgroundRotation = (f3RotationDecorator *)[builder top]; // keep reference on decorator to rotate the background
         [backgroundRotation applyAngle:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(90.f), nil]];
-        backgroundRotation.Ratio = ([director OrientationIsPortrait] ? 1.f : 0.f);
+        backgroundRotation.Ratio = (orientationIsPortrait ? 1.f : 0.f);
     }
 }
 
@@ -76,7 +86,7 @@
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
     
-    [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 896.f)
                                   atPoint:CGPointMake(1664.f, 384.f)
                                withExtend:CGSizeMake(384.f, 384.f)]];
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
@@ -100,7 +110,7 @@
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
     
-    [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 896.f)
                                   atPoint:CGPointMake(128.f +(_type *384.f), 0.f)
                                withExtend:CGSizeMake(384.f, 384.f)]];
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
@@ -148,7 +158,7 @@
     
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
-    [builder push:[f3GameLevel computeCoordonate:CGSizeMake(2048.f, 896.f)
+    [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 896.f)
                                   atPoint:CGPointMake(type.x, type.y)
                                withExtend:CGSizeMake(128.f, 128.f)]];
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
@@ -337,9 +347,9 @@
 
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
     
-    float targetAngle = [f3GameLevel computeAbsoluteAngleBetween:_target.Position and:_node.Position];
+    float targetAngle = [f3GameScene computeAngleBetween:_target.Position and:_node.Position];
     
-    float deltaAngle = targetAngle - [f3GameLevel computeAbsoluteAngleBetween:_origin.Position and:_node.Position];
+    float deltaAngle = targetAngle - [f3GameScene computeAngleBetween:_origin.Position and:_node.Position];
     if (deltaAngle > 180.f)
     {
         deltaAngle -= 360.f;
@@ -393,11 +403,6 @@
         
         [edge bindControlHeader:transformHeader];
     }
-}
-
-- (f3RotationDecorator *)getBackgroundRotation {
-    
-    return backgroundRotation;
 }
 
 @end

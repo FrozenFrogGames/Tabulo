@@ -13,9 +13,9 @@
 
 @interface fgGameAdapter : GLKViewController {
     
+    bool orientationHasChanged;
     fgTabuloDirector *director;
     f3GameAdaptee *adaptee;
-    bool orientationHasChanged;
 }
 
 @end

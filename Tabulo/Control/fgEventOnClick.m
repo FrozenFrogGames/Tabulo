@@ -6,10 +6,11 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgClickOnLevel.h"
-#import "../View/fgTabuloDirector.h"
+#import "fgEventOnClick.h"
+#import "fgTabuloEvent.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 
-@implementation fgClickOnLevel
+@implementation fgEventOnClick
 
 - (id)initWithNode:(f3GraphNode *)_node useLevel:(NSUInteger)_index {
 
@@ -25,10 +26,8 @@
 
 - (void)onActionCompleted:(f3ControlComponent *)_action owner:(f3Controller *)_owner {
 
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    
-    [director showDialog:DIALOG_Play forScene:levelIndex]; // TODO move into GameState
-    
+    [[f3GameAdaptee Producer] notifyEvent:[[fgTabuloEvent alloc] init:EVENT_StartGame level:levelIndex]];
+
     [super onActionCompleted:_action owner:_owner];
 }
 

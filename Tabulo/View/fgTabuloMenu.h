@@ -8,11 +8,17 @@
 
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/View/f3GameScene.h"
 
-@interface fgTabuloMenu : NSObject
+@interface fgTabuloMenu : f3GameScene {
+    
+    f3RotationDecorator *backgroundRotation;
+}
 
-+ (void)buildDialog:(enum f3TabuloDialogOptions)_options director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
+- (void)buildDialog:(enum f3TabuloDialogOption)_options director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
 
-+ (void)buildMenu:(NSUInteger)_count director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
+- (void)buildMenu:(NSUInteger)_count director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
+
+- (void)buildBackground;
 
 @end

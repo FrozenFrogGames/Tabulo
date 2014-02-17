@@ -10,7 +10,9 @@
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
 #import "fgDataAdapter.h"
+#import "Control/fgTabuloEvent.h"
 #import "View/fgTabuloDirector.h"
+#import "View/fgTabuloState.h"
 
 @interface fgGameAdapter ()
 
@@ -28,11 +30,11 @@
     
     if (self != nil)
     {
+        orientationHasChanged = false;
+
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
 
-        adaptee = [[f3GameAdaptee alloc] init];
-        
-        orientationHasChanged = true;
+        adaptee = [[f3GameAdaptee alloc] initState:[[fgTabuloState alloc] init]]; // TODO provide tabulo game state at init
     }
     
     return self;
@@ -54,7 +56,7 @@
     if (self.context != nil)
     {
         canvas = (fgViewCanvas *)self.view;
-        canvas = [canvas init:self.context scene:director.Scene];
+        canvas = [canvas init:self.context];
         canvas.drawableDepthFormat = GLKViewDrawableDepthFormat24;
     }
     else
@@ -65,6 +67,8 @@
     [EAGLContext setCurrentContext:self.context];
     
     [director loadResource:canvas];
+    
+    [adaptee notifyEvent:[[fgTabuloEvent alloc] init:EVENT_Initialize]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)
@@ -150,16 +154,12 @@
 
     if (orientationHasChanged)
     {
+        [(fgViewCanvas *)self.view deviceOrientationDidChange];
+
         orientationHasChanged = false;
-
-        fgViewCanvas *canvas = (fgViewCanvas *)self.view;
-    
-        [canvas deviceOrientationDidChange];
-
-        [director deviceOrientationDidChange:[canvas OrientationIsPortrait]];
     }
 
-    [director.Scene refresh]; // TODO refresh adapter list only if the view tree has changed
+    [director.Scene refresh];
 }
 
 #pragma mark - Touch based methods
