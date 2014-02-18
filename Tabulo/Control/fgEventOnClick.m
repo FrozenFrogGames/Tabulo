@@ -12,13 +12,13 @@
 
 @implementation fgEventOnClick
 
-- (id)initWithNode:(f3GraphNode *)_node useLevel:(NSUInteger)_index {
+- (id)initWithNode:(f3GraphNode *)_node event:(fgTabuloEvent *)_event {
 
     self = [super initWithNode:_node];
     
     if (self != nil)
     {
-        levelIndex = _index;
+        eventToTrigger = _event;
     }
 
     return self;
@@ -26,7 +26,7 @@
 
 - (void)onActionCompleted:(f3ControlComponent *)_action owner:(f3Controller *)_owner {
 
-    [[f3GameAdaptee Producer] notifyEvent:[[fgTabuloEvent alloc] init:EVENT_StartGame level:levelIndex]];
+    [[f3GameAdaptee Producer] notifyEvent:eventToTrigger];
 
     [super onActionCompleted:_action owner:_owner];
 }

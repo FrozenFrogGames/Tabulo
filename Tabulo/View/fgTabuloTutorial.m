@@ -45,7 +45,7 @@
             break;
     }
 
-    if (gameController != nil) // TODO push game state that will trigger the dialog box once that controller is finished 
+    if (gameController != nil)
     {
         [_producer appendComponent:gameController];
     }
@@ -53,7 +53,7 @@
 
 - (fgTabuloController *)loadTutorialOne:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
     
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:1 dialog:DIALOGOPTION_Next]];
     
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f];
@@ -93,8 +93,8 @@
 }
 
 - (fgTabuloController *)loadTutorialTwo:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-   
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
+
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:2 dialog:DIALOGOPTION_Next]];
 
     [self addPointFrom:0 Radius:1.75f Angle:90.f];
     [self addPointFrom:1 Radius:1.75f Angle:90.f];
@@ -144,8 +144,8 @@
 }
 
 - (fgTabuloController *)loadTutorialThree:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
+
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:3 dialog:DIALOGOPTION_Next]];
     
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
@@ -207,8 +207,8 @@
 }
 
 - (fgTabuloController *)loadTutorialFour:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
+
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:4 dialog:DIALOGOPTION_Next]];
     
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
@@ -275,9 +275,9 @@
 }
 
 - (fgTabuloController *)loadTutorialFive:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
-    
+
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:5 dialog:DIALOGOPTION_Next]];
+
     [self addPointFrom:0 Radius:1.75f Angle:180.f];
     [self addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
     [self addPointFrom:2 Radius:1.75f Angle:225.f];
@@ -346,9 +346,9 @@
 }
 
 - (fgTabuloController *)loadTutorialSix:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init];
-    
+
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_Menu]];
+
     [self addPointFrom:0 Radius:1.75f Angle:90.f];
     [self addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
     [self addPointFrom:2 Radius:1.75f Angle:180.f];

@@ -46,7 +46,7 @@ enum f3TabuloResource {
 };
 
 enum f3TabuloDialogOption {
-    
+
     DIALOGOPTION_Play = 0,
     DIALOGOPTION_Next,
     DIALOGOPTION_Pause

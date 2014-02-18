@@ -8,13 +8,22 @@
 
 #import "../../../Framework/Framework/Control/f3GameEvent.h"
 
+
+enum fgEventType {
+    
+    EVENT_Menu,
+    EVENT_StartGame,
+    EVENT_GameOver
+};
+
 @interface fgTabuloEvent : f3GameEvent {
 
-    NSUInteger levelIndex;
+    NSUInteger levelIndex, dialogOption;
 }
 
 @property (readonly) NSUInteger Level;
+@property (readonly) NSUInteger Option;
 
-- (id)init:(NSUInteger)_type level:(NSUInteger)_index;
+- (id)init:(NSUInteger)_type level:(NSUInteger)_index dialog:(NSUInteger)_option;
 
 @end

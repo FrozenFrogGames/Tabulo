@@ -13,6 +13,18 @@
 
 @implementation fgTabuloController
 
+- (id)init:(fgTabuloEvent *)_event {
+    
+    self = [super init];
+    
+    if (self != nil)
+    {
+        eventToTrigger = _event;
+    }
+    
+    return self;
+}
+
 - (void)updateComponents:(NSTimeInterval)_elapsed {
 
     int componentCount = [components count];
@@ -49,13 +61,13 @@
         }
     }
 
-    hasFinished = (componentAtHome == componentCount);
-
-    if (hasFinished) // TODO notify TabuloState (that replace GameState when into a level?) that the game is over
+    if (componentAtHome == componentCount)
     {
         [self removeAllComponents];
 
-        [[f3GameAdaptee Producer] notifyEvent:[[fgTabuloEvent alloc] init:EVENT_GameOver]];
+        [[f3GameAdaptee Producer] notifyEvent:eventToTrigger];
+        
+        hasFinished = true;
     }
 }
 

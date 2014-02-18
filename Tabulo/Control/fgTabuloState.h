@@ -7,10 +7,11 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/View/f3ViewComposite.h"
 
 @interface fgTabuloState : f3GameState {
 
-    NSUInteger levelIndex;
+    f3ViewComposite *dialogBox;
 }
 
 @end

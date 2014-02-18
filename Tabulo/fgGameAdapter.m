@@ -11,8 +11,8 @@
 #import "fgViewAdapter.h"
 #import "fgDataAdapter.h"
 #import "Control/fgTabuloEvent.h"
+#import "Control/fgTabuloState.h"
 #import "View/fgTabuloDirector.h"
-#import "View/fgTabuloState.h"
 
 @interface fgGameAdapter ()
 
@@ -68,7 +68,7 @@
     
     [director loadResource:canvas];
     
-    [adaptee notifyEvent:[[fgTabuloEvent alloc] init:EVENT_Initialize]];
+    [adaptee notifyEvent:[[fgTabuloEvent alloc] init:EVENT_Menu]];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)
