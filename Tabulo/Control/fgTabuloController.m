@@ -51,13 +51,22 @@
 
     for (int i = (componentCount -1); i >= 0; --i)
     {
-        if (((fgPawnController *)[components objectAtIndex:i]).isHome)
+        f3ControlComponent *component = [components objectAtIndex:i];
+        
+        if ([component isKindOfClass:[fgPawnController class]])
         {
-            ++componentAtHome;
+            if (((fgPawnController *)component).isHome)
+            {
+                ++componentAtHome;
+            }
+            else
+            {
+                break;
+            }
         }
         else
         {
-            break;
+            --componentCount; // ignore plank control
         }
     }
 

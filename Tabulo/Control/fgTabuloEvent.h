@@ -13,6 +13,7 @@ enum fgEventType {
     
     EVENT_Menu,
     EVENT_StartGame,
+    EVENT_ResumeGame,
     EVENT_GameOver
 };
 
@@ -24,6 +25,6 @@ enum fgEventType {
 @property (readonly) NSUInteger Level;
 @property (readonly) NSUInteger Option;
 
-- (id)init:(NSUInteger)_type level:(NSUInteger)_index dialog:(NSUInteger)_option;
+- (id)init:(NSUInteger)_type level:(NSUInteger)_index option:(NSUInteger)_option;
 
 @end

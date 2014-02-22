@@ -13,8 +13,15 @@
 
 @interface fgTabuloMenu : f3GameScene
 
-- (void)buildMenu:(NSUInteger)_count director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
+enum TabuloLevelState {
+    
+    LEVELSTATE_unlocked,
+    LEVELSTATE_locked,
+    LEVELSTATE_bronze,
+    LEVELSTATE_silver,
+    LEVELSTATE_gold
+};
 
-- (f3ViewComposite *)buildDialog:(fgTabuloEvent *)_event director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer;
+- (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state;
 
 @end

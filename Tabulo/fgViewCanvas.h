@@ -17,6 +17,8 @@
 
     NSMutableArray *textureLoaded;
     CGSize screenSize, unitSize;
+    
+    f3ViewScene *lastScene;
 }
 
 @property (readonly) bool OrientationIsPortrait;

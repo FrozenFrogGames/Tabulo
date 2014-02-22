@@ -23,7 +23,7 @@
     return self;
 }
 
-- (id)init:(NSUInteger)_type level:(NSUInteger)_index dialog:(NSUInteger)_option {
+- (id)init:(NSUInteger)_type level:(NSUInteger)_index option:(NSUInteger)_option {
 
     self = [super init:_type];
 

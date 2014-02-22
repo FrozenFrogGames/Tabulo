@@ -41,7 +41,7 @@
         gameCanvas = (fgViewCanvas *)_canvas;
     }
 
-    interface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-interface.png"]), nil];
+    interface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"interface-prototype.png"]), nil];
     spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
     background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
 }

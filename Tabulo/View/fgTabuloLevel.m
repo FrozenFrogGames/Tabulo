@@ -29,8 +29,9 @@
     return self;
 }
 
-- (void)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+- (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state level:(NSUInteger)_level {
     
+    // TODO throw f3Exception
 }
 
 - (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {

@@ -70,6 +70,13 @@
 
     f3ViewScene *scene = [f3GameDirector Director].Scene;
     
+    if (scene != lastScene)
+    {
+        
+    }
+    
+    lastScene = scene;
+    
     if (CGSizeEqualToSize(screenSize, CGSizeZero))
     {
         const UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];

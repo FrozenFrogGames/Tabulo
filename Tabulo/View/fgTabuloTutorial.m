@@ -7,6 +7,7 @@
 //
 
 #import "fgTabuloTutorial.h"
+#import "fgDialogState.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 #import "fgDragViewOverEdge.h"
 #import "../Control/fgTabuloController.h"
@@ -14,47 +15,42 @@
 
 @implementation fgTabuloTutorial
 
-- (void)buildLevel:(NSUInteger)_index director:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+- (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state level:(NSUInteger)_level {
 
     fgTabuloController *gameController = nil;
 
-    switch (_index)
+    switch (_level)
     {
         case 1:
-            gameController = [self loadTutorialOne:_director producer:_producer];
+            gameController = [self loadTutorialOne:_builder state:_state];
             break;
 
         case 2:
-            gameController = [self loadTutorialTwo:_director producer:_producer];
+            gameController = [self loadTutorialTwo:_builder state:_state];
             break;
 
         case 3:
-            gameController = [self loadTutorialThree:_director producer:_producer];
+            gameController = [self loadTutorialThree:_builder state:_state];
             break;
             
         case 4:
-            gameController = [self loadTutorialFour:_director producer:_producer];
+            gameController = [self loadTutorialFour:_builder state:_state];
             break;
 
         case 5:
-            gameController = [self loadTutorialFive:_director producer:_producer];
+            gameController = [self loadTutorialFive:_builder state:_state];
             break;
             
         case 6:
-            gameController = [self loadTutorialSix:_director producer:_producer];
+            gameController = [self loadTutorialSix:_builder state:_state];
             break;
     }
-
-    if (gameController != nil)
-    {
-        [_producer appendComponent:gameController];
-    }
+    
+    [_state appendComponent:gameController];
 }
 
-- (fgTabuloController *)loadTutorialOne:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-    
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:1 dialog:DIALOGOPTION_Next]];
-    
+- (fgTabuloController *)loadTutorialOne:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f];
     [self computePoints];
@@ -63,38 +59,40 @@
     [self buildHouse:2 Type:TABULO_PawnOne];
     [self buildBackground];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnOne];
     f3ViewAdaptee *plank = [self buildMediumPlank:1 Angle:270.f Hole:0];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
     
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
     
     [self clearPoints];
     
     [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
     [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
 
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:1 option:DIALOGOPTION_Next]];
+
     f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plank useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlank]];
 
     f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node2]];
-    
+
     return gameController;
 }
 
-- (fgTabuloController *)loadTutorialTwo:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+- (fgTabuloController *)loadTutorialTwo:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
 
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:2 dialog:DIALOGOPTION_Next]];
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:2 option:DIALOGOPTION_Next]];
 
     [self addPointFrom:0 Radius:1.75f Angle:90.f];
     [self addPointFrom:1 Radius:1.75f Angle:90.f];
@@ -107,22 +105,22 @@
     [self buildHouse:4 Type:TABULO_PawnTwo];
     [self buildBackground];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnTwo];
     f3ViewAdaptee *plank = [self buildSmallPlank:1 Angle:270.f Hole:0];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
 
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[self getPointAt:3] withRadius:0.8f];
-    f3GraphNode *node4 = [_producer buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
 
     [self clearPoints];
     
@@ -135,7 +133,7 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
 
     f3DragViewFromNode *controlPlank = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plank useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlank]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlank]];
     
     f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawn Home:node4]];
@@ -143,10 +141,8 @@
     return gameController;
 }
 
-- (fgTabuloController *)loadTutorialThree:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+- (fgTabuloController *)loadTutorialThree:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
 
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:3 dialog:DIALOGOPTION_Next]];
-    
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
     [self addPointFrom:2 Radius:1.75f Angle:45.f];
@@ -161,25 +157,25 @@
     [self buildHouse:6 Type:TABULO_PawnThree];
     [self buildBackground];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawn = [self buildPawn:0 Type:TABULO_PawnThree];
     f3ViewAdaptee *plankOne = [self buildMediumPlank:1 Angle:90.f Hole:0];
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:3 Angle:45.f Hole:0];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
 
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:1.5f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[self getPointAt:3] withRadius:0.8f];
-    f3GraphNode *node4 = [_producer buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node5 = [_producer buildNode:[self getPointAt:5] withRadius:0.8f];
-    f3GraphNode *node6 = [_producer buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
 
     [self clearPoints];
     
@@ -193,11 +189,13 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
 
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:3 option:DIALOGOPTION_Next]];
+    
     f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node3 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
 
     f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawn useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     
@@ -206,10 +204,8 @@
     return gameController;
 }
 
-- (fgTabuloController *)loadTutorialFour:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
+- (fgTabuloController *)loadTutorialFour:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
 
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:4 dialog:DIALOGOPTION_Next]];
-    
     [self addPointFrom:0 Radius:2.5f Angle:90.f];
     [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
     [self addPointFrom:2 Radius:2.5f Angle:210.f];
@@ -222,8 +218,8 @@
     [self buildPillar:4];
     [self buildBackground];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
 
     f3ViewAdaptee *pawnOne = [self buildPawn:2 Type:TABULO_PawnOne];
     f3ViewAdaptee *pawnTwo = [self buildPawn:0 Type:TABULO_PawnTwo];
@@ -231,17 +227,17 @@
     f3ViewAdaptee *plankOne = [self buildMediumPlank:1 Angle:90.f Hole:0];
     f3ViewAdaptee *plankTwo = [self buildMediumPlank:5 Angle:150.f Hole:0];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
     
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:1.5f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[self getPointAt:3] withRadius:1.5f];
-    f3GraphNode *node4 = [_producer buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node5 = [_producer buildNode:[self getPointAt:5] withRadius:1.5f];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f];
 
     [self clearPoints];
 
@@ -259,11 +255,13 @@
     [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node3];
 
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:4 option:DIALOGOPTION_Next]];
+    
     f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveMediumPlank nextState:[fgDragViewOverEdge class]];
 
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
     f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node2 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];
@@ -274,9 +272,7 @@
     return gameController;
 }
 
-- (fgTabuloController *)loadTutorialFive:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:5 dialog:DIALOGOPTION_Next]];
+- (fgTabuloController *)loadTutorialFive:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
 
     [self addPointFrom:0 Radius:1.75f Angle:180.f];
     [self addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
@@ -292,8 +288,8 @@
     [self buildHouse:6 Type:TABULO_PawnThree];
     [self buildBackground];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
 
     f3ViewAdaptee *pawnOne = [self buildPawn:6 Type:TABULO_PawnFive];
     f3ViewAdaptee *pawnTwo = [self buildPawn:4 Type:TABULO_PawnThree];
@@ -301,18 +297,18 @@
     f3ViewAdaptee *plankOne = [self buildSmallPlank:1 Angle:0.f Hole:0];
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:5 Angle:135.f Hole:0];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
 
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
     
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[self getPointAt:3] withRadius:0.8f];
-    f3GraphNode *node4 = [_producer buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node5 = [_producer buildNode:[self getPointAt:5] withRadius:0.8f];
-    f3GraphNode *node6 = [_producer buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
     
     [self clearPoints];
     
@@ -330,11 +326,13 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
     
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_GameOver level:5 option:DIALOGOPTION_Next]];
+    
     f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node1 forView:plankOne useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
     f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node6 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];
@@ -345,9 +343,7 @@
     return gameController;
 }
 
-- (fgTabuloController *)loadTutorialSix:(fgTabuloDirector *)_director producer:(f3GameAdaptee *)_producer {
-
-    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_Menu]];
+- (fgTabuloController *)loadTutorialSix:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
 
     [self addPointFrom:0 Radius:1.75f Angle:90.f];
     [self addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
@@ -364,8 +360,8 @@
     [self buildPillar:6];
     [self buildBackground];
     
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay background
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [self buildPawn:4 Type:TABULO_PawnFour];
     f3ViewAdaptee *pawnTwo = [self buildPawn:0 Type:TABULO_PawnThree];
@@ -373,19 +369,19 @@
     f3ViewAdaptee *plankOne = [self buildSmallPlank:3 Angle:180.f Hole:0];
     f3ViewAdaptee *plankTwo = [self buildSmallPlank:5 Angle:270.f Hole:0];
 
-    [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]]; // gameplay elements
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay elements
     
-//  [_producer.Grid sceneDidLoad:self]; // debug purpose
+//  [_state.Grid sceneDidLoad:self]; // debug purpose
     
-    f3GraphNode *node0 = [_producer buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node1 = [_producer buildNode:[self getPointAt:1] withRadius:0.8f];
-    f3GraphNode *node2 = [_producer buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node3 = [_producer buildNode:[self getPointAt:3] withRadius:0.8f];
-    f3GraphNode *node4 = [_producer buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node5 = [_producer buildNode:[self getPointAt:5] withRadius:0.8f];
-    f3GraphNode *node6 = [_producer buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
-    f3GraphNode *node7 = [_producer buildNode:[self getPointAt:7] withRadius:0.8f];
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f];
 
     [self clearPoints];
 
@@ -407,11 +403,13 @@
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node7];
     [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node5];
 
+    fgTabuloController* gameController = [[fgTabuloController alloc] init:[[fgTabuloEvent alloc] init:EVENT_Menu]];
+    
     f3DragViewFromNode *controlPlankOne = [[f3DragViewFromNode alloc] initWithNode:node3 forView:plankOne useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPlankTwo = [[f3DragViewFromNode alloc] initWithNode:node5 forView:plankTwo useFlag:TABULO_HaveSmallPlank nextState:[fgDragViewOverEdge class]];
     
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
-    [_producer appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
     f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawnTwo useFlag:TABULO_PawnTwo nextState:[fgDragViewOverEdge class]];

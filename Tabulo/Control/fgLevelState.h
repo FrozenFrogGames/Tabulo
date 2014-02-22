@@ -9,9 +9,6 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewComposite.h"
 
-@interface fgTabuloState : f3GameState {
-
-    f3ViewComposite *dialogBox;
-}
+@interface fgLevelState : f3GameState
 
 @end

@@ -45,13 +45,6 @@ enum f3TabuloResource {
     RESOURCE_Background
 };
 
-enum f3TabuloDialogOption {
-
-    DIALOGOPTION_Play = 0,
-    DIALOGOPTION_Next,
-    DIALOGOPTION_Pause
-};
-
 @interface fgTabuloDirector : f3GameDirector {
 
     fgViewCanvas *gameCanvas;
