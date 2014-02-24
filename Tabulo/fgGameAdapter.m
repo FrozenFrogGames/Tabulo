@@ -10,9 +10,8 @@
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
 #import "fgDataAdapter.h"
-#import "fgTabuloMenu.h"
 #import "Control/fgTabuloEvent.h"
-#import "Control/fgLevelState.h"
+#import "Control/fgGameState.h"
 #import "View/fgTabuloDirector.h"
 
 @interface fgGameAdapter ()
@@ -35,7 +34,7 @@
 
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
 
-        adaptee = [[f3GameAdaptee alloc] initState:[[fgLevelState alloc] init]]; // TODO provide tabulo game state at init
+        adaptee = [[f3GameAdaptee alloc] initState:[[fgGameState alloc] init]]; // TODO provide tabulo game state at init
     }
     
     return self;
@@ -68,9 +67,9 @@
     [EAGLContext setCurrentContext:self.context];
 
     [director loadResource:canvas];
-    fgTabuloMenu *menu = [[fgTabuloMenu alloc] init];
-    [menu build:director.Builder state:(fgLevelState *)adaptee.State];
-    [director loadScene:menu];
+
+    [(fgGameState *)adaptee.State buildMenu:director.Builder];
+    [adaptee.State begin:nil owner:adaptee]; // assign current scene to director
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)

@@ -7,10 +7,84 @@
 //
 
 #import "fgDragViewOverEdge.h"
+#import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
+#import "../../../Framework/Framework/Control/f3AppendFeedbackCommand.h"
+#import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
+#import "fgTabuloDirector.h"
 #import "fgTabuloEdge.h"
-#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 
 @implementation fgDragViewOverEdge
+
+- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
+    
+    float widthScale, heightScale;
+    switch (flagIndex) {
+            
+        case TABULO_HaveSmallPlank:
+        case TABULO_HaveMediumPlank:
+            widthScale = 2.4f;
+            heightScale = 1.2f;
+            break;
+
+        case TABULO_PawnOne:
+        case TABULO_PawnTwo:
+        case TABULO_PawnThree:
+        case TABULO_PawnFour:
+        case TABULO_PawnFive:
+            widthScale = 1.5f;
+            heightScale = 1.5f;
+            break;
+
+        default:
+            widthScale = 2.f;
+            heightScale = 2.f;
+            break;
+    }
+
+    [super begin:_previousState owner:_owner];
+
+    f3SetScaleCommand *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:widthScale height:heightScale]];
+    [_owner appendComponent:scaleCommand];
+
+    f3AppendFeedbackCommand *feedbackCommand = [[f3AppendFeedbackCommand alloc] initWithView:view];
+    [_owner appendComponent:feedbackCommand];
+}
+
+- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+
+    float widthScale, heightScale;
+    switch (flagIndex) {
+            
+        case TABULO_HaveSmallPlank:
+        case TABULO_HaveMediumPlank:
+            widthScale = 2.f;
+            heightScale = 1.f;
+            break;
+            
+        case TABULO_PawnOne:
+        case TABULO_PawnTwo:
+        case TABULO_PawnThree:
+        case TABULO_PawnFour:
+        case TABULO_PawnFive:
+            widthScale = 1.f;
+            heightScale = 1.f;
+            break;
+
+        default:
+            widthScale = 1.f;
+            heightScale = 1.f;
+            break;
+    }
+
+    [super end:_nextState owner:_owner];
+
+    
+    f3RemoveFeedbackCommand *feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
+    [_owner appendComponent:feedbackCommand];
+
+    f3VectorHandle *scaleDown = [f3VectorHandle buildHandleForWidth:widthScale height:heightScale];
+    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view Scale:scaleDown]];
+}
 
 - (void)attachListener {
     

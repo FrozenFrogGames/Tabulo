@@ -10,12 +10,12 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
+#import "fgGameState.h"
 #import "fgDialogState.h"
 #import "fgTabuloDirector.h"
 #import "fgEventOnClick.h"
-#import "fgTabuloMenu.h"
 #import "fgTabuloTutorial.h"
-#import "fgLevelState.h"
+#import "fgTabuloLevel01.h"
 
 @implementation fgDialogState
 
@@ -28,14 +28,14 @@ enum TabuloDialogItem {
 };
 
 - (id)init:(f3GameState *)_previousState {
-    
+
     self = [super init];
-    
+
     if (self != nil)
     {
         previousState = _previousState;
     }
-    
+
     return self;
 }
 
@@ -195,22 +195,17 @@ enum TabuloDialogItem {
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
-    if (![[f3GameDirector Director].Scene appendComposite:dialogLayer])
+    if (dialogLayer != nil)
     {
-        // TODO throw f3Exception
+        [[f3GameDirector Director].Scene appendComposite:dialogLayer];
     }
 }
 
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+
+    [[f3GameDirector Director].Scene removeComposite:dialogLayer];
     
-    if ([[f3GameDirector Director].Scene removeComposite:dialogLayer])
-    {
-        dialogLayer = nil;
-    }
-    else
-    {
-        // TODO throw f3Exception
-    }
+    dialogLayer = nil;
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
@@ -223,43 +218,31 @@ enum TabuloDialogItem {
         
         if (event.EventType == EVENT_Menu)
         {
-            [director.Scene removeAllComposites];
-            
-            fgLevelState *nextState = [[fgLevelState alloc] init];
-            fgTabuloMenu *menu = [[fgTabuloMenu alloc] init];
-
-            [menu build:director.Builder state:nextState];
-
+            fgGameState *nextState = [[fgGameState alloc] init];
+            [nextState buildMenu:director.Builder];
             [producer switchState:nextState];
-            [director loadScene:menu];
         }
         else if (event.EventType == EVENT_StartGame)
         {
-            [director.Scene removeAllComposites];
+            NSUInteger nextLevel = event.Level;
+            fgTabuloLevel *nextScene = nil;
+            
+            if (nextLevel < 7)
+            {
+                nextScene = [[fgTabuloTutorial alloc] init];
+            }
+            else if (nextLevel < 13)
+            {
+                nextScene = [[fgTabuloLevel01 alloc] init];
+            }
 
-            fgLevelState *nextState = [[fgLevelState alloc] init];
-            fgTabuloTutorial *tutorial = [[fgTabuloTutorial alloc] init];
-
-            [tutorial build:director.Builder state:nextState level:event.Level];
-
-            [director loadScene:tutorial];
+            fgGameState *nextState = [[fgGameState alloc] init:nextScene];
+            [nextScene build:director.Builder state:nextState level:nextLevel];
             [producer switchState:nextState];
         }
         else if (event.EventType == EVENT_ResumeGame)
         {
             [producer switchState:previousState];
-        }
-        else if (event.EventType == EVENT_GameOver)
-        {
-            [director.Scene removeAllComposites];
-            
-            fgLevelState *nextState = [[fgLevelState alloc] init];
-            fgTabuloTutorial *tutorial = [[fgTabuloTutorial alloc] init];
-
-            [tutorial build:director.Builder state:nextState level:event.Level];
-            
-            [director loadScene:tutorial];
-            [producer switchState:nextState];
         }
     }
 }

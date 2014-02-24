@@ -8,6 +8,6 @@
 
 #import "fgTabuloLevel.h"
 
-@interface fgTabuloEasy : fgTabuloLevel
+@interface fgTabuloLevel01 : fgTabuloLevel
 
 @end
