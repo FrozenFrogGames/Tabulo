@@ -129,16 +129,22 @@
 
 - (void)drawItem:(NSObject<IViewCanvas> *)_canvas {
 
+    [_canvas beginDraw];
+    
+    ressource.light0.enabled = GL_FALSE;
+    ressource.useConstantColor = YES;
+    ressource.constantColor = view.Color;
+    
     if (textureIndex != NSUIntegerMax)
     {
         GLKTextureInfo *textureInfo = [((fgViewCanvas *)_canvas) getTexture:textureIndex];
 
         if (textureInfo != nil)
         {
-            ressource.light0.enabled = GL_FALSE;
             ressource.texture2d0.enabled = GL_TRUE;
             ressource.texture2d0.name = textureInfo.name;
             ressource.texture2d0.target = GLKTextureTarget2D;
+            ressource.texture2d0.envMode = GLKTextureEnvModeModulate;
         }
         else
         {
@@ -146,17 +152,12 @@
         }
     }
 
-    [_canvas beginDraw];
-
     if (textureCoordinates != nil)
     {
         [_canvas bindTextureCoordinates:textureCoordinates];
     }
     else
     {
-        ressource.light0.enabled = GL_FALSE;
-        ressource.useConstantColor = YES;
-        ressource.constantColor = view.Color;
         ressource.texture2d0.enabled = GL_FALSE;
     }
 

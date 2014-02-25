@@ -12,18 +12,21 @@
 #import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
 #import "fgTabuloDirector.h"
 #import "fgTabuloEdge.h"
+#import "fgPawnFeedbackCommand.h"
+#import "fgPlankFeedbackCommand.h"
 
 @implementation fgDragViewOverEdge
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
-    
-    float widthScale, heightScale;
+
+    f3ControlComponent *scaleCommand = nil, *feedbackCommand = nil;
+
     switch (flagIndex) {
-            
+
         case TABULO_HaveSmallPlank:
         case TABULO_HaveMediumPlank:
-            widthScale = 2.4f;
-            heightScale = 1.2f;
+            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
+            feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Type:flagIndex Node:node];
             break;
 
         case TABULO_PawnOne:
@@ -31,34 +34,34 @@
         case TABULO_PawnThree:
         case TABULO_PawnFour:
         case TABULO_PawnFive:
-            widthScale = 1.5f;
-            heightScale = 1.5f;
-            break;
-
-        default:
-            widthScale = 2.f;
-            heightScale = 2.f;
+            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
+            feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Type:flagIndex Node:node];
             break;
     }
 
     [super begin:_previousState owner:_owner];
 
-    f3SetScaleCommand *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:widthScale height:heightScale]];
-    [_owner appendComponent:scaleCommand];
-
-    f3AppendFeedbackCommand *feedbackCommand = [[f3AppendFeedbackCommand alloc] initWithView:view];
-    [_owner appendComponent:feedbackCommand];
+    if (scaleCommand != nil)
+    {
+        [_owner appendComponent:scaleCommand];
+    }
+    
+    if (feedbackCommand != nil)
+    {
+        [_owner appendComponent:feedbackCommand];
+    }
 }
 
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
-    float widthScale, heightScale;
+    f3ControlComponent *scaleCommand = nil, *feedbackCommand = nil;
+    
     switch (flagIndex) {
             
         case TABULO_HaveSmallPlank:
         case TABULO_HaveMediumPlank:
-            widthScale = 2.f;
-            heightScale = 1.f;
+            feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
+            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
             break;
             
         case TABULO_PawnOne:
@@ -66,24 +69,22 @@
         case TABULO_PawnThree:
         case TABULO_PawnFour:
         case TABULO_PawnFive:
-            widthScale = 1.f;
-            heightScale = 1.f;
-            break;
-
-        default:
-            widthScale = 1.f;
-            heightScale = 1.f;
+            feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
+            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
             break;
     }
 
     [super end:_nextState owner:_owner];
-
     
-    f3RemoveFeedbackCommand *feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
-    [_owner appendComponent:feedbackCommand];
+    if (feedbackCommand != nil)
+    {
+        [_owner appendComponent:feedbackCommand];
+    }
 
-    f3VectorHandle *scaleDown = [f3VectorHandle buildHandleForWidth:widthScale height:heightScale];
-    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view Scale:scaleDown]];
+    if (scaleCommand != nil)
+    {
+        [_owner appendComponent:scaleCommand];
+    }
 }
 
 - (void)attachListener {

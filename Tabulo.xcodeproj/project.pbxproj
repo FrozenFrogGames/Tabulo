@@ -48,6 +48,8 @@
 		F6DF020F18B90CC700E7DF6C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF020C18B90CC700E7DF6C /* Default@2x.png */; };
 		F6DF021118B90D7800E7DF6C /* spritesheet-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF021018B90D7800E7DF6C /* spritesheet-gameplay.png */; };
 		F6DF021318B91D9D00E7DF6C /* interface-prototype.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF021218B91D9D00E7DF6C /* interface-prototype.png */; };
+		F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */; };
+		F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -112,6 +114,10 @@
 		F6DF020C18B90CC700E7DF6C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		F6DF021018B90D7800E7DF6C /* spritesheet-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-gameplay.png"; sourceTree = "<group>"; };
 		F6DF021218B91D9D00E7DF6C /* interface-prototype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "interface-prototype.png"; sourceTree = "<group>"; };
+		F6DF021E18BBEA8300E7DF6C /* fgPawnFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnFeedbackCommand.h; path = Control/fgPawnFeedbackCommand.h; sourceTree = "<group>"; };
+		F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnFeedbackCommand.m; path = Control/fgPawnFeedbackCommand.m; sourceTree = "<group>"; };
+		F6DF022118BC269500E7DF6C /* fgPlankFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankFeedbackCommand.h; path = Control/fgPlankFeedbackCommand.h; sourceTree = "<group>"; };
+		F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankFeedbackCommand.m; path = Control/fgPlankFeedbackCommand.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,6 +266,7 @@
 				F6A6CA821880971B006AAE57 /* fgPawnController.m */,
 				F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */,
 				F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */,
+				F6DF021D18BBE81D00E7DF6C /* Command */,
 				F6118608188C4E22004497C2 /* Graph */,
 				F611860C188C4F46004497C2 /* State */,
 			);
@@ -277,6 +284,17 @@
 				F682185B189733D70041DA80 /* fgTabuloLevel01.m */,
 			);
 			name = Visitor;
+			sourceTree = "<group>";
+		};
+		F6DF021D18BBE81D00E7DF6C /* Command */ = {
+			isa = PBXGroup;
+			children = (
+				F6DF021E18BBEA8300E7DF6C /* fgPawnFeedbackCommand.h */,
+				F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */,
+				F6DF022118BC269500E7DF6C /* fgPlankFeedbackCommand.h */,
+				F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */,
+			);
+			name = Command;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -373,12 +391,14 @@
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
 				F6821868189F26EC0041DA80 /* fgTabuloLevel.m in Sources */,
 				F682185C189733D70041DA80 /* fgTabuloLevel01.m in Sources */,
+				F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */,
 				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
 				F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */,
+				F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */,
 				F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */,
 				F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */,
 			);

@@ -129,27 +129,27 @@
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
 
-    CGPoint type, position = [self getPointAt:_index];
+    CGPoint textureCoordonate, position = [self getPointAt:_index];
     
     switch (_type) {
         case TABULO_PawnOne:
-            type = CGPointMake(0.f, 0.f);
+            textureCoordonate = CGPointMake(0.f, 0.f);
             break;
             
         case TABULO_PawnTwo:
-            type = CGPointMake(0.f, 128.f);
+            textureCoordonate = CGPointMake(0.f, 128.f);
             break;
             
         case TABULO_PawnThree:
-            type = CGPointMake(0.f, 256.f);
+            textureCoordonate = CGPointMake(0.f, 256.f);
             break;
             
         case TABULO_PawnFour:
-            type = CGPointMake(0.f, 384.f);
+            textureCoordonate = CGPointMake(0.f, 384.f);
             break;
             
         case TABULO_PawnFive:
-            type = CGPointMake(0.f, 512.f);
+            textureCoordonate = CGPointMake(0.f, 512.f);
             break;
     }
     
@@ -160,7 +160,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
     [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 896.f)
-                                  atPoint:CGPointMake(type.x, type.y)
+                                  atPoint:CGPointMake(textureCoordonate.x, textureCoordonate.y)
                                withExtend:CGSizeMake(128.f, 128.f)]];
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
@@ -239,7 +239,7 @@
 }
 
 - (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole {
-    
+
     f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
@@ -347,7 +347,7 @@
 }
 
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
-    
+
     float targetAngle = [f3GameScene computeAngleBetween:_target.Position and:_node.Position];
     
     float deltaAngle = targetAngle - [f3GameScene computeAngleBetween:_origin.Position and:_node.Position];

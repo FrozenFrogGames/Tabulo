@@ -411,7 +411,7 @@
     [_state appendComponent:[[f3Controller alloc] initState:controlPlankOne]];
     [_state appendComponent:[[f3Controller alloc] initState:controlPlankTwo]];
     
-    f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnOne useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPawnOne = [[f3DragViewFromNode alloc] initWithNode:node4 forView:pawnOne useFlag:TABULO_PawnFour nextState:[fgDragViewOverEdge class]];
     f3DragViewFromNode *controlPawnTwo = [[f3DragViewFromNode alloc] initWithNode:node0 forView:pawnTwo useFlag:TABULO_PawnOne nextState:[fgDragViewOverEdge class]];
     
     [gameController appendComponent:[[fgPawnController alloc] initState:controlPawnOne Home:node0]];

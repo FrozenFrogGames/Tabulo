@@ -219,7 +219,7 @@
 
     glEnableVertexAttribArray(GLKVertexAttribPosition);
     glVertexAttribPointer(GLKVertexAttribPosition, 2, GL_FLOAT, GL_FALSE, 0, _vertex);
-    
+
     switch (_type)
     {
         case DRAW_LINES:

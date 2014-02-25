@@ -51,84 +51,19 @@
     switch (_resource) {
 
         case RESOURCE_Interface:
-            
+
             return interface;
 
         case RESOURCE_SpriteSheet:
-            
+
             return spritesheet;
 
         case RESOURCE_Background:
-            
+
             return background;
     }
 }
 
-/*
-- (void)showDialog:(enum f3TabuloDialogOption)_options forScene:(NSUInteger)_index {
-
-    levelIndex = _index;
-
-    [self showDialog:_options];
-}
-
-- (void)showDialog:(enum f3TabuloDialogOption)_options {
-
-    switch (_options) {
-
-        case DIALOGOPTION_Play:
-
-            [self loadScene:levelIndex];
-            break;
-
-        case DIALOGOPTION_Next:
-
-            [self loadScene:0];
-
-            if (levelIndex < LEVEL_COUNT)
-            {
-                [self loadScene:++levelIndex];
-            }
-            else
-            {
-                [self loadScene:0];
-            }
- 
-            break;
-            
-        case DIALOGOPTION_Pause:
-            break;
-    }
-}
-
-- (void)loadScene:(NSUInteger)_index {
-
-    f3GameAdaptee *producer = [f3GameAdaptee Producer];
-
-    [scene removeAllComposites];
-
-    [producer removeAllComponents];
-
-    f3GameScene *level = nil;
-
-    levelIndex = _index;
-
-    if (levelIndex == 0)
-    {
-        level = [[fgTabuloMenu alloc] init];
-
-        [(fgTabuloMenu *)level buildMenu:LEVEL_COUNT director:self producer:producer];
-    }
-    else
-    {
-        level = [[fgTabuloTutorial alloc] init];
-        
-        [(fgTabuloTutorial *)level buildLevel:levelIndex director:self producer:producer];
-    }
-    
-    backgroundRotation = [level getBackgroundRotation];
-}
- */
 /*
 - (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole1:(int)_hole1 Hole2:(int)_hole2 {
 
