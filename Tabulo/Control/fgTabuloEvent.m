@@ -10,40 +10,33 @@
 
 @implementation fgTabuloEvent
 
-- (id)init:(NSUInteger)_type {
-    
-    self = [super init:_type];
-    
+- (id)init {
+
+    self = [super init];
+
     if (self != nil)
     {
         levelIndex = 0;
-        dialogOption = 0;
     }
 
     return self;
 }
 
-- (id)init:(NSUInteger)_type level:(NSUInteger)_index option:(NSUInteger)_option {
+- (id)init:(NSUInteger)_event level:(NSUInteger)_index {
 
-    self = [super init:_type];
+    self = [super init:_event];
 
     if (self != nil)
     {
         levelIndex = _index;
-        dialogOption = _option;
     }
 
     return self;
 }
 
 - (NSUInteger)Level {
-
+    
     return levelIndex;
-}
-
-- (NSUInteger)Option {
-
-    return dialogOption;
 }
 
 @end

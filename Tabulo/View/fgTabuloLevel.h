@@ -9,6 +9,7 @@
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
+#import "fgTabuloNode.h"
 
 @interface fgTabuloLevel : f3GameScene {
     
@@ -21,11 +22,10 @@
 
 - (void)buildBackground;
 - (void)buildPillar:(NSUInteger)_index;
-- (void)buildHouse:(NSUInteger)_index Type:(unsigned int)_type;
-
-- (f3ViewAdaptee *)buildPawn:(NSUInteger)_index Type:(enum f3TabuloPawnType)_type;
-- (f3ViewAdaptee *)buildSmallPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
-- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index Angle:(float)_angle Hole:(int)_hole;
+- (f3ViewAdaptee *)buildHouse:(NSUInteger)_index type:(unsigned int)_type;
+- (f3ViewAdaptee *)buildPawn:(NSUInteger)_index type:(enum f3TabuloPawnType)_type;
+- (f3ViewAdaptee *)buildSmallPlank:(NSUInteger)_index angle:(float)_angle hole:(int)_hole;
+- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index angle:(float)_angle hole:(int)_hole;
 
 - (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target;

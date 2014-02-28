@@ -10,7 +10,6 @@
 #import "../../../Framework/Framework/Model/f3IntegerArray.h"
 #import "../../../Framework/Framework/Model/f3FloatArray.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
-#import "../Control/fgTabuloController.h"
 #import "fgViewCanvas.h"
 
 enum f3TabuloPawnType {

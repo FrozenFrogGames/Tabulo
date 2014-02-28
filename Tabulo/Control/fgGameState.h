@@ -9,14 +9,23 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
+#import "fgTabuloNode.h"
+#import "fgTabuloEvent.h"
 
 @interface fgGameState : f3GameState {
 
     f3ViewScene *currentScene;
+    NSMutableArray *tabuloNodes;
+    NSUInteger gameLevel;
+    double gameOverTimer;
 }
 
-- (id)init:(f3ViewScene *)_scene;
+@property (readonly) int Level;
+
+- (id)init:(f3ViewScene *)_scene level:(NSUInteger)_level;
 
 - (void)buildMenu:(f3ViewBuilder *)_builder;
+
+- (fgTabuloNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
 
 @end

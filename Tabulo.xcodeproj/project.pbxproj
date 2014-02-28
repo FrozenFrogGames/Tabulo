@@ -32,8 +32,6 @@
 		F6821868189F26EC0041DA80 /* fgTabuloLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821867189F26EC0041DA80 /* fgTabuloLevel.m */; };
 		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
-		F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA821880971B006AAE57 /* fgPawnController.m */; };
-		F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */; };
 		F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF01F618B598CC00E7DF6C /* fgDialogState.m */; };
 		F6DF01FD18B90A0500E7DF6C /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */; };
 		F6DF01FE18B90A0500E7DF6C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01FA18B90A0500E7DF6C /* Default-Portrait~ipad.png */; };
@@ -46,10 +44,11 @@
 		F6DF020D18B90CC700E7DF6C /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF020A18B90CC700E7DF6C /* Default-568h@2x.png */; };
 		F6DF020E18B90CC700E7DF6C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF020B18B90CC700E7DF6C /* Default.png */; };
 		F6DF020F18B90CC700E7DF6C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF020C18B90CC700E7DF6C /* Default@2x.png */; };
-		F6DF021118B90D7800E7DF6C /* spritesheet-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF021018B90D7800E7DF6C /* spritesheet-gameplay.png */; };
 		F6DF021318B91D9D00E7DF6C /* interface-prototype.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF021218B91D9D00E7DF6C /* interface-prototype.png */; };
 		F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */; };
 		F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */; };
+		F6DF022D18BECEDF00E7DF6C /* gameplay-spritesheet.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF022C18BECEDF00E7DF6C /* gameplay-spritesheet.png */; };
+		F6DF023018BED35A00E7DF6C /* fgTabuloNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -95,10 +94,6 @@
 		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
-		F6A6CA811880971B006AAE57 /* fgPawnController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnController.h; path = Control/fgPawnController.h; sourceTree = "<group>"; };
-		F6A6CA821880971B006AAE57 /* fgPawnController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnController.m; path = Control/fgPawnController.m; sourceTree = "<group>"; };
-		F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloController.h; path = Control/fgTabuloController.h; sourceTree = "<group>"; };
-		F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloController.m; path = Control/fgTabuloController.m; sourceTree = "<group>"; };
 		F6DF01F518B598CC00E7DF6C /* fgDialogState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDialogState.h; path = Control/fgDialogState.h; sourceTree = "<group>"; };
 		F6DF01F618B598CC00E7DF6C /* fgDialogState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDialogState.m; path = Control/fgDialogState.m; sourceTree = "<group>"; };
 		F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
@@ -112,12 +107,14 @@
 		F6DF020A18B90CC700E7DF6C /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F6DF020B18B90CC700E7DF6C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		F6DF020C18B90CC700E7DF6C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
-		F6DF021018B90D7800E7DF6C /* spritesheet-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-gameplay.png"; sourceTree = "<group>"; };
 		F6DF021218B91D9D00E7DF6C /* interface-prototype.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "interface-prototype.png"; sourceTree = "<group>"; };
 		F6DF021E18BBEA8300E7DF6C /* fgPawnFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnFeedbackCommand.h; path = Control/fgPawnFeedbackCommand.h; sourceTree = "<group>"; };
 		F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnFeedbackCommand.m; path = Control/fgPawnFeedbackCommand.m; sourceTree = "<group>"; };
 		F6DF022118BC269500E7DF6C /* fgPlankFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankFeedbackCommand.h; path = Control/fgPlankFeedbackCommand.h; sourceTree = "<group>"; };
 		F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankFeedbackCommand.m; path = Control/fgPlankFeedbackCommand.m; sourceTree = "<group>"; };
+		F6DF022C18BECEDF00E7DF6C /* gameplay-spritesheet.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gameplay-spritesheet.png"; sourceTree = "<group>"; };
+		F6DF022E18BED35A00E7DF6C /* fgTabuloNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloNode.h; path = Control/fgTabuloNode.h; sourceTree = "<group>"; };
+		F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloNode.m; path = Control/fgTabuloNode.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,8 +197,8 @@
 				F6DF020418B90ADB00E7DF6C /* Tabulo-Portrait.png */,
 				F6DF020518B90ADB00E7DF6C /* Tabulo-Portrait@2x.png */,
 				F6DF021218B91D9D00E7DF6C /* interface-prototype.png */,
-				F6DF021018B90D7800E7DF6C /* spritesheet-gameplay.png */,
 				F6145D4E18B04D5C00924636 /* background-gameplay.png */,
+				F6DF022C18BECEDF00E7DF6C /* gameplay-spritesheet.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -211,6 +208,8 @@
 			children = (
 				F6118609188C4E42004497C2 /* fgTabuloEdge.h */,
 				F611860A188C4E42004497C2 /* fgTabuloEdge.m */,
+				F6DF022E18BED35A00E7DF6C /* fgTabuloNode.h */,
+				F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */,
 			);
 			name = Graph;
 			sourceTree = "<group>";
@@ -262,10 +261,6 @@
 			children = (
 				F6145D5418B1B24200924636 /* fgTabuloEvent.h */,
 				F6145D5518B1B24200924636 /* fgTabuloEvent.m */,
-				F6A6CA811880971B006AAE57 /* fgPawnController.h */,
-				F6A6CA821880971B006AAE57 /* fgPawnController.m */,
-				F6A6CA8418809B0F006AAE57 /* fgTabuloController.h */,
-				F6A6CA8518809B0F006AAE57 /* fgTabuloController.m */,
 				F6DF021D18BBE81D00E7DF6C /* Command */,
 				F6118608188C4E22004497C2 /* Graph */,
 				F611860C188C4F46004497C2 /* State */,
@@ -356,6 +351,7 @@
 			files = (
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F6DF020118B90A8B00E7DF6C /* Default-Landscape~ipad.png in Resources */,
+				F6DF022D18BECEDF00E7DF6C /* gameplay-spritesheet.png in Resources */,
 				F6145D4618A883E500924636 /* TabuloDev.mobileprovision in Resources */,
 				F6DF020E18B90CC700E7DF6C /* Default.png in Resources */,
 				F6DF01FD18B90A0500E7DF6C /* Default-Portrait@2x~ipad.png in Resources */,
@@ -365,7 +361,6 @@
 				F6145D5018B04D5C00924636 /* background-gameplay.png in Resources */,
 				F6DF020F18B90CC700E7DF6C /* Default@2x.png in Resources */,
 				F6DF020D18B90CC700E7DF6C /* Default-568h@2x.png in Resources */,
-				F6DF021118B90D7800E7DF6C /* spritesheet-gameplay.png in Resources */,
 				F6DF020918B90ADB00E7DF6C /* Tabulo-Portrait@2x.png in Resources */,
 				F6DF020618B90ADB00E7DF6C /* Tabulo-Landscape.png in Resources */,
 				F6DF01FE18B90A0500E7DF6C /* Default-Portrait~ipad.png in Resources */,
@@ -387,6 +382,7 @@
 				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
 				F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgGameState.m in Sources */,
+				F6DF023018BED35A00E7DF6C /* fgTabuloNode.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
 				F6821868189F26EC0041DA80 /* fgTabuloLevel.m in Sources */,
@@ -395,11 +391,9 @@
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
-				F6A6CA831880971B006AAE57 /* fgPawnController.m in Sources */,
 				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
 				F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */,
 				F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */,
-				F6A6CA8618809B0F006AAE57 /* fgTabuloController.m in Sources */,
 				F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

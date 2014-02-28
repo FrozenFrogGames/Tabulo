@@ -16,7 +16,8 @@
 
 @implementation fgGameState
 
-const NSUInteger LEVEL_COUNT = 18;
+const NSUInteger LEVEL_MAXIMUM = 18;
+const NSUInteger LEVEL_LOCKED = 7;
 
 enum TabuloLevelState {
     
@@ -30,36 +31,42 @@ enum TabuloLevelState {
 - (id)init {
 
     self = [super init];
-    
+
     if (self != nil)
     {
         currentScene = nil;
+        tabuloNodes = nil;
+        gameLevel = 0;
+        gameOverTimer = 0.0;
     }
-    
+
     return self;
 }
 
-- (id)init:(f3ViewScene *)_scene {
+- (id)init:(f3ViewScene *)_scene level:(NSUInteger)_level {
 
     self = [super init];
-    
+
     if (self != nil)
     {
         currentScene = _scene;
+        tabuloNodes = [NSMutableArray array];
+        gameLevel = _level;
+        gameOverTimer = 0.3;
     }
-    
+
     return self;
 }
 
 - (void)buildMenu:(f3ViewBuilder *)_builder {
 
-    if (currentScene == nil)
+    if (currentScene == nil && tabuloNodes == nil)
     {
         currentScene = [[f3ViewScene alloc] init];
         
         NSUInteger index = 1;
         
-        while (index < LEVEL_COUNT)
+        while (index < LEVEL_MAXIMUM)
         {
             float offset = 1.5f -(((index -1) /6) *3.f);
             
@@ -72,18 +79,22 @@ enum TabuloLevelState {
         }
 
         [_builder buildComposite:0];
-        [currentScene appendComposite:(f3ViewComposite *)[_builder popComponent]]; // group
+        [currentScene appendComposite:(f3ViewComposite *)[_builder popComponent]]; // levels
         
         [self buildHeader:_builder];
         
         [_builder buildComposite:0];
         [currentScene appendComposite:(f3ViewComposite *)[_builder popComponent]]; // header
     }
+    else
+    {
+        // throw f3Exception
+    }
 }
 
 - (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state atPosition:(CGPoint)_position level:(NSUInteger)_level {
     
-    enum TabuloLevelState state = (_level < 9) ? LEVELSTATE_unlocked : LEVELSTATE_locked;
+    enum TabuloLevelState state = (_level < LEVEL_LOCKED) ? LEVELSTATE_unlocked : LEVELSTATE_locked;
     
     CGPoint coordonatePoint;
     
@@ -126,10 +137,10 @@ enum TabuloLevelState {
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
     
-    if (_level < 9)
+    if (_level < LEVEL_LOCKED)
     {
         f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
-        fgTabuloEvent * event = [[fgTabuloEvent alloc] init:EVENT_StartGame level:_level option:DIALOGOPTION_Play];
+        fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
         [_state appendComponent:[[f3Controller alloc] initState:controlView]]; // TODO use level controller
     }
@@ -162,35 +173,79 @@ enum TabuloLevelState {
     }
 }
 
-- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+- (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
     
+    [super update:_elapsed owner:_owner];
+
+    if (gameLevel > 0)
+    {
+        for (fgTabuloNode *node in tabuloNodes)
+        {
+            if (![node IsPawnHome])
+            {
+                gameOverTimer = 0.3;
+                break;
+            }
+        }
+
+        gameOverTimer -= _elapsed;
+        
+        if (gameOverTimer < 0.0)
+        {
+            f3GameDirector *director = [f3GameDirector Director];
+            f3GameAdaptee *producer = [f3GameAdaptee Producer];
+            
+            if (gameLevel < (LEVEL_LOCKED -1))
+            {
+                fgDialogState *dialogState = [[fgDialogState alloc] init:self];
+                [dialogState build:director.Builder event:GAME_Next level:gameLevel];
+                [producer switchState:dialogState];
+            }
+            else
+            {
+                fgGameState *nextState = [[fgGameState alloc] init];
+                [nextState buildMenu:director.Builder];
+                [producer switchState:nextState];
+            }
+        }
+    }
+}
+
+- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+
     currentScene = nil;
+    tabuloNodes = nil;
+}
+
+- (fgTabuloNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+
+    fgTabuloNode *node = [[fgTabuloNode alloc] initPosition:_position extend:_extend view:_view type:_type];
+
+    [grid appendNode:node];
+
+    [tabuloNodes addObject:node];
+
+    return node;
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 
-    if ([_event isKindOfClass:[fgTabuloEvent class]])
-    {
-        fgTabuloEvent *event = (fgTabuloEvent *)_event;
-        f3GameDirector *director = [f3GameDirector Director];
-        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+    f3GameDirector *director = [f3GameDirector Director];
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
-        if (event.EventType == EVENT_Menu)
-        {
-            fgGameState *nextState = [[fgGameState alloc] init];
-            [nextState buildMenu:director.Builder];
-            [producer switchState:nextState];
-        }
-        else
-        {
-            fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-            [dialogState build:director.Builder event:event];
-            [producer switchState:dialogState];
-        }
+    if (_event.Event != GAME_Over && [_event isKindOfClass:[fgTabuloEvent class]])
+    {
+        fgTabuloEvent * event = (fgTabuloEvent *)_event;
+
+        fgDialogState *dialogState = [[fgDialogState alloc] init:self];
+        [dialogState build:director.Builder event:event.Event level:event.Level];
+        [producer switchState:dialogState];
     }
     else
     {
-        [super notifyEvent:_event];
+        fgGameState *nextState = [[fgGameState alloc] init];
+        [nextState buildMenu:director.Builder];
+        [producer switchState:nextState];
     }
 }
 

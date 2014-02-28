@@ -84,7 +84,7 @@
     [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.4f),nil]];
     [_builder buildProperty:0]; // reduce opacity
     
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 896.f)
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
                                          atPoint:CGPointMake(textureCoordonate.x, textureCoordonate.y)
                                       withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];

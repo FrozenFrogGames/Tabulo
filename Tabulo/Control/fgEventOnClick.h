@@ -7,13 +7,13 @@
 //
 
 #import "../../../Framework/Framework/Control/f3ClickOnNode.h"
-#import "fgTabuloEvent.h"
+#import "../../../Framework/Framework/Control/f3GameEvent.h"
 
 @interface fgEventOnClick : f3ClickOnNode {
 
-    fgTabuloEvent *eventToTrigger;
+    f3GameEvent *eventToTrigger;
 }
 
-- (id)initWithNode:(f3GraphNode *)_node event:(fgTabuloEvent *)_event;
+- (id)initWithNode:(f3GraphNode *)_node event:(f3GameEvent *)_event;
 
 @end

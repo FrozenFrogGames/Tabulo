@@ -91,18 +91,18 @@
 
     float holeOffset = 176.f; // TODO support hole
 
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.42857143f), // 0
-                                     FLOAT_BOX(0.0859375f), FLOAT_BOX(0.42857143f),
-                                     FLOAT_BOX(0.0625f), FLOAT_BOX(0.71428571f), // 2
-                                     FLOAT_BOX(0.0859375f), FLOAT_BOX(0.71428571f),
-                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.42857143f), // 4
-                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.42857143f),
-                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.71428571f), // 6
-                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.71428571f),
-                                     FLOAT_BOX(0.1640625f), FLOAT_BOX(0.42857143f), // 8
-                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.42857143f),
-                                     FLOAT_BOX(0.1640625f), FLOAT_BOX(0.71428571f), // 10
-                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.71428571f), nil];
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
+                                     FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
+                                     FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
+                                     FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
+                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.444444444f), // 4
+                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.444444444f),
+                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 6
+                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
+                                     FLOAT_BOX(0.1640625f), FLOAT_BOX(0.444444444f), // 8
+                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.444444444f),
+                                     FLOAT_BOX(0.1640625f), FLOAT_BOX(0.666666667f), // 10
+                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f), nil];
 
     [_builder push:plankIndices];
     [_builder push:plankVertex];
@@ -147,18 +147,20 @@
                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
                                  FLOAT_BOX(0.5f), FLOAT_BOX(1.5f), nil];
 
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.f), FLOAT_BOX(0.71428571f), // 0
-                                     FLOAT_BOX(0.0546875f), FLOAT_BOX(0.71428571f),
-                                     FLOAT_BOX(0.f), FLOAT_BOX(1.f), // 2
-                                     FLOAT_BOX(0.0546875f), FLOAT_BOX(1.f),
-                                     FLOAT_BOX(0.f), FLOAT_BOX(0.71428571f), // 4
-                                     FLOAT_BOX(0.07813f), FLOAT_BOX(0.71428571f),
-                                     FLOAT_BOX(0.f), FLOAT_BOX(1.f), // 6
-                                     FLOAT_BOX(0.07813f), FLOAT_BOX(1.f),
-                                     FLOAT_BOX(0.1328125f), FLOAT_BOX(0.71428571f), // 8
-                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.71428571f),
-                                     FLOAT_BOX(0.1328125f), FLOAT_BOX(1.f), // 10
-                                     FLOAT_BOX(0.1875f), FLOAT_BOX(1.f), nil];
+    float holeOffset = 176.f;
+
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
+                                     FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
+                                     FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
+                                     FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
+                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 4
+                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
+                                     FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.888888889f), // 6
+                                     FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.888888889f),
+                                     FLOAT_BOX(0.1328125f), FLOAT_BOX(0.666666667f), // 8
+                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f),
+                                     FLOAT_BOX(0.1328125f), FLOAT_BOX(0.888888889f), // 10
+                                     FLOAT_BOX(0.1875f), FLOAT_BOX(0.888888889f), nil];
 
     [_builder push:plankIndices];
     [_builder push:plankVertex];
