@@ -7,6 +7,7 @@
 //
 
 #import "fgPawnFeedbackCommand.h"
+#import "fgTabuloNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
@@ -31,13 +32,20 @@
     NSArray *edges = [f3GraphEdge edgesFromNode:pawnNode];
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
-    
+
     for (f3GraphEdge *edge in edges)
     {
         if ([edge evaluateConditions])
         {
-            [self buildPawn:builder Position:edge.Target.Position Type:pawnType];
+            f3GraphNode *node = edge.Target;
             
+            if ([node isKindOfClass:[fgTabuloNode class]])
+            {
+                [(fgTabuloNode *)node buildHouseFeedback:pawnType];
+            }
+            
+            [self buildPawn:builder Position:node.Position Type:pawnType];
+
             [result appendComponent:[builder popComponent]];
         }
     }

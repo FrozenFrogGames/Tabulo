@@ -103,22 +103,46 @@
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
+
+    f3IntegerArray *houseIndices = [f3IntegerArray buildHandleForValues:12, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+                                    USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
+                                    USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
+                                    USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7), nil];
+
+    f3FloatArray *houseVertex = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(-1.5f), FLOAT_BOX(1.5f), // 0
+                                 FLOAT_BOX(1.5f), FLOAT_BOX(1.5f),
+                                 FLOAT_BOX(-1.5f), FLOAT_BOX(-0.5f), // 2
+                                 FLOAT_BOX(1.5f), FLOAT_BOX(-0.5f),
+                                 FLOAT_BOX(-1.5f), FLOAT_BOX(-0.5f), // 4
+                                 FLOAT_BOX(1.5f), FLOAT_BOX(-0.5f),
+                                 FLOAT_BOX(-1.5f), FLOAT_BOX(-1.5f), // 6
+                                 FLOAT_BOX(1.5f), FLOAT_BOX(-1.5f), nil];
+
+    float houseX1 = (128.f +(_type *384.f)) /2048.f;
+    float houseX2 = (512.f +(_type *384.f)) /2048.f;
+
+    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.f),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 2
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 4
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(0.333333333f), // 6
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.333333333f), nil];
+
+    [builder push:houseIndices];
+    [builder push:houseVertex];
     [builder buildAdaptee:DRAW_TRIANGLES];
     
     f3ViewAdaptee *view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
-                                  atPoint:CGPointMake(128.f +(_type *384.f), 0.f)
-                               withExtend:CGSizeMake(384.f, 384.f)]];
+    
+    [builder push:houseCoordonate];
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
     
     CGPoint position = [self getPointAt:_index];
     
-    [builder push:[f3VectorHandle buildHandleForWidth:3.f height:3.f]];
+    [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
     [builder buildDecorator:2];
     
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];

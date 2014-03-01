@@ -8,6 +8,9 @@
 
 #import "../../../Framework/Framework/Control/f3DragViewOverEdge.h"
 
-@interface fgDragViewOverEdge : f3DragViewOverEdge
+@interface fgDragViewOverEdge : f3DragViewOverEdge {
+
+    bool feedbackDisplayed, feedbackToRemove;
+}
 
 @end

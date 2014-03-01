@@ -9,6 +9,7 @@
 #import "fgTabuloNode.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
+#import "../../../Framework/Framework/View/f3ViewSearch.h"
 
 @implementation fgTabuloNode
 
@@ -38,21 +39,86 @@
     return self;
 }
 
+- (void)setFlag:(int)_index value:(bool)_value {
+
+    [super setFlag:_index value:_value];
+
+    if (_index == houseType)
+    {
+        [self replaceHouseTexture:_value];
+    }
+}
+
 - (bool)IsPawnHome {
 
     return [self getFlag:houseType];
 }
 
-- (f3TextureDecorator *)buildTextureDecorator {
+- (void)buildHouseFeedback:(enum f3TabuloPawnType)_type {
+
+    if (_type == houseType)
+    {
+        [self replaceHouseTexture:true];
+    }
+}
+
+- (void)clearHouseFeedback {
+
+    [self replaceHouseTexture:[self getFlag:houseType]];
+}
+
+- (void)replaceHouseTexture:(bool)_value {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    
+    f3ViewSearch *searchDecorator = [[f3ViewSearch alloc] initSearch:houseView forType:[f3TextureDecorator class]];
+    
+    [director.Scene accept:searchDecorator];
+    
+    if (searchDecorator.Result != nil)
+    {
+        f3ViewSearch *searchComponent = [[f3ViewSearch alloc] initSearch:houseView ownedBy:searchDecorator.Result];
+        
+        [searchDecorator.Result accept:searchComponent]; // check for decorator between the texture and the view
+        
+        if (searchComponent.Result != nil)
+        {
+            f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result isHome:_value];
+            
+            [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+        }
+        else
+        {
+            f3TextureDecorator *decorator = [self buildTextureDecorator:houseView isHome:_value];
+            
+            [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+        }
+    }
+}
 
-    [director.Builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
-                                         atPoint:CGPointMake(128.f +(houseType *384.f), 0.f)
-                                      withExtend:CGSizeMake(384.f, 384.f)]];
+- (f3TextureDecorator *)buildTextureDecorator:(f3ViewComponent *)_component isHome:(bool)_home {
+    
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    
+    float houseX1 = (128.f +(houseType *384.f)) /2048.f;
+    float houseX2 = (512.f +(houseType *384.f)) /2048.f;
+    float houseY1 = _home ? 0.334201390f : 0.222222222f;
+    float houseY2 = _home ? 0.444444444f : 0.333333333f;
+    
+    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.f),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 2
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(houseY1), // 4
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(houseY1),
+                                     FLOAT_BOX(houseX1), FLOAT_BOX(houseY2), // 6
+                                     FLOAT_BOX(houseX2), FLOAT_BOX(houseY2), nil];
+    
+    [director.Builder push:_component];
+    [director.Builder push:houseCoordonate];
     [director.Builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [director.Builder buildDecorator:4];
-
+    
     return (f3TextureDecorator *)[director.Builder popComponent];
 }
 

@@ -12,6 +12,7 @@
 #import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
 #import "fgTabuloDirector.h"
 #import "fgTabuloEdge.h"
+#import "fgTabuloNode.h"
 #import "fgPawnFeedbackCommand.h"
 #import "fgPlankFeedbackCommand.h"
 
@@ -20,6 +21,8 @@
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
     f3ControlComponent *scaleCommand = nil, *feedbackCommand = nil;
+
+    [super begin:_previousState owner:_owner];
 
     switch (flagIndex) {
 
@@ -39,51 +42,102 @@
             break;
     }
 
-    [super begin:_previousState owner:_owner];
-
     if (scaleCommand != nil)
     {
         [_owner appendComponent:scaleCommand];
     }
-    
-    if (feedbackCommand != nil)
+
+    feedbackDisplayed = (feedbackCommand != nil);
+
+    if (feedbackDisplayed)
     {
         [_owner appendComponent:feedbackCommand];
     }
 }
 
+- (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
+    
+    if (feedbackToRemove)
+    {
+        [self clearFeedback:_owner];
+
+        feedbackToRemove = false;
+    }
+    
+    [super update:_elapsed owner:_owner];
+}
+
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
-    f3ControlComponent *scaleCommand = nil, *feedbackCommand = nil;
-    
+    f3ControlComponent *scaleCommand = nil;
+
+    [super end:_nextState owner:_owner];
+
     switch (flagIndex) {
-            
+
         case TABULO_HaveSmallPlank:
         case TABULO_HaveMediumPlank:
-            feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
             scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
             break;
-            
+
         case TABULO_PawnOne:
         case TABULO_PawnTwo:
         case TABULO_PawnThree:
         case TABULO_PawnFour:
         case TABULO_PawnFive:
-            feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
             scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
             break;
-    }
-
-    [super end:_nextState owner:_owner];
-    
-    if (feedbackCommand != nil)
-    {
-        [_owner appendComponent:feedbackCommand];
     }
 
     if (scaleCommand != nil)
     {
         [_owner appendComponent:scaleCommand];
+    }
+
+    [self clearFeedback:_owner];
+}
+
+- (void)clearFeedback:(f3Controller *)_owner {
+
+    if (feedbackDisplayed)
+    {
+        f3ControlComponent *feedbackCommand = nil;
+        
+        switch (flagIndex) {
+                
+            case TABULO_HaveSmallPlank:
+            case TABULO_HaveMediumPlank:
+    
+                feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
+                break;
+                
+            case TABULO_PawnOne:
+            case TABULO_PawnTwo:
+            case TABULO_PawnThree:
+            case TABULO_PawnFour:
+            case TABULO_PawnFive:
+
+                for (fgTabuloEdge *edge in edges)
+                {
+                    if ([edge.Target isKindOfClass:[fgTabuloNode class]])
+                    {
+                        if (currentEdge == nil || currentEdge.Target != edge.Target)
+                        {
+                            [(fgTabuloNode *)edge.Target clearHouseFeedback];
+                        }
+                    }
+                }
+                
+                feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
+                break;
+        }
+        
+        if (feedbackCommand != nil)
+        {
+            [_owner appendComponent:feedbackCommand];
+            
+            feedbackDisplayed = false;
+        }
     }
 }
 
@@ -130,6 +184,7 @@
                     {
                         if ([edge evaluateConditions])
                         {
+                            feedbackToRemove = feedbackDisplayed;
                             currentEdge = edge;
 //                          NSLog(@"State: %@, target: %@", self, edge.Target);
                             break;

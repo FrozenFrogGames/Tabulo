@@ -52,7 +52,7 @@ enum TabuloLevelState {
         currentScene = _scene;
         tabuloNodes = [NSMutableArray array];
         gameLevel = _level;
-        gameOverTimer = 0.3;
+        gameOverTimer = 2.0;
     }
 
     return self;
@@ -183,7 +183,7 @@ enum TabuloLevelState {
         {
             if (![node IsPawnHome])
             {
-                gameOverTimer = 0.3;
+                gameOverTimer = 0.5;
                 break;
             }
         }

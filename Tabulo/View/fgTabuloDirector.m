@@ -42,7 +42,7 @@
     }
 
     interface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"interface-prototype.png"]), nil];
-    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"gameplay-spritesheet.png"]), nil];
+    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
     background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
 }
 
