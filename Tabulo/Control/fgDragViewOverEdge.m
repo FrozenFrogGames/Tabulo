@@ -8,13 +8,12 @@
 
 #import "fgDragViewOverEdge.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
-#import "../../../Framework/Framework/Control/f3AppendFeedbackCommand.h"
-#import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
-#import "fgTabuloDirector.h"
 #import "fgTabuloEdge.h"
 #import "fgTabuloNode.h"
+#import "fgTabuloDirector.h"
 #import "fgPawnFeedbackCommand.h"
 #import "fgPlankFeedbackCommand.h"
+#import "fgRemoveFeedbackCommand.h"
 
 @implementation fgDragViewOverEdge
 
@@ -117,18 +116,18 @@
             case TABULO_PawnFour:
             case TABULO_PawnFive:
 
+                feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
+
                 for (fgTabuloEdge *edge in edges)
                 {
                     if ([edge.Target isKindOfClass:[fgTabuloNode class]])
                     {
                         if (currentEdge == nil || currentEdge.Target != edge.Target)
                         {
-                            [(fgTabuloNode *)edge.Target clearHouseFeedback];
+                            [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgTabuloNode *)edge.Target];
                         }
                     }
                 }
-                
-                feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
                 break;
         }
         
@@ -174,26 +173,35 @@
 
     if ([nodeListening containsObject:_node])
     {
+        shouldKeepFocus = false;
+
         if (_type == INPUT_MOVED || _type == INPUT_ENDED)
         {
-            if (haveFocus && !releaseFocus && currentEdge == nil)
+            if (haveFocus && !releaseFocus)
             {
-                for (fgTabuloEdge *edge in edges)
+                if (currentEdge == nil)
                 {
-                    if (edge.Target == _node || edge.Input == _node)
+                    for (fgTabuloEdge *edge in edges)
                     {
-                        if ([edge evaluateConditions])
+                        if (edge.Target == _node || edge.Input == _node)
                         {
-                            feedbackToRemove = feedbackDisplayed;
-                            currentEdge = edge;
-//                          NSLog(@"State: %@, target: %@", self, edge.Target);
-                            break;
-                        }
-                        else
-                        {
-                            // TODO notify player with visual feedback if relevant
+                            if ([edge evaluateConditions])
+                            {
+                                feedbackToRemove = feedbackDisplayed;
+                                currentEdge = edge;
+    //                          NSLog(@"State: %@, target: %@", self, edge.Target);
+                                break;
+                            }
+                            else
+                            {
+                                // TODO notify player with visual feedback if relevant
+                            }
                         }
                     }
+                }
+                else if (_type == INPUT_MOVED && currentEdge.Target == _node)
+                {
+                    shouldKeepFocus = true;
                 }
             }
         }

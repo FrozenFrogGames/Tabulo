@@ -107,8 +107,10 @@ enum TabuloDialogItem {
 
                 break;
                 
-            case GAME_Over: // nothing
-                break;
+            case GAME_Over:
+            case GAME_EVENT_MAX:
+
+                return; // TODO throw f3Exception
         }
 
         [self buildDialogBox:_builder];
@@ -217,49 +219,65 @@ enum TabuloDialogItem {
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
-    
-    f3GameAdaptee *producer = [f3GameAdaptee Producer];
-    f3GameDirector *director = [f3GameDirector Director];
-    
-    if (_event.Event != GAME_Over && [_event isKindOfClass:[fgTabuloEvent class]])
+
+    if (_event.Event < GAME_EVENT_MAX)
     {
-        fgTabuloEvent *event = (fgTabuloEvent *)_event;
-        fgTabuloLevel *nextScene = nil;
-        fgGameState *nextState = nil;
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        f3GameDirector *director = [f3GameDirector Director];
         
-        NSUInteger nextLevel = event.Level;
-        switch (event.Event) {
+        if ([_event isKindOfClass:[fgTabuloEvent class]])
+        {
+            fgTabuloEvent *event = (fgTabuloEvent *)_event;
+            fgTabuloLevel *nextScene = nil;
+            fgGameState *nextState = nil;
+            
+            NSUInteger nextLevel = event.Level;
+            switch (event.Event) {
 
-            case GAME_Next:
-                ++nextLevel;
+                case GAME_Pause:
+                    
+                    [producer switchState:previousState];
+                    break;
+                    
+                case GAME_Next:
 
-            case GAME_Play:
+                    ++nextLevel; // increment level before to trigger play
+//                  break;
 
-                if (nextLevel < 7)
-                {
-                    nextScene = [[fgTabuloTutorial alloc] init];
-                }
-                else if (nextLevel < 13)
-                {
-                    nextScene = [[fgTabuloLevel01 alloc] init];
-                }
+                case GAME_Play:
 
-                nextState = [[fgGameState alloc] init:nextScene level:nextLevel];
-                [nextScene build:director.Builder state:nextState level:nextLevel];
-                [producer switchState:nextState];
-                break;
+                    if (nextLevel < 7)
+                    {
+                        nextScene = [[fgTabuloTutorial alloc] init];
+                    }
+                    else if (nextLevel < 13)
+                    {
+                        nextScene = [[fgTabuloLevel01 alloc] init];
+                    }
 
-            case GAME_Pause:
+                    nextState = [[fgGameState alloc] init:nextScene level:nextLevel];
+                    [nextScene build:director.Builder state:nextState level:nextLevel];
+                    [producer switchState:nextState];
+                    break;
 
-                [producer switchState:previousState];
-                break;
+                case GAME_Over:
+    
+                    nextState = [[fgGameState alloc] init];
+                    [nextState buildMenu:director.Builder];
+                    [producer switchState:nextState];
+                    break;
+            }
+        }
+        else
+        {
+            fgGameState *nextState = [[fgGameState alloc] init];
+            [nextState buildMenu:director.Builder];
+            [producer switchState:nextState];
         }
     }
     else
     {
-        fgGameState *nextState = [[fgGameState alloc] init];
-        [nextState buildMenu:director.Builder];
-        [producer switchState:nextState];
+        [super notifyEvent:_event];
     }
 }
 

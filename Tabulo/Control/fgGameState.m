@@ -37,6 +37,7 @@ enum TabuloLevelState {
         currentScene = nil;
         tabuloNodes = nil;
         gameLevel = 0;
+        gameIsOver = false;
         gameOverTimer = 0.0;
     }
 
@@ -52,6 +53,7 @@ enum TabuloLevelState {
         currentScene = _scene;
         tabuloNodes = [NSMutableArray array];
         gameLevel = _level;
+        gameIsOver = false;
         gameOverTimer = 2.0;
     }
 
@@ -174,15 +176,18 @@ enum TabuloLevelState {
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
-    
+
     [super update:_elapsed owner:_owner];
 
     if (gameLevel > 0)
     {
+        gameIsOver = true;
+
         for (fgTabuloNode *node in tabuloNodes)
         {
             if (![node IsPawnHome])
             {
+                gameIsOver = false;
                 gameOverTimer = 0.5;
                 break;
             }
@@ -190,7 +195,7 @@ enum TabuloLevelState {
 
         gameOverTimer -= _elapsed;
         
-        if (gameOverTimer < 0.0)
+        if (gameIsOver && gameOverTimer < 0.0)
         {
             f3GameDirector *director = [f3GameDirector Director];
             f3GameAdaptee *producer = [f3GameAdaptee Producer];
@@ -230,22 +235,29 @@ enum TabuloLevelState {
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 
-    f3GameDirector *director = [f3GameDirector Director];
-    f3GameAdaptee *producer = [f3GameAdaptee Producer];
-
-    if (_event.Event != GAME_Over && [_event isKindOfClass:[fgTabuloEvent class]])
+    if (_event.Event < GAME_EVENT_MAX)
     {
-        fgTabuloEvent * event = (fgTabuloEvent *)_event;
+        f3GameDirector *director = [f3GameDirector Director];
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        
+        if ([_event isKindOfClass:[fgTabuloEvent class]])
+        {
+            fgTabuloEvent * event = (fgTabuloEvent *)_event;
 
-        fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:event.Event level:event.Level];
-        [producer switchState:dialogState];
+            fgDialogState *dialogState = [[fgDialogState alloc] init:self];
+            [dialogState build:director.Builder event:event.Event level:event.Level];
+            [producer switchState:dialogState];
+        }
+        else
+        {
+            fgGameState *nextState = [[fgGameState alloc] init];
+            [nextState buildMenu:director.Builder];
+            [producer switchState:nextState];
+        }
     }
     else
     {
-        fgGameState *nextState = [[fgGameState alloc] init];
-        [nextState buildMenu:director.Builder];
-        [producer switchState:nextState];
+        [super notifyEvent:_event];
     }
 }
 
