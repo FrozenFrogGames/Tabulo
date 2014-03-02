@@ -183,7 +183,7 @@ enum TabuloLevelState {
     {
         gameIsOver = true;
 
-        for (fgTabuloNode *node in tabuloNodes)
+        for (fgHouseNode *node in tabuloNodes)
         {
             if (![node IsPawnHome])
             {
@@ -222,9 +222,9 @@ enum TabuloLevelState {
     tabuloNodes = nil;
 }
 
-- (fgTabuloNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+- (fgHouseNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
 
-    fgTabuloNode *node = [[fgTabuloNode alloc] initPosition:_position extend:_extend view:_view type:_type];
+    fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend view:_view type:_type];
 
     [grid appendNode:node];
 

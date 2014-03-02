@@ -34,6 +34,8 @@
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6BDB2AE18C16E0700430653 /* spritesheet-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BDB2AD18C16E0700430653 /* spritesheet-gameplay.png */; };
 		F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2B018C2733000430653 /* fgRemoveFeedbackCommand.m */; };
+		F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */; };
+		F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */; };
 		F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF01F618B598CC00E7DF6C /* fgDialogState.m */; };
 		F6DF01FD18B90A0500E7DF6C /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */; };
 		F6DF01FE18B90A0500E7DF6C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01FA18B90A0500E7DF6C /* Default-Portrait~ipad.png */; };
@@ -49,7 +51,7 @@
 		F6DF021318B91D9D00E7DF6C /* interface-prototype.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF021218B91D9D00E7DF6C /* interface-prototype.png */; };
 		F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */; };
 		F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */; };
-		F6DF023018BED35A00E7DF6C /* fgTabuloNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */; };
+		F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022F18BED35A00E7DF6C /* fgHouseNode.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -98,6 +100,10 @@
 		F6BDB2AD18C16E0700430653 /* spritesheet-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-gameplay.png"; sourceTree = "<group>"; };
 		F6BDB2AF18C2733000430653 /* fgRemoveFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgRemoveFeedbackCommand.h; path = Control/fgRemoveFeedbackCommand.h; sourceTree = "<group>"; };
 		F6BDB2B018C2733000430653 /* fgRemoveFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgRemoveFeedbackCommand.m; path = Control/fgRemoveFeedbackCommand.m; sourceTree = "<group>"; };
+		F6BDB2B718C2DAD600430653 /* fgPawnEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnEdge.h; path = Control/fgPawnEdge.h; sourceTree = "<group>"; };
+		F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnEdge.m; path = Control/fgPawnEdge.m; sourceTree = "<group>"; };
+		F6BDB2BA18C2DAEF00430653 /* fgPlankEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankEdge.h; path = Control/fgPlankEdge.h; sourceTree = "<group>"; };
+		F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankEdge.m; path = Control/fgPlankEdge.m; sourceTree = "<group>"; };
 		F6DF01F518B598CC00E7DF6C /* fgDialogState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDialogState.h; path = Control/fgDialogState.h; sourceTree = "<group>"; };
 		F6DF01F618B598CC00E7DF6C /* fgDialogState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDialogState.m; path = Control/fgDialogState.m; sourceTree = "<group>"; };
 		F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
@@ -116,8 +122,8 @@
 		F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnFeedbackCommand.m; path = Control/fgPawnFeedbackCommand.m; sourceTree = "<group>"; };
 		F6DF022118BC269500E7DF6C /* fgPlankFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankFeedbackCommand.h; path = Control/fgPlankFeedbackCommand.h; sourceTree = "<group>"; };
 		F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankFeedbackCommand.m; path = Control/fgPlankFeedbackCommand.m; sourceTree = "<group>"; };
-		F6DF022E18BED35A00E7DF6C /* fgTabuloNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloNode.h; path = Control/fgTabuloNode.h; sourceTree = "<group>"; };
-		F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloNode.m; path = Control/fgTabuloNode.m; sourceTree = "<group>"; };
+		F6DF022E18BED35A00E7DF6C /* fgHouseNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgHouseNode.h; path = Control/fgHouseNode.h; sourceTree = "<group>"; };
+		F6DF022F18BED35A00E7DF6C /* fgHouseNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgHouseNode.m; path = Control/fgHouseNode.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,10 +215,14 @@
 		F6118608188C4E22004497C2 /* Graph */ = {
 			isa = PBXGroup;
 			children = (
+				F6DF022E18BED35A00E7DF6C /* fgHouseNode.h */,
+				F6DF022F18BED35A00E7DF6C /* fgHouseNode.m */,
 				F6118609188C4E42004497C2 /* fgTabuloEdge.h */,
 				F611860A188C4E42004497C2 /* fgTabuloEdge.m */,
-				F6DF022E18BED35A00E7DF6C /* fgTabuloNode.h */,
-				F6DF022F18BED35A00E7DF6C /* fgTabuloNode.m */,
+				F6BDB2B718C2DAD600430653 /* fgPawnEdge.h */,
+				F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */,
+				F6BDB2BA18C2DAEF00430653 /* fgPlankEdge.h */,
+				F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */,
 			);
 			name = Graph;
 			sourceTree = "<group>";
@@ -395,7 +405,8 @@
 				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
 				F6821859189733BA0041DA80 /* fgTabuloTutorial.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgGameState.m in Sources */,
-				F6DF023018BED35A00E7DF6C /* fgTabuloNode.m in Sources */,
+				F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */,
+				F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */,
 				F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
@@ -406,6 +417,7 @@
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
+				F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */,
 				F6118612188C545A004497C2 /* fgDragViewOverEdge.m in Sources */,
 				F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */,
 				F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */,

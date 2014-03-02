@@ -9,7 +9,7 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 #import "fgTabuloEvent.h"
 
 @interface fgGameState : f3GameState {
@@ -26,6 +26,6 @@
 
 - (void)buildMenu:(f3ViewBuilder *)_builder;
 
-- (fgTabuloNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
+- (fgHouseNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
 
 @end

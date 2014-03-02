@@ -6,12 +6,12 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
 #import "../../../Framework/Framework/View/f3ViewSearch.h"
 
-@implementation fgTabuloNode
+@implementation fgHouseNode
 
 - (id)initPosition:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
 

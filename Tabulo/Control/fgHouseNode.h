@@ -10,7 +10,7 @@
 #import "../../../Framework/Framework/view/f3ViewAdaptee.h"
 #import "../View/fgTabuloDirector.h"
 
-@interface fgTabuloNode : f3GraphNode {
+@interface fgHouseNode : f3GraphNode {
 
     f3ViewAdaptee *houseView;
     enum f3TabuloPawnType houseType;

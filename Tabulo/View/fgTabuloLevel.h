@@ -9,7 +9,7 @@
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 
 @interface fgTabuloLevel : f3GameScene {
     

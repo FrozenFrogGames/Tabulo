@@ -10,21 +10,26 @@
 
 @implementation fgTabuloEdge
 
-- (id)initFromNode:(f3GraphNode *)_origin toNode:(f3GraphNode *)_target inputNode:(f3GraphNode *)_input {
-    
-    self = [super initFromNode:_origin toNode:_target];
-    
+- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target {
+
+    self = [super init:_flag origin:_origin target:_target];
+
     if (self != nil)
     {
-        inputNode = _input;
+        inputKey = nil;
     }
 
     return self;
 }
 
 - (f3GraphNode *)Input {
-    
-    return inputNode;
+
+    if (inputKey != nil)
+    {
+        return [f3GraphNode nodeForKey:inputKey];
+    }
+
+    return nil;
 }
 
 + (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input {

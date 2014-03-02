@@ -9,7 +9,7 @@
 #import "fgDragViewOverEdge.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "fgTabuloEdge.h"
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 #import "fgTabuloDirector.h"
 #import "fgPawnFeedbackCommand.h"
 #import "fgPlankFeedbackCommand.h"
@@ -120,11 +120,11 @@
 
                 for (fgTabuloEdge *edge in edges)
                 {
-                    if ([edge.Target isKindOfClass:[fgTabuloNode class]])
+                    if ([edge.Target isKindOfClass:[fgHouseNode class]])
                     {
                         if (currentEdge == nil || currentEdge.Target != edge.Target)
                         {
-                            [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgTabuloNode *)edge.Target];
+                            [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)edge.Target];
                         }
                     }
                 }

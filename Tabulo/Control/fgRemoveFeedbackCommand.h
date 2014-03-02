@@ -7,13 +7,13 @@
 //
 
 #import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 
 @interface fgRemoveFeedbackCommand : f3RemoveFeedbackCommand {
     
     NSMutableArray *feedbackOnNodes;
 }
 
-- (void)appendHouseNode:(fgTabuloNode *)_node;
+- (void)appendHouseNode:(fgHouseNode *)_node;
 
 @end

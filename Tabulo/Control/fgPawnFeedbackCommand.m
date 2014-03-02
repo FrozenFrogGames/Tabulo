@@ -7,7 +7,7 @@
 //
 
 #import "fgPawnFeedbackCommand.h"
-#import "fgTabuloNode.h"
+#import "fgHouseNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
@@ -39,9 +39,9 @@
         {
             f3GraphNode *node = edge.Target;
             
-            if ([node isKindOfClass:[fgTabuloNode class]])
+            if ([node isKindOfClass:[fgHouseNode class]])
             {
-                [(fgTabuloNode *)node buildHouseFeedback:pawnType];
+                [(fgHouseNode *)node buildHouseFeedback:pawnType];
             }
             
             [self buildPawn:builder Position:node.Position Type:pawnType];

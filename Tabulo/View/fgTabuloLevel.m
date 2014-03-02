@@ -7,7 +7,8 @@
 //
 
 #import "fgTabuloLevel.h"
-#import "../Control/fgTabuloEdge.h"
+#import "../Control/fgPawnEdge.h"
+#import "../Control/fgPlankEdge.h"
 
 @implementation fgTabuloLevel
 
@@ -331,17 +332,13 @@
 
 - (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
     
-    f3ControlHeader *translationHeader = [[f3ControlHeader alloc] initForType:2];
-    
     for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
     {
-        fgTabuloEdge *edge = [[fgTabuloEdge alloc] initFromNode:_origin toNode:_target inputNode:_node];
-        [edge bindControlHeader:translationHeader];
-        
+        fgPawnEdge *edge = [[fgPawnEdge alloc] init:pawn origin:_origin target:_target input:_node];
+
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:pawn value:true]];
-        
         [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:_type value:true]];
-        
+
         switch (pawn) // restrict edge if a hole is present
         {
             case TABULO_PawnOne:
@@ -374,62 +371,14 @@
 }
 
 - (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
-
-    float targetAngle = [f3GameScene computeAngleBetween:_target.Position and:_node.Position];
-    
-    float deltaAngle = targetAngle - [f3GameScene computeAngleBetween:_origin.Position and:_node.Position];
-    if (deltaAngle > 180.f)
-    {
-        deltaAngle -= 360.f;
-    }
-    else if (deltaAngle < -180.f)
-    {
-        deltaAngle += 360.f;
-    }
-    
-    float radius;
-    switch (_type)
-    {
-        case TABULO_HaveSmallPlank:
-            radius = 1.75f;
-            break;
-            
-        case TABULO_HaveMediumPlank:
-            radius = 2.5f;
-            break;
-            
-        case TABULO_HaveLongPlank:
-            radius = 4.0f; // TODO compute gameplay for long plank
-            break;
-    }
-    
-    f3GraphNode *inputNode = nil;
-    
-    NSArray *targetEdge = [fgTabuloEdge edgesFromNode:_node withInput:_target];
-    if ([targetEdge count] > 0)
-    {
-        inputNode = ((fgTabuloEdge *)[targetEdge objectAtIndex:0]).Target;
-        
-        if ([targetEdge count] > 1)
-        {
-            // TODO test that all the edges have the same target node
-        }
-    }
-    
-    f3ControlHeader *transformHeader = [[f3ControlHeader alloc] initForType:3];
-    [transformHeader bindModel:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(targetAngle), nil]];
-    [transformHeader bindModel:[f3FloatArray buildHandleForValues:2, FLOAT_BOX(deltaAngle), FLOAT_BOX(radius), nil]];
-    [transformHeader bindModel:[_node getPositionHandle]];
     
     for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
     {
-        fgTabuloEdge *edge = [[fgTabuloEdge alloc] initFromNode:_origin toNode:_target inputNode:inputNode];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_type origin:_origin target:_target rotation:_node];
         
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:_type value:true]];
         [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:pawn value:true]];
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:_type value:false]];
-        
-        [edge bindControlHeader:transformHeader];
     }
 }
 

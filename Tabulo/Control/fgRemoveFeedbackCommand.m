@@ -22,14 +22,14 @@
     return self;
 }
 
-- (void)appendHouseNode:(fgTabuloNode *)_node {
+- (void)appendHouseNode:(fgHouseNode *)_node {
     
     [feedbackOnNodes addObject:_node];
 }
 
 - (void)update:(NSTimeInterval)_elapsed {
     
-    for (fgTabuloNode *node in feedbackOnNodes)
+    for (fgHouseNode *node in feedbackOnNodes)
     {
         [node clearHouseFeedback];
     }

@@ -10,7 +10,7 @@
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
-#import "fgTabuloEdge.h"
+#import "fgPlankEdge.h"
 
 @implementation fgPlankFeedbackCommand
 
@@ -37,10 +37,9 @@
     {
         if ([edge evaluateConditions])
         {
-            NSArray *controlHeaders = [edge getControlHeaders];
-            if ([controlHeaders count] > 0)
+            if ([edge isKindOfClass:[fgPlankEdge class]])
             {
-                float targetAngle = [[[controlHeaders objectAtIndex:0] getModel:0] float32Value];
+                float targetAngle = [(fgPlankEdge *)edge Angle];
 
                 switch (plankType) {
         
