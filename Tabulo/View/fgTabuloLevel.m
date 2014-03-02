@@ -76,13 +76,11 @@
     }
 }
 
-- (void)buildPillar:(NSUInteger)_index {
+- (void)buildPillar:(f3GraphNode *)_node {
     
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
 
-    CGPoint position = [self getPointAt:_index];
-    
     [builder push:indicesHandle];
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
@@ -96,11 +94,13 @@
     [builder push:[f3VectorHandle buildHandleForWidth:3.f height:3.f]];
     [builder buildDecorator:2];
     
+    CGPoint position = _node.Position;
+    
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
 }
 
-- (f3ViewAdaptee *)buildHouse:(NSUInteger)_index type:(unsigned int)_type {
+- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
@@ -141,24 +141,20 @@
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
     
-    CGPoint position = [self getPointAt:_index];
-    
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
     [builder buildDecorator:2];
     
+    CGPoint position = _node.Position;
+    
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
-
-    return view;
+    
+    [_node bindView:view type:_type];
 }
 
-- (f3ViewAdaptee *)buildPawn:(NSUInteger)_index type:(enum f3TabuloPawnType)_type {
+- (f3ViewAdaptee *)buildPawn:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type {
 
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-
-    CGPoint textureCoordonate, position = [self getPointAt:_index];
-    
+    CGPoint textureCoordonate, position = _node.Position;
     switch (_type) {
         case TABULO_PawnOne:
             textureCoordonate = CGPointMake(0.f, 0.f);
@@ -179,7 +175,14 @@
         case TABULO_PawnFive:
             textureCoordonate = CGPointMake(0.f, 512.f);
             break;
+            
+        case TABULO_PAWN_MAX:
+            // TODO throw f3Exception
+            return nil;
     }
+    
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    f3ViewBuilder *builder = director.Builder;
     
     [builder push:indicesHandle];
     [builder push:vertexHandle];
@@ -199,10 +202,12 @@
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     
+    [_node setFlag:_type value:true];
+    
     return result;
 }
 
-- (f3ViewAdaptee *)buildSmallPlank:(NSUInteger)_index angle:(float)_angle hole:(int)_hole {
+- (f3ViewAdaptee *)buildSmallPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
     
     f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -224,10 +229,7 @@
                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
                                  FLOAT_BOX(0.5f), FLOAT_BOX(1.f), nil];
     
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-    
-    float holeOffset = 176.f +(_hole *256.f);
+    float holeOffset = 176.f; // +(_hole *256.f);
     
     f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
@@ -241,6 +243,9 @@
                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.444444444f),
                                      FLOAT_BOX(0.1640625f), FLOAT_BOX(0.666666667f), // 10
                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f), nil];
+    
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    f3ViewBuilder *builder = director.Builder;
     
     [builder push:plankIndices];
     [builder push:plankVertex];
@@ -258,15 +263,17 @@
     [builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
     [builder buildDecorator:2];
     
-    CGPoint position = [self getPointAt:_index];
+    CGPoint position = _node.Position;
     
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     
+    [_node setFlag:TABULO_HaveSmallPlank value:true];
+
     return result;
 }
 
-- (f3ViewAdaptee *)buildMediumPlank:(NSUInteger)_index angle:(float)_angle hole:(int)_hole {
+- (f3ViewAdaptee *)buildMediumPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
 
     f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -291,7 +298,7 @@
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
     
-    float holeOffset = (_hole == 0) ? 112.f : 176. +(_hole *256.f);
+    float holeOffset = 112.f; // (_hole == 0) ? 112.f : 176. +(_hole *256.f);
 
     f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
@@ -322,11 +329,13 @@
     [builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
     [builder buildDecorator:2];
     
-    CGPoint position = [self getPointAt:_index];
+    CGPoint position = _node.Position;
     
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     
+    [_node setFlag:TABULO_HaveMediumPlank value:true];
+
     return result;
 }
 

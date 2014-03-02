@@ -10,7 +10,7 @@
 
 @interface fgDragViewOverEdge : f3DragViewOverEdge {
 
-    bool feedbackDisplayed, feedbackToRemove;
+    bool isPawnView, isPlankView, feedbackDisplayed, feedbackToRemove;
 }
 
 @end

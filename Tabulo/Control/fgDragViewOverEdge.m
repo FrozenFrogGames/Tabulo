@@ -7,6 +7,7 @@
 //
 
 #import "fgDragViewOverEdge.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "fgTabuloEdge.h"
 #import "fgHouseNode.h"
@@ -17,40 +18,81 @@
 
 @implementation fgDragViewOverEdge
 
+- (id)initWithNode:(f3GraphNode *)_node forView:(f3ViewAdaptee *)_view {
+    
+    self = [super initWithNode:_node forView:_view];
+    
+    if (self != nil)
+    {
+        isPawnView = ( [_node getFlag:TABULO_PawnOne]
+                      || [_node getFlag:TABULO_PawnTwo]
+                      || [_node getFlag:TABULO_PawnThree]
+                      || [_node getFlag:TABULO_PawnFour]
+                      || [_node getFlag:TABULO_PawnFive] );
+        
+        isPlankView = ( [_node getFlag:TABULO_HaveSmallPlank]
+                       || [_node getFlag:TABULO_HaveMediumPlank]
+                       || [_node getFlag:TABULO_HaveLongPlank] );
+    }
+    
+    return self;
+}
+
+- (id)initWithNode:(f3GraphNode *)_node forView:(f3ViewAdaptee *)_view nextState:(Class)_class {
+    
+    self = [super initWithNode:_node forView:_view nextState:_class];
+    
+    if (self != nil)
+    {
+        isPawnView = ( [_node getFlag:TABULO_PawnOne]
+                    || [_node getFlag:TABULO_PawnTwo]
+                    || [_node getFlag:TABULO_PawnThree]
+                    || [_node getFlag:TABULO_PawnFour]
+                    || [_node getFlag:TABULO_PawnFive] );
+
+        isPlankView = ( [_node getFlag:TABULO_HaveSmallPlank]
+                     || [_node getFlag:TABULO_HaveMediumPlank]
+                     || [_node getFlag:TABULO_HaveLongPlank] );
+    }
+
+    return self;
+}
+
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
-    f3ControlComponent *scaleCommand = nil, *feedbackCommand = nil;
-
+    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
+    
     [super begin:_previousState owner:_owner];
-
-    switch (flagIndex) {
-
-        case TABULO_HaveSmallPlank:
-        case TABULO_HaveMediumPlank:
-            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
-            feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Type:flagIndex Node:node];
-            break;
-
-        case TABULO_PawnOne:
-        case TABULO_PawnTwo:
-        case TABULO_PawnThree:
-        case TABULO_PawnFour:
-        case TABULO_PawnFive:
-            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
-            feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Type:flagIndex Node:node];
-            break;
-    }
-
-    if (scaleCommand != nil)
+    
+    if (isPlankView)
     {
-        [_owner appendComponent:scaleCommand];
+        f3ControlComponent *feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Node:node];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
+
+        [builder push:feedbackCommand];
+        [builder push:scaleCommand];
     }
-
-    feedbackDisplayed = (feedbackCommand != nil);
-
-    if (feedbackDisplayed)
+    else if (isPawnView)
     {
-        [_owner appendComponent:feedbackCommand];
+        f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
+
+        [builder push:feedbackCommand];
+        [builder push:scaleCommand];
+    }
+    
+    f3ControlComponent *command = [builder popComponent];
+    
+    while (command != nil)
+    {
+        [_owner appendComponent:command];
+        
+        if ([command isKindOfClass:[f3AppendFeedbackCommand class]])
+        {
+            feedbackDisplayed = true;
+        }
+
+        command = [builder popComponent];
     }
 }
 
@@ -68,29 +110,30 @@
 
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
-    f3ControlComponent *scaleCommand = nil;
+    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
 
     [super end:_nextState owner:_owner];
 
-    switch (flagIndex) {
+    if (isPlankView)
+    {
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
 
-        case TABULO_HaveSmallPlank:
-        case TABULO_HaveMediumPlank:
-            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
-            break;
-
-        case TABULO_PawnOne:
-        case TABULO_PawnTwo:
-        case TABULO_PawnThree:
-        case TABULO_PawnFour:
-        case TABULO_PawnFive:
-            scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-            break;
+        [builder push:scaleCommand];
+    }
+    else if (isPawnView)
+    {
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+        
+        [builder push:scaleCommand];
     }
 
-    if (scaleCommand != nil)
+    f3ControlComponent *command = [builder popComponent];
+    
+    while (command != nil)
     {
-        [_owner appendComponent:scaleCommand];
+        [_owner appendComponent:command];
+        
+        command = [builder popComponent];
     }
 
     [self clearFeedback:_owner];
@@ -100,43 +143,31 @@
 
     if (feedbackDisplayed)
     {
-        f3ControlComponent *feedbackCommand = nil;
-        
-        switch (flagIndex) {
-                
-            case TABULO_HaveSmallPlank:
-            case TABULO_HaveMediumPlank:
-    
-                feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
-                break;
-                
-            case TABULO_PawnOne:
-            case TABULO_PawnTwo:
-            case TABULO_PawnThree:
-            case TABULO_PawnFour:
-            case TABULO_PawnFive:
+        if (isPlankView)
+        {
+            f3ControlComponent *feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
 
-                feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
-
-                for (fgTabuloEdge *edge in edges)
+            [_owner appendComponent:feedbackCommand];
+        }
+        else if (isPawnView)
+        {
+            f3ControlComponent *feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
+            
+            for (fgTabuloEdge *edge in edges)
+            {
+                if ([edge.Target isKindOfClass:[fgHouseNode class]])
                 {
-                    if ([edge.Target isKindOfClass:[fgHouseNode class]])
+                    if (currentEdge == nil || currentEdge.Target != edge.Target)
                     {
-                        if (currentEdge == nil || currentEdge.Target != edge.Target)
-                        {
-                            [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)edge.Target];
-                        }
+                        [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)edge.Target];
                     }
                 }
-                break;
-        }
-        
-        if (feedbackCommand != nil)
-        {
-            [_owner appendComponent:feedbackCommand];
+            }
             
-            feedbackDisplayed = false;
+            [_owner appendComponent:feedbackCommand];
         }
+
+        feedbackDisplayed = false;
     }
 }
 
@@ -189,12 +220,8 @@
                             {
                                 feedbackToRemove = feedbackDisplayed;
                                 currentEdge = edge;
-    //                          NSLog(@"State: %@, target: %@", self, edge.Target);
+//                              NSLog(@"State: %@, target: %@", self, edge.Target);
                                 break;
-                            }
-                            else
-                            {
-                                // TODO notify player with visual feedback if relevant
                             }
                         }
                     }

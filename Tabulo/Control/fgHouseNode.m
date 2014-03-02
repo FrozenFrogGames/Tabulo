@@ -13,27 +13,27 @@
 
 @implementation fgHouseNode
 
-- (id)initPosition:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+- (id)initPosition:(CGPoint)_position extend:(CGSize)_extend {
 
     self = [super initPosition:_position extend:_extend];
 
     if (self != nil)
     {
-        houseView = _view;
-        houseType = _type;
+        houseView = nil;
+        houseType = TABULO_PAWN_MAX;
     }
 
     return self;
 }
 
-- (id)initPosition:(CGPoint)_position radius:(float)_radius view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+- (id)initPosition:(CGPoint)_position radius:(float)_radius {
 
     self = [super initPosition:_position radius:_radius];
 
     if (self != nil)
     {
-        houseView = _view;
-        houseType = _type;
+        houseView = nil;
+        houseType = TABULO_PAWN_MAX;
     }
 
     return self;
@@ -54,6 +54,12 @@
     return [self getFlag:houseType];
 }
 
+- (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+    
+    houseView = _view;
+    houseType = _type;
+}
+
 - (void)buildHouseFeedback:(enum f3TabuloPawnType)_type {
 
     if (_type == houseType)
@@ -69,29 +75,32 @@
 
 - (void)replaceHouseTexture:(bool)_value {
 
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    
-    f3ViewSearch *searchDecorator = [[f3ViewSearch alloc] initSearch:houseView forType:[f3TextureDecorator class]];
-    
-    [director.Scene accept:searchDecorator];
-    
-    if (searchDecorator.Result != nil)
+    if (houseView != nil)
     {
-        f3ViewSearch *searchComponent = [[f3ViewSearch alloc] initSearch:houseView ownedBy:searchDecorator.Result];
+        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
         
-        [searchDecorator.Result accept:searchComponent]; // check for decorator between the texture and the view
+        f3ViewSearch *searchDecorator = [[f3ViewSearch alloc] initSearch:houseView forType:[f3TextureDecorator class]];
         
-        if (searchComponent.Result != nil)
+        [director.Scene accept:searchDecorator];
+        
+        if (searchDecorator.Result != nil)
         {
-            f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result isHome:_value];
+            f3ViewSearch *searchComponent = [[f3ViewSearch alloc] initSearch:houseView ownedBy:searchDecorator.Result];
             
-            [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
-        }
-        else
-        {
-            f3TextureDecorator *decorator = [self buildTextureDecorator:houseView isHome:_value];
+            [searchDecorator.Result accept:searchComponent]; // check for decorator between the texture and the view
             
-            [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+            if (searchComponent.Result != nil)
+            {
+                f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result isHome:_value];
+                
+                [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+            }
+            else
+            {
+                f3TextureDecorator *decorator = [self buildTextureDecorator:houseView isHome:_value];
+                
+                [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+            }
         }
     }
 }

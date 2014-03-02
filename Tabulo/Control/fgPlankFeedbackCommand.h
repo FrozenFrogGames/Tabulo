@@ -12,10 +12,9 @@
 
 @interface fgPlankFeedbackCommand : f3AppendFeedbackCommand {
     
-    enum f3TabuloPlankType plankType;
     f3GraphNode *plankNode;
 }
 
-- (id)initWithView:(f3ViewComponent *)_view Type:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node;
+- (id)initWithView:(f3ViewComponent *)_view Node:(f3GraphNode *)_node;
 
 @end

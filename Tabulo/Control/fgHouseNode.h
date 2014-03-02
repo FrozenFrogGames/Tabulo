@@ -18,9 +18,7 @@
 
 @property (readonly) bool IsPawnHome;
 
-- (id)initPosition:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
-- (id)initPosition:(CGPoint)_position radius:(float)_radius view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
-
+- (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
 - (void)buildHouseFeedback:(enum f3TabuloPawnType)_type;
 - (void)clearHouseFeedback;
 

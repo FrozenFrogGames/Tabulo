@@ -14,13 +14,12 @@
 
 @implementation fgPawnFeedbackCommand
 
-- (id)initWithView:(f3ViewComponent *)_view Type:(enum f3TabuloPawnType)_type Node:(f3GraphNode *)_node {
+- (id)initWithView:(f3ViewComponent *)_view Node:(f3GraphNode *)_node {
 
     self = [super initWithView:_view];
     
     if (self != nil)
     {
-        pawnType = _type;
         pawnNode = _node;
     }
     
@@ -29,24 +28,49 @@
 
 - (f3ViewComposite *)buildFeedbackCompositeFor:(f3ViewComponent *)_component {
 
+    enum f3TabuloPawnType pawnType = TABULO_PAWN_MAX;
     NSArray *edges = [f3GraphEdge edgesFromNode:pawnNode];
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
-
-    for (f3GraphEdge *edge in edges)
+    
+    if ([pawnNode getFlag:TABULO_PawnOne])
     {
-        if ([edge evaluateConditions])
+        pawnType = TABULO_PawnOne;
+    }
+    else if ([pawnNode getFlag:TABULO_PawnTwo])
+    {
+        pawnType = TABULO_PawnTwo;
+    }
+    else if ([pawnNode getFlag:TABULO_PawnThree])
+    {
+        pawnType = TABULO_PawnThree;
+    }
+    else if ([pawnNode getFlag:TABULO_PawnFour])
+    {
+        pawnType = TABULO_PawnFour;
+    }
+    else if ([pawnNode getFlag:TABULO_PawnFive])
+    {
+        pawnType = TABULO_PawnFive;
+    }
+    
+    if (pawnType < TABULO_PAWN_MAX)
+    {
+        for (f3GraphEdge *edge in edges)
         {
-            f3GraphNode *node = edge.Target;
-            
-            if ([node isKindOfClass:[fgHouseNode class]])
+            if ([edge evaluateConditions])
             {
-                [(fgHouseNode *)node buildHouseFeedback:pawnType];
-            }
-            
-            [self buildPawn:builder Position:node.Position Type:pawnType];
+                f3GraphNode *node = edge.Target;
+                
+                if ([node isKindOfClass:[fgHouseNode class]])
+                {
+                    [(fgHouseNode *)node buildHouseFeedback:pawnType];
+                }
+                
+                [self buildPawn:builder Position:node.Position Type:pawnType];
 
-            [result appendComponent:[builder popComponent]];
+                [result appendComponent:[builder popComponent]];
+            }
         }
     }
 
@@ -83,6 +107,10 @@
         case TABULO_PawnFive:
             textureCoordonate = CGPointMake(0.f, 512.f);
             break;
+            
+        case TABULO_PAWN_MAX:
+            // TODO throw f3Exception
+            return;
     }
     
     [_builder push:indicesHandle];

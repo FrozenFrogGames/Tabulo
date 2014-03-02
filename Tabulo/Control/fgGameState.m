@@ -35,7 +35,7 @@ enum TabuloLevelState {
     if (self != nil)
     {
         currentScene = nil;
-        tabuloNodes = nil;
+        houseNodes = nil;
         gameLevel = 0;
         gameIsOver = false;
         gameOverTimer = 0.0;
@@ -51,7 +51,7 @@ enum TabuloLevelState {
     if (self != nil)
     {
         currentScene = _scene;
-        tabuloNodes = [NSMutableArray array];
+        houseNodes = [NSMutableArray array];
         gameLevel = _level;
         gameIsOver = false;
         gameOverTimer = 2.0;
@@ -62,7 +62,7 @@ enum TabuloLevelState {
 
 - (void)buildMenu:(f3ViewBuilder *)_builder {
 
-    if (currentScene == nil && tabuloNodes == nil)
+    if (currentScene == nil && houseNodes == nil)
     {
         currentScene = [[f3ViewScene alloc] init];
         
@@ -183,7 +183,7 @@ enum TabuloLevelState {
     {
         gameIsOver = true;
 
-        for (fgHouseNode *node in tabuloNodes)
+        for (fgHouseNode *node in houseNodes)
         {
             if (![node IsPawnHome])
             {
@@ -219,16 +219,16 @@ enum TabuloLevelState {
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
     currentScene = nil;
-    tabuloNodes = nil;
+    houseNodes = nil;
 }
 
-- (fgHouseNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend {
 
-    fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend view:_view type:_type];
+    fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
 
     [grid appendNode:node];
 
-    [tabuloNodes addObject:node];
+    [houseNodes addObject:node];
 
     return node;
 }

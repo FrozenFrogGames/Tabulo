@@ -15,7 +15,7 @@
 @interface fgGameState : f3GameState {
 
     f3ViewScene *currentScene;
-    NSMutableArray *tabuloNodes;
+    NSMutableArray *houseNodes;
     NSUInteger gameLevel;
     double gameOverTimer;
 }
@@ -26,6 +26,6 @@
 
 - (void)buildMenu:(f3ViewBuilder *)_builder;
 
-- (fgHouseNode *)buildNode:(CGPoint)_position extend:(CGSize)_extend view:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
+- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend;
 
 @end

@@ -14,13 +14,12 @@
 
 @implementation fgPlankFeedbackCommand
 
-- (id)initWithView:(f3ViewComponent *)_view Type:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node {
+- (id)initWithView:(f3ViewComponent *)_view Node:(f3GraphNode *)_node {
 
     self = [super initWithView:_view];
     
     if (self != nil)
     {
-        plankType = _type;
         plankNode = _node;
     }
     
@@ -40,23 +39,24 @@
             if ([edge isKindOfClass:[fgPlankEdge class]])
             {
                 float targetAngle = [(fgPlankEdge *)edge Angle];
-
-                switch (plankType) {
-        
-                    case TABULO_HaveSmallPlank:
-                        [self buildSmallPlank:builder Position:edge.Target.Position Angle:targetAngle];
-                        break;
-                        
-                    case TABULO_HaveMediumPlank:
-                        [self buildMediumPlank:builder Position:edge.Target.Position Angle:targetAngle];
-                        break;
-                        
-                    case TABULO_HaveLongPlank:
-                        // TODO support long plank
-                        break;
+                
+                if ([plankNode getFlag:TABULO_HaveSmallPlank])
+                {
+                    [self buildSmallPlank:builder Position:edge.Target.Position Angle:targetAngle];
+                }
+                else if ([plankNode getFlag:TABULO_HaveMediumPlank])
+                {
+                    [self buildMediumPlank:builder Position:edge.Target.Position Angle:targetAngle];
+                }
+                else if ([plankNode getFlag:TABULO_HaveLongPlank])
+                {
+                    // TODO support long plank
                 }
                 
-                [result appendComponent:[builder popComponent]];
+                if ([builder top] != nil)
+                {
+                    [result appendComponent:[builder popComponent]];
+                }
             }
         }
     }

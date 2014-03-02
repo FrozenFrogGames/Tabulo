@@ -12,10 +12,9 @@
 
 @interface fgPawnFeedbackCommand : f3AppendFeedbackCommand {
     
-    enum f3TabuloPawnType pawnType;
     f3GraphNode *pawnNode;
 }
 
-- (id)initWithView:(f3ViewComponent *)_view Type:(enum f3TabuloPawnType)_type Node:(f3GraphNode *)_node;
+- (id)initWithView:(f3ViewComponent *)_view Node:(f3GraphNode *)_node;
 
 @end

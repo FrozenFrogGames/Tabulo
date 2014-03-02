@@ -18,7 +18,9 @@ enum f3TabuloPawnType {
     TABULO_PawnTwo   = 1,
     TABULO_PawnThree = 2,
     TABULO_PawnFour  = 3,
-    TABULO_PawnFive  = 4
+    TABULO_PawnFive  = 4,
+
+    TABULO_PAWN_MAX  = 5
 };
 
 enum f3TabuloPlankType {
