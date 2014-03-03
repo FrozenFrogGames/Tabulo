@@ -39,7 +39,7 @@
     return self;
 }
 
-- (void)setFlag:(int)_index value:(bool)_value {
+- (void)setFlag:(unsigned char)_index value:(bool)_value {
 
     [super setFlag:_index value:_value];
 

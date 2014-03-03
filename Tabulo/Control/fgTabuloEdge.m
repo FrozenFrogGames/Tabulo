@@ -7,10 +7,11 @@
 //
 
 #import "fgTabuloEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphNode.h"
 
 @implementation fgTabuloEdge
 
-- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target {
+- (id)init:(unsigned char)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target {
 
     self = [super init:_flag origin:_origin target:_target];
 

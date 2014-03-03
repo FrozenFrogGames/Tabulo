@@ -345,37 +345,37 @@
     {
         fgPawnEdge *edge = [[fgPawnEdge alloc] init:pawn origin:_origin target:_target input:_node];
 
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:pawn value:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:_type value:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:pawn result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:_type result:true]];
 
         switch (pawn) // restrict edge if a hole is present
         {
             case TABULO_PawnOne:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HoleOne value:false]];
+                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleOne result:false]];
                 break;
                 
             case TABULO_PawnTwo:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HoleTwo value:false]];
+                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleTwo result:false]];
                 break;
                 
             case TABULO_PawnThree:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HoleThree value:false]];
+                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleThree result:false]];
                 break;
                 
             case TABULO_PawnFive:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HoleFour value:false]];
+                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleFour result:false]];
                 break;
                 
             case TABULO_PawnFour:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HoleFive value:false]];
+                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleFive result:false]];
                 break;
         }
         
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:TABULO_PawnOne value:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:TABULO_PawnTwo value:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:TABULO_PawnThree value:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:TABULO_PawnFive value:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:TABULO_PawnFour value:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnOne result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnTwo result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnThree result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFive result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFour result:false]];
     }
 }
 
@@ -385,9 +385,9 @@
     {
         fgPlankEdge *edge = [[fgPlankEdge alloc] init:_type origin:_origin target:_target rotation:_node];
         
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin flag:_type value:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:pawn value:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target flag:_type value:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:_type result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:pawn result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:_type result:false]];
     }
 }
 

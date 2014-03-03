@@ -200,17 +200,24 @@ enum TabuloLevelState {
             f3GameDirector *director = [f3GameDirector Director];
             f3GameAdaptee *producer = [f3GameAdaptee Producer];
             
+            enum fgTabuloGrade grade = configRevisited ? GRADE_bronze : GRADE_silver;
+
+            if (grade == GRADE_silver)
+            {
+                // TODO upgrade to gold if shortest path used
+            }
+
             if (gameLevel < (LEVEL_LOCKED -1))
             {
                 fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-                [dialogState build:director.Builder event:GAME_Next level:gameLevel];
+                [dialogState build:director.Builder event:GAME_Next level:gameLevel grade:grade];
                 [producer switchState:dialogState];
             }
             else
             {
-                fgGameState *nextState = [[fgGameState alloc] init];
-                [nextState buildMenu:director.Builder];
-                [producer switchState:nextState];
+                fgDialogState *dialogState = [[fgDialogState alloc] init:self];
+                [dialogState build:director.Builder event:GAME_Over level:gameLevel grade:grade];
+                [producer switchState:dialogState];
             }
         }
     }
@@ -226,8 +233,8 @@ enum TabuloLevelState {
 
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
 
+    [nodeKeys addObject:node.Key];
     [grid appendNode:node];
-
     [houseNodes addObject:node];
 
     return node;
@@ -239,13 +246,15 @@ enum TabuloLevelState {
     {
         f3GameDirector *director = [f3GameDirector Director];
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
-        
+
         if ([_event isKindOfClass:[fgTabuloEvent class]])
         {
             fgTabuloEvent * event = (fgTabuloEvent *)_event;
 
+            enum fgTabuloGrade grade = GRADE_none; // TODO obtain previous grade for that level
+
             fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-            [dialogState build:director.Builder event:event.Event level:event.Level];
+            [dialogState build:director.Builder event:event.Event level:event.Level grade:grade];
             [producer switchState:dialogState];
         }
         else

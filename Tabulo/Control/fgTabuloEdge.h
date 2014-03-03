@@ -7,6 +7,7 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphNode.h"
 
 @interface fgTabuloEdge : f3GraphEdge {
     

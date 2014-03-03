@@ -39,89 +39,104 @@ enum TabuloDialogItem {
     return self;
 }
 
-- (void)build:(f3ViewBuilder *)_builder event:(enum f3GameEvent)_event level:(NSUInteger)_level {
+- (void)build:(f3ViewBuilder *)_builder event:(enum f3GameEvent)_event level:(NSUInteger)_level grade:(enum fgTabuloGrade)_grade {
 
-    if (_event != GAME_Over)
+    f3GraphNode *itemNode;
+    f3GameEvent *itemEvent;
+    fgEventOnClick *itemState;
+    
+    if (_event >= GAME_EVENT_MAX)
     {
-        f3GraphNode *itemNode;
-        f3GameEvent *itemEvent;
-        fgEventOnClick *itemState;
-
-        switch (_event) {
-                
-            case GAME_Next:
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(-2.f, -2.f) option:DIALOGITEM_Reset];
-                itemNode = [self buildNode:CGPointMake(-2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Next];
-                itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Next level:_level];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                break;
-
-            case GAME_Play:
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
-                itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-
-                break;
-                
-            case GAME_Pause:
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(-2.f, -2.f) option:DIALOGITEM_Reset];
-                itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
-                itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-                
-                [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
-                [controls appendComponent:[[f3Controller alloc] initState:itemState]];
-
-                break;
-                
-            case GAME_Over:
-            case GAME_EVENT_MAX:
-
-                return; // TODO throw f3Exception
-        }
-
-        [self buildDialogBox:_builder];
-        [_builder buildComposite:0];
-
-        dialogLayer = (f3ViewComposite *)[_builder pop];
+        // TODO throw f3Exception
+        
+        _event = GAME_EVENT_MAX;
     }
-    else
-    {
-        dialogLayer = nil;
+
+    switch (_event) {
+            
+        case GAME_Over:
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(-2.f, -2.f) option:DIALOGITEM_Reset];
+            itemNode = [self buildNode:CGPointMake(-2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
+            itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            break;
+            
+        case GAME_Next:
+
+            [self buildDialogItem:_builder atPosition:CGPointMake(-2.f, -2.f) option:DIALOGITEM_Reset];
+            itemNode = [self buildNode:CGPointMake(-2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Next];
+            itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Next level:_level];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
+            itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            break;
+
+        case GAME_Play:
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
+            itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
+            itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+
+            break;
+            
+        case GAME_Pause:
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(-2.f, -2.f) option:DIALOGITEM_Reset];
+            itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
+            itemNode = [self buildNode:CGPointMake(0.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+            
+            [self buildDialogItem:_builder atPosition:CGPointMake(2.f, -2.f) option:DIALOGITEM_Menu];
+            itemNode = [self buildNode:CGPointMake(2.f, -2.f) withExtend:CGSizeMake(1.f, 1.f)];
+            itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+            [controls appendComponent:[[f3Controller alloc] initState:itemState]];
+
+            break;
+            
+        case GAME_EVENT_MAX:
+            dialogLayer = nil;
+            return;
     }
+
+    [self buildDialogGrade:_builder grade:_grade];
+    [self buildDialogBox:_builder];
+    [_builder buildComposite:0];
+
+    dialogLayer = (f3ViewComposite *)[_builder pop];
 }
 
 - (void)buildDialogItem:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position option:(enum TabuloDialogItem)_option {
@@ -173,6 +188,79 @@ enum TabuloDialogItem {
     [_builder buildDecorator:4];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:radius height:radius]];
+    [_builder buildDecorator:2];
+    
+    [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
+    [_builder buildDecorator:1];
+}
+
+- (void)buildDialogGrade:(f3ViewBuilder *)_builder grade:(enum fgTabuloGrade)_grade {
+
+    switch (_grade) {
+
+        case GRADE_none:
+            [self buildDialogStar:_builder atPosition:CGPointMake(-1.5f, 0.5f) option:GRADE_none];
+            [self buildDialogStar:_builder atPosition:CGPointMake(0.f, 0.5f) option:GRADE_none];
+            [self buildDialogStar:_builder atPosition:CGPointMake(1.5f, 0.5f) option:GRADE_none];
+            break;
+            
+        case GRADE_bronze:
+            [self buildDialogStar:_builder atPosition:CGPointMake(-1.5f, 0.5f) option:GRADE_bronze];
+            [self buildDialogStar:_builder atPosition:CGPointMake(0.f, 0.5f) option:GRADE_none];
+            [self buildDialogStar:_builder atPosition:CGPointMake(1.5f, 0.5f) option:GRADE_none];
+            break;
+            
+        case GRADE_silver:
+            [self buildDialogStar:_builder atPosition:CGPointMake(-1.5f, 0.5f) option:GRADE_silver];
+            [self buildDialogStar:_builder atPosition:CGPointMake(0.f, 0.5f) option:GRADE_silver];
+            [self buildDialogStar:_builder atPosition:CGPointMake(1.5f, 0.5f) option:GRADE_none];
+            break;
+            
+        case GRADE_gold:
+            [self buildDialogStar:_builder atPosition:CGPointMake(-1.5f, 0.5f) option:GRADE_gold];
+            [self buildDialogStar:_builder atPosition:CGPointMake(0.f, 0.5f) option:GRADE_gold];
+            [self buildDialogStar:_builder atPosition:CGPointMake(1.5f, 0.5f) option:GRADE_gold];
+            break;
+    }
+}
+
+- (void)buildDialogStar:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position option:(enum fgTabuloGrade)_grade {
+    
+    CGPoint coordonatePoint;
+    
+    switch (_grade) {
+            
+        case DIALOGITEM_Reset:
+            coordonatePoint = CGPointMake(1920.f, 0.f);
+            break;
+            
+        case DIALOGITEM_Play:
+            coordonatePoint = CGPointMake(1920.f, 128.f);
+            break;
+            
+        case DIALOGITEM_Next:
+            coordonatePoint = CGPointMake(1920.f, 256.f);
+            break;
+            
+        case DIALOGITEM_Menu:
+            coordonatePoint = CGPointMake(1920.f, 384.f);
+            break;
+    }
+    
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+    
+    [_builder push:indicesHandle];
+    [_builder push:vertexHandle];
+    [_builder buildAdaptee:DRAW_TRIANGLES];
+
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
+    [_builder buildDecorator:4];
+    
+    [_builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
     [_builder buildDecorator:2];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];

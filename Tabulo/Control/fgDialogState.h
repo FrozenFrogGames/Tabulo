@@ -9,6 +9,14 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 
+enum fgTabuloGrade {
+    
+    GRADE_none,
+    GRADE_bronze,
+    GRADE_silver,
+    GRADE_gold
+};
+
 @interface fgDialogState : f3GameState {
     
     f3ViewComposite *dialogLayer;
@@ -16,6 +24,6 @@
 }
 
 - (id)init:(f3GameState *)_previousState;
-- (void)build:(f3ViewBuilder *)_builder event:(enum f3GameEvent)_event level:(NSUInteger)_level;
+- (void)build:(f3ViewBuilder *)_builder event:(enum f3GameEvent)_event level:(NSUInteger)_level grade:(enum fgTabuloGrade)_grade;
 
 @end
