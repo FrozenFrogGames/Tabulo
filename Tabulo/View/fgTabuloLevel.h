@@ -22,7 +22,7 @@
 
 - (void)buildBackground;
 - (void)buildPillar:(f3GraphNode *)_node;
-- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type;
+- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GameState *)_state;
 
 - (f3ViewAdaptee *)buildPawn:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type;
 - (f3ViewAdaptee *)buildSmallPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole;

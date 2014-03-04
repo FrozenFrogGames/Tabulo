@@ -49,11 +49,6 @@
     }
 }
 
-- (bool)IsPawnHome {
-
-    return [self getFlag:houseType];
-}
-
 - (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
     
     houseView = _view;
@@ -73,7 +68,7 @@
     [self replaceHouseTexture:[self getFlag:houseType]];
 }
 
-- (void)replaceHouseTexture:(bool)_value {
+- (void)replaceHouseTexture:(bool)_result {
 
     if (houseView != nil)
     {
@@ -91,13 +86,13 @@
             
             if (searchComponent.Result != nil)
             {
-                f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result isHome:_value];
+                f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result result:_result];
                 
                 [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
             }
             else
             {
-                f3TextureDecorator *decorator = [self buildTextureDecorator:houseView isHome:_value];
+                f3TextureDecorator *decorator = [self buildTextureDecorator:houseView result:_result];
                 
                 [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
             }
@@ -105,7 +100,7 @@
     }
 }
 
-- (f3TextureDecorator *)buildTextureDecorator:(f3ViewComponent *)_component isHome:(bool)_home {
+- (f3TextureDecorator *)buildTextureDecorator:(f3ViewComponent *)_component result:(bool)_home {
     
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     

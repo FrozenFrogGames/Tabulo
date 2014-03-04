@@ -7,6 +7,7 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphCondition.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "fgHouseNode.h"
@@ -15,7 +16,6 @@
 @interface fgGameState : f3GameState {
 
     f3ViewScene *currentScene;
-    NSMutableArray *houseNodes;
     NSUInteger gameLevel;
     double gameOverTimer;
 }

@@ -7,9 +7,10 @@
 //
 
 #import "fgPlankFeedbackCommand.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
+#import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
-#import "../../../Framework/Framework/View/f3GameScene.h"
 #import "fgPlankEdge.h"
 
 @implementation fgPlankFeedbackCommand
@@ -28,13 +29,14 @@
 
 - (f3ViewComposite *)buildFeedbackCompositeFor:(f3ViewComponent *)_component {
     
-    NSArray *edges = [f3GraphEdge edgesFromNode:plankNode];
+    NSArray *edges = [f3GraphEdge edgesFromNode:plankNode.Key];
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
+    f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
 
     for (fgTabuloEdge *edge in edges)
     {
-        if ([edge evaluateConditions])
+        if ([gameState evaluateEdge:edge])
         {
             if ([edge isKindOfClass:[fgPlankEdge class]])
             {

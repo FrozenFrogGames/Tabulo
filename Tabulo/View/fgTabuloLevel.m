@@ -100,7 +100,7 @@
     [builder buildDecorator:1];
 }
 
-- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type {
+- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GameState *)_state {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
@@ -149,7 +149,11 @@
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     
-    [_node bindView:view type:_type];
+    f3GraphCondition *condition = [[f3GraphCondition alloc] init:_node.Key flag:_type result:true];
+
+    [_state bindCondition:condition]; // each house add its game condition
+    
+    [_node bindView:view type:_type]; // only used for visual feedback on the house
 }
 
 - (f3ViewAdaptee *)buildPawn:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type {

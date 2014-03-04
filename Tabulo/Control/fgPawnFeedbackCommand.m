@@ -8,6 +8,7 @@
 
 #import "fgPawnFeedbackCommand.h"
 #import "fgHouseNode.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
@@ -29,7 +30,7 @@
 - (f3ViewComposite *)buildFeedbackCompositeFor:(f3ViewComponent *)_component {
 
     enum f3TabuloPawnType pawnType = TABULO_PAWN_MAX;
-    NSArray *edges = [f3GraphEdge edgesFromNode:pawnNode];
+    NSArray *edges = [f3GraphEdge edgesFromNode:pawnNode.Key];
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
     
@@ -56,9 +57,11 @@
     
     if (pawnType < TABULO_PAWN_MAX)
     {
+        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+
         for (f3GraphEdge *edge in edges)
         {
-            if ([edge evaluateConditions])
+            if ([gameState evaluateEdge:edge])
             {
                 f3GraphNode *node = edge.Target;
                 

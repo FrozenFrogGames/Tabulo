@@ -57,7 +57,7 @@
     [self clearPoints];
     
     [self buildPillar:node0];
-    [self buildHouse:node2 type:TABULO_PawnFour];
+    [self buildHouse:node2 type:TABULO_PawnFour state:_state];
     [self buildBackground];
 
     [_builder buildComposite:0];
@@ -95,7 +95,7 @@
 
     [self buildPillar:node0];
     [self buildPillar:node2];
-    [self buildHouse:node4 type:TABULO_PawnFour];
+    [self buildHouse:node4 type:TABULO_PawnFour state:_state];
     [self buildBackground];
 
     [_builder buildComposite:0];
@@ -143,7 +143,7 @@
     [self buildPillar:node0];
     [self buildPillar:node2];
     [self buildPillar:node4];
-    [self buildHouse:node6 type:TABULO_PawnFour];
+    [self buildHouse:node6 type:TABULO_PawnFour state:_state];
     [self buildBackground];
 
     [_builder buildComposite:0];
@@ -192,8 +192,8 @@
     f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f];
     [self clearPoints];
 
-    [self buildHouse:node0 type:TABULO_PawnOne];
-    [self buildHouse:node2 type:TABULO_PawnFour];
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node2 type:TABULO_PawnFour state:_state];
     [self buildPillar:node4];
     [self buildBackground];
     
@@ -255,8 +255,8 @@
     
     [self buildPillar:node0];
     [self buildPillar:node2];
-    [self buildHouse:node4 type:TABULO_PawnOne];
-    [self buildHouse:node6 type:TABULO_PawnFour];
+    [self buildHouse:node4 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node6 type:TABULO_PawnFour state:_state];
     [self buildBackground];
     
     [_builder buildComposite:0];
@@ -317,9 +317,9 @@
     f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f];
     [self clearPoints];
 
-    [self buildHouse:node0 type:TABULO_PawnFour];
+    [self buildHouse:node0 type:TABULO_PawnFour state:_state];
     [self buildPillar:node2];
-    [self buildHouse:node4 type:TABULO_PawnOne];
+    [self buildHouse:node4 type:TABULO_PawnOne state:_state];
     [self buildPillar:node6];
     [self buildBackground];
     

@@ -8,6 +8,7 @@
 
 #import "fgDragViewOverEdge.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "fgTabuloEdge.h"
 #import "fgHouseNode.h"
@@ -212,11 +213,13 @@
             {
                 if (currentEdge == nil)
                 {
+                    f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+
                     for (fgTabuloEdge *edge in edges)
                     {
                         if (edge.Target == _node || edge.Input == _node)
                         {
-                            if ([edge evaluateConditions])
+                            if ([gameState evaluateEdge:edge])
                             {
                                 feedbackToRemove = feedbackDisplayed;
                                 currentEdge = edge;

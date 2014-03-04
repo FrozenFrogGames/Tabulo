@@ -35,7 +35,7 @@
 
 + (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input {
     
-    NSArray *edgesFrom = [self edgesFromNode:_node];
+    NSArray *edgesFrom = [self edgesFromNode:_node.Key];
     
     NSMutableArray *edges = [NSMutableArray array];
 
