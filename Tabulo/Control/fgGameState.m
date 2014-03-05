@@ -8,6 +8,7 @@
 
 #import "fgGameState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/Control/f3GraphSolver.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
 #import "../Control/fgEventOnClick.h"
 #import "fgTabuloDirector.h"
@@ -36,6 +37,7 @@ enum TabuloLevelState {
     {
         currentScene = nil;
         gameLevel = 0;
+        goldPathLength = 0;
         gameIsOver = false;
         gameOverTimer = 0.0;
     }
@@ -51,11 +53,28 @@ enum TabuloLevelState {
     {
         currentScene = _scene;
         gameLevel = _level;
+        goldPathLength = 0;
         gameIsOver = false;
         gameOverTimer = 2.0;
     }
 
     return self;
+}
+
+- (f3GraphConfig *)buildConfig:(f3GraphConfig *)_previous {
+    
+    f3GraphConfig *result = [super buildConfig:_previous];
+
+    if (gameLevel > 0 && goldPathLength == 0)
+    {
+        f3GraphSolver *graphSolver = [[f3GraphSolver alloc] init:result keys:keys];
+        
+        NSArray *shortestPath = [graphSolver getShortestPath:self index:0];
+        
+        goldPathLength = [shortestPath count];
+    }
+
+    return result;
 }
 
 - (void)buildMenu:(f3ViewBuilder *)_builder {
@@ -179,7 +198,7 @@ enum TabuloLevelState {
 
     if (gameLevel > 0)
     {
-        gameIsOver = [self evaluateGame:currentConfig keys:nodeKeys];
+        gameIsOver = [self evaluateGame:currentConfig keys:keys];
         
         if (gameIsOver)
         {
@@ -199,7 +218,19 @@ enum TabuloLevelState {
 
             if (grade == GRADE_silver)
             {
-                // TODO upgrade to gold if shortest path used
+                NSUInteger configCount = 0;
+
+                f3GraphConfig *config = currentConfig;
+                while (config != nil)
+                {
+                    configCount++;
+                    config = [config Previous];
+                }
+
+                if (configCount == (goldPathLength +1))
+                {
+                    grade = GRADE_gold;
+                }
             }
 
             if (gameLevel < (LEVEL_LOCKED -1))
@@ -227,7 +258,7 @@ enum TabuloLevelState {
 
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
 
-    [nodeKeys addObject:node.Key];
+    [keys addObject:node.Key];
     [grid appendNode:node];
 
     return node;
