@@ -18,7 +18,7 @@
 @implementation fgGameState
 
 const NSUInteger LEVEL_MAXIMUM = 18;
-const NSUInteger LEVEL_LOCKED = 7;
+const NSUInteger LEVEL_LOCKED = 9;
 
 enum TabuloLevelState {
     
