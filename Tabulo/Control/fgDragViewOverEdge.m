@@ -180,6 +180,11 @@
         
         for (fgTabuloEdge *edge in edges)
         {
+            if (edge.Target == nil || edge.Input == nil)
+            {
+                continue; // TODO throw f3Exception
+            }
+
             if (![nodeListening containsObject:edge.Target])
             {
                 [nodeListening addObject:edge.Target];

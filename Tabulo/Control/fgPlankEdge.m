@@ -40,6 +40,11 @@
             inputKey = inputNode.Key;
         }
         
+        if (inputKey == nil)
+        {
+            return nil; // TODO throw f3Exception
+        }
+        
         targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
         rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
 

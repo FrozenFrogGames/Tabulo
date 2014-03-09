@@ -8,7 +8,6 @@
 
 #import "fgGameState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../../Framework/Framework/Control/f3GraphSolver.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
 #import "../Control/fgEventOnClick.h"
 #import "fgTabuloDirector.h"
@@ -18,7 +17,7 @@
 @implementation fgGameState
 
 const NSUInteger LEVEL_MAXIMUM = 18;
-const NSUInteger LEVEL_LOCKED = 9;
+const NSUInteger LEVEL_LOCKED = 13;
 
 enum TabuloLevelState {
     
@@ -37,9 +36,9 @@ enum TabuloLevelState {
     {
         currentScene = nil;
         gameLevel = 0;
-        goldPathLength = 0;
         gameIsOver = false;
         gameOverTimer = 0.0;
+        solverComputeTime = 0.0;
     }
 
     return self;
@@ -53,28 +52,12 @@ enum TabuloLevelState {
     {
         currentScene = _scene;
         gameLevel = _level;
-        goldPathLength = 0;
         gameIsOver = false;
         gameOverTimer = 2.0;
+        solverComputeTime = 0.0;
     }
 
     return self;
-}
-
-- (f3GraphConfig *)buildConfig:(f3GraphConfig *)_previous {
-    
-    f3GraphConfig *result = [super buildConfig:_previous];
-
-    if (gameLevel > 0 && goldPathLength == 0)
-    {
-        f3GraphSolver *graphSolver = [[f3GraphSolver alloc] init:result keys:keys];
-        
-        NSArray *shortestPath = [graphSolver getShortestPath:self index:0];
-        
-        goldPathLength = [shortestPath count];
-    }
-
-    return result;
 }
 
 - (void)buildMenu:(f3ViewBuilder *)_builder {
@@ -196,10 +179,10 @@ enum TabuloLevelState {
 
     [super update:_elapsed owner:_owner];
 
-    if (gameLevel > 0)
+    if (currentConfig != nil && gameLevel > 0)
     {
         gameIsOver = [self evaluateGame:currentConfig keys:keys];
-        
+
         if (gameIsOver)
         {
             gameOverTimer -= _elapsed;
@@ -208,17 +191,13 @@ enum TabuloLevelState {
         {
             gameOverTimer = 0.5;
         }
-        
+
         if (gameIsOver && gameOverTimer < 0.0)
         {
-            f3GameDirector *director = [f3GameDirector Director];
-            f3GameAdaptee *producer = [f3GameAdaptee Producer];
-            
             enum fgTabuloGrade grade = configRevisited ? GRADE_bronze : GRADE_silver;
-
             if (grade == GRADE_silver)
             {
-                NSUInteger configCount = 0;
+                NSUInteger configCount = 0, shortestPathLength = 1; // TODO count the length of the shortest solution
 
                 f3GraphConfig *config = currentConfig;
                 while (config != nil)
@@ -227,12 +206,14 @@ enum TabuloLevelState {
                     config = [config Previous];
                 }
 
-                if (configCount == (goldPathLength +1))
+                if (configCount == shortestPathLength)
                 {
                     grade = GRADE_gold;
                 }
             }
 
+            f3GameDirector *director = [f3GameDirector Director];
+            f3GameAdaptee *producer = [f3GameAdaptee Producer];
             if (gameLevel < (LEVEL_LOCKED -1))
             {
                 fgDialogState *dialogState = [[fgDialogState alloc] init:self];

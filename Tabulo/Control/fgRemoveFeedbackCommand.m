@@ -23,7 +23,7 @@
 }
 
 - (void)appendHouseNode:(fgHouseNode *)_node {
-    
+
     [feedbackOnNodes addObject:_node];
 }
 

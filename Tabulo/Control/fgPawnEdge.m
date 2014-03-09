@@ -16,14 +16,16 @@
 
 - (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target input:(f3GraphNode *)_input {
 
+    if (_input == nil)
+    {
+        return nil; // TODO throw f3Exception
+    }
+
     self = [super init:_flag origin:_origin target:_target];
     
     if (self != nil)
     {
-        if (_input != nil)
-        {
-            inputKey = _input.Key;
-        }
+        inputKey = _input.Key;
     }
 
     return self;

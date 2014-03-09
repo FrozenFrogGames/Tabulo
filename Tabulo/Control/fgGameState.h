@@ -16,8 +16,8 @@
 @interface fgGameState : f3GameState {
 
     f3ViewScene *currentScene;
-    NSUInteger gameLevel, goldPathLength;
-    double gameOverTimer;
+    double gameOverTimer, solverComputeTime;
+    NSUInteger gameLevel;
 }
 
 @property (readonly) int Level;
