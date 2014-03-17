@@ -87,10 +87,10 @@
 
     f3GraphNode *rotationNode = [f3GraphNode nodeForKey:rotationKey];
     f3GraphNode *targetNode = [f3GraphNode nodeForKey:targetKey];
-    f3FloatArray *angleHandle = [f3FloatArray buildHandleForValues:1, FLOAT_BOX(targetAngle), nil];
+    f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(targetAngle), nil];
 
     f3ControlCommand *command = [[f3ControlCommand alloc] init];
-    f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle] Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle];
+    f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle] Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:0.7f];
     [command appendComponent:transform];
     f3ControlComposite *composite = [[f3ControlComposite alloc] init];
     [composite appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:[targetNode getPositionHandle]]];

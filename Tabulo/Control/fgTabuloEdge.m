@@ -23,6 +23,12 @@
     return self;
 }
 
++ (void)removeEdgesForKeys:(NSArray *)_keys {
+
+    [f3GraphEdge removeEdgesForKeys:_keys];
+}
+
+
 - (f3GraphNode *)Input {
 
     if (inputKey != nil)

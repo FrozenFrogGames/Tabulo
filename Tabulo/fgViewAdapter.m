@@ -11,10 +11,10 @@
 #import "../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../Framework/Framework/View/f3ViewDecorator.h"
 #import "../../Framework/Framework/View/f3TextureDecorator.h"
-#import "../../Framework/Framework/View/f3TranslationDecorator.h"
+#import "../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../Framework/Framework/View/f3TransformDecorator.h"
 #import "../../Framework/Framework/View/f3ScaleDecorator.h"
-#import "../../Framework/Framework/View/f3RotationDecorator.h"
+#import "../../Framework/Framework/View/f3AngleDecorator.h"
 
 @implementation fgViewAdapter
 
@@ -47,9 +47,9 @@
 
 - (void)bindDecorator:(f3ViewDecorator *)_decorator {
 
-    if ([_decorator isKindOfClass:[f3TranslationDecorator class]])
+    if ([_decorator isKindOfClass:[f3OffsetDecorator class]])
     {
-        f3TranslationDecorator *decorator = (f3TranslationDecorator *)_decorator;
+        f3OffsetDecorator *decorator = (f3OffsetDecorator *)_decorator;
 
         if (decorator.Offset != nil)
         {
@@ -77,9 +77,9 @@
             relativeScale.height += decorator.Scale[1];
         }
     }
-    else if ([_decorator isKindOfClass:[f3RotationDecorator class]])
+    else if ([_decorator isKindOfClass:[f3AngleDecorator class]])
     {
-        f3RotationDecorator *decorator = (f3RotationDecorator *)_decorator;
+        f3AngleDecorator *decorator = (f3AngleDecorator *)_decorator;
         angleDegree = decorator.Angle;
     }
     else if ([_decorator isKindOfClass:[f3TextureDecorator class]])

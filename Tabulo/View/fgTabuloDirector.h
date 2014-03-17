@@ -10,7 +10,7 @@
 #import "../../../Framework/Framework/Model/f3IntegerArray.h"
 #import "../../../Framework/Framework/Model/f3FloatArray.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
-#import "fgViewCanvas.h"
+#import "../../../Framework/Framework/IDataAdapter.h"
 
 enum f3TabuloPawnType {
     
@@ -27,7 +27,9 @@ enum f3TabuloPlankType {
     
     TABULO_HaveSmallPlank  = 5,
     TABULO_HaveMediumPlank = 6,
-    TABULO_HaveLongPlank   = 7
+    TABULO_HaveLongPlank   = 7,
+    
+    TABULO_PLANK_MAX = 8
 };
 
 enum f3TabuloHoleType {
@@ -46,6 +48,9 @@ enum f3TabuloResource {
     RESOURCE_Background
 };
 
+@class fgViewCanvas;
+@class fgGameState;
+
 @interface fgTabuloDirector : f3GameDirector {
 
     fgViewCanvas *gameCanvas;
@@ -53,5 +58,7 @@ enum f3TabuloResource {
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
+
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgGameState *)_state level:(NSUInteger)_level;
 
 @end

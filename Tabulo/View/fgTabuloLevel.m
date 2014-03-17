@@ -7,8 +7,11 @@
 //
 
 #import "fgTabuloLevel.h"
+#import "../../../Framework/Framework/Control/f3GraphResolver.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
+#import "../Control/fgGameState.h"
+#import "../fgDataAdapter.h"
 
 @implementation fgTabuloLevel
 
@@ -20,9 +23,9 @@
     {
         backgroundRotation = nil;
 
-        indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+        indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
         
-        vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+        vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                         FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     }
     
@@ -31,7 +34,86 @@
 
 - (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state level:(NSUInteger)_level {
     
-    // TODO throw f3Exception
+    if (_level < 7)
+    {
+/*
+    NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04d",_level]];
+    fgDataAdapter *adapter = [[fgDataAdapter alloc] initWithName:filename];
+
+    if (adapter == nil)
+    {
+ */
+        f3GraphResolver *resolver = [[f3GraphResolver alloc] init:[_state getNodeKeys]];
+
+        while ([resolver computeAllConfig:_state])
+        {
+            NSLog(@"%@", resolver);
+        }
+
+        NSUInteger *solutionIndexes;
+        NSUInteger solutionCount = [resolver getSolutionIndexes:&solutionIndexes];
+        NSMutableArray *bestSolutions = [NSMutableArray array];
+        NSUInteger pathLength, shortestPathLength = 0;
+
+        for (NSUInteger i = 0; i < solutionCount; ++i)
+        {
+            f3GraphConfig *solution = [resolver resolve:solutionIndexes[i] initial:0];
+            
+            if (solution != nil)
+            {
+                pathLength = solution.PathLength;
+                
+                if (shortestPathLength == 0 || pathLength < shortestPathLength)
+                {
+                    shortestPathLength = pathLength;
+
+                    [bestSolutions removeAllObjects];
+                }
+                
+                if (pathLength == shortestPathLength)
+                {
+                    [bestSolutions addObject:solution];
+                }
+            }
+            else
+            {
+                // TODO throw f3Exception
+            }
+        }
+
+        if (solutionIndexes != nil)
+        {
+            free(solutionIndexes);
+        }
+/*
+        adapter = [[fgDataAdapter alloc] init];
+        
+        f3IntegerArray *countHandle = [f3IntegerArray buildHandleForUInt32:1, [[NSNumber alloc] initWithUnsignedInteger:[bestSolutions count]], nil];
+        [countHandle.Data serialize:adapter];
+ */
+        for (f3GraphConfig *solution in bestSolutions)
+        {
+            [(fgGameState *)_state bindSolution:solution];
+
+//          [solution serialize:adapter];
+        }
+    }
+/*
+        [adapter closeWithName:filename];
+    }
+    else
+    {
+        f3IntegerArray *countHandle = [[f3IntegerArray alloc] initWithModel:[[f3ModelData alloc] init:adapter] size:sizeof(unsigned int)];
+        unsigned int count = [countHandle uint32ValueAt:0];
+
+        for (NSUInteger i = 0; i < count; ++i)
+        {
+            f3GraphConfig *solution = [[f3GraphConfig alloc] init:adapter];
+
+            [(fgGameState *)_state bindSolution:solution];
+        }
+    }
+ */
 }
 
 - (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {
@@ -58,7 +140,7 @@
         [builder push:vertexHandle];
         [builder buildAdaptee:DRAW_TRIANGLES];
         
-        [builder push:[f3FloatArray buildHandleForValues:8,
+        [builder push:[f3FloatArray buildHandleForFloat32:8,
                        FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f),
                        FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
         [builder push:background];
@@ -67,11 +149,11 @@
         [builder push:[f3VectorHandle buildHandleForWidth:16.f height:12.f]];
         [builder buildDecorator:2];
         
-        [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.f), nil]];
+        [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.f), nil]];
         [builder buildDecorator:3];
         
-        backgroundRotation = (f3RotationDecorator *)[builder top]; // keep reference on decorator to rotate the background
-        [backgroundRotation applyAngle:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(90.f), nil]];
+        backgroundRotation = (f3AngleDecorator *)[builder top]; // keep reference on decorator to rotate the background
+        [backgroundRotation applyRotation:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(90.f), nil]];
         backgroundRotation.Ratio = (orientationIsPortrait ? 1.f : 0.f);
     }
 }
@@ -105,12 +187,12 @@
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3ViewBuilder *builder = director.Builder;
 
-    f3IntegerArray *houseIndices = [f3IntegerArray buildHandleForValues:12, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+    f3IntegerArray *houseIndices = [f3IntegerArray buildHandleForUInt16:12, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7), nil];
 
-    f3FloatArray *houseVertex = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(-1.5f), FLOAT_BOX(1.5f), // 0
+    f3FloatArray *houseVertex = [f3FloatArray buildHandleForFloat32:16, FLOAT_BOX(-1.5f), FLOAT_BOX(1.5f), // 0
                                  FLOAT_BOX(1.5f), FLOAT_BOX(1.5f),
                                  FLOAT_BOX(-1.5f), FLOAT_BOX(-0.5f), // 2
                                  FLOAT_BOX(1.5f), FLOAT_BOX(-0.5f),
@@ -122,7 +204,7 @@
     float houseX1 = (128.f +(_type *384.f)) /2048.f;
     float houseX2 = (512.f +(_type *384.f)) /2048.f;
 
-    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
+    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForFloat32:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.f),
                                      FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 2
                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
@@ -213,14 +295,14 @@
 
 - (f3ViewAdaptee *)buildSmallPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
     
-    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
     
-    f3FloatArray *plankVertex = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
+    f3FloatArray *plankVertex = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.f), // 2
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
@@ -235,7 +317,7 @@
     
     float holeOffset = 176.f; // +(_hole *256.f);
     
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
                                      FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
@@ -261,7 +343,7 @@
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
     
-    [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
+    [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
     [builder buildDecorator:3];
     
     [builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
@@ -279,14 +361,14 @@
 
 - (f3ViewAdaptee *)buildMediumPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
 
-    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
     
-    f3FloatArray *plankVertex = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
+    f3FloatArray *plankVertex = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.5f), // 2
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
@@ -304,7 +386,7 @@
     
     float holeOffset = 112.f; // (_hole == 0) ? 112.f : 176. +(_hole *256.f);
 
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
                                      FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
@@ -327,7 +409,7 @@
     [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
     [builder buildDecorator:4];
     
-    [builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
+    [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
     [builder buildDecorator:3];
     
     [builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];

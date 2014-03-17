@@ -70,14 +70,14 @@
 
 - (void)buildSmallPlank:(f3ViewBuilder *)_builder Position:(CGPoint)_position Angle:(float)_angle {
 
-    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
 
-    f3FloatArray *plankVertex = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
+    f3FloatArray *plankVertex = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.f), // 2
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
@@ -92,7 +92,7 @@
 
     float holeOffset = 176.f; // TODO support hole
 
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
                                      FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
@@ -109,14 +109,14 @@
     [_builder push:plankVertex];
     [_builder buildAdaptee:DRAW_TRIANGLES];
 
-    [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.4f),nil]];
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.4f),nil]];
     [_builder buildProperty:0]; // reduce opacity
 
     [_builder push:plankCoordonate];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];
     [_builder buildDecorator:4];
 
-    [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
     [_builder buildDecorator:3];
 
     [_builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
@@ -128,14 +128,14 @@
 
 - (void)buildMediumPlank:(f3ViewBuilder *)_builder Position:(CGPoint)_position Angle:(float)_angle {
     
-    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForValues:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+    f3IntegerArray *plankIndices = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
     
-    f3FloatArray *plankVertex = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
+    f3FloatArray *plankVertex = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.5f), // 2
                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
@@ -150,7 +150,7 @@
 
     float holeOffset = 176.f;
 
-    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForValues:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
+    f3FloatArray *plankCoordonate = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
                                      FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
@@ -167,14 +167,14 @@
     [_builder push:plankVertex];
     [_builder buildAdaptee:DRAW_TRIANGLES];
 
-    [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.4f),nil]];
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.4f),nil]];
     [_builder buildProperty:0]; // reduce opacity
 
     [_builder push:plankCoordonate];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];
     [_builder buildDecorator:4];
 
-    [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(_angle), nil]];
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
     [_builder buildDecorator:3];
 
     [_builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];

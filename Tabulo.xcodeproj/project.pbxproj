@@ -36,6 +36,7 @@
 		F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2B018C2733000430653 /* fgRemoveFeedbackCommand.m */; };
 		F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */; };
 		F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */; };
+		F6BDB2CA18CD64A300430653 /* Content in Resources */ = {isa = PBXBuildFile; fileRef = F6BDB2C918CD64A300430653 /* Content */; };
 		F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF01F618B598CC00E7DF6C /* fgDialogState.m */; };
 		F6DF01FD18B90A0500E7DF6C /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */; };
 		F6DF01FE18B90A0500E7DF6C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = F6DF01FA18B90A0500E7DF6C /* Default-Portrait~ipad.png */; };
@@ -104,6 +105,7 @@
 		F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPawnEdge.m; path = Control/fgPawnEdge.m; sourceTree = "<group>"; };
 		F6BDB2BA18C2DAEF00430653 /* fgPlankEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankEdge.h; path = Control/fgPlankEdge.h; sourceTree = "<group>"; };
 		F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankEdge.m; path = Control/fgPlankEdge.m; sourceTree = "<group>"; };
+		F6BDB2C918CD64A300430653 /* Content */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Content; sourceTree = "<group>"; };
 		F6DF01F518B598CC00E7DF6C /* fgDialogState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDialogState.h; path = Control/fgDialogState.h; sourceTree = "<group>"; };
 		F6DF01F618B598CC00E7DF6C /* fgDialogState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDialogState.m; path = Control/fgDialogState.m; sourceTree = "<group>"; };
 		F6DF01F918B90A0500E7DF6C /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				F682185E189736720041DA80 /* Adapter */,
 				F6A6CA80188096F8006AAE57 /* Control */,
 				F6A6CA60187DF175006AAE57 /* View */,
+				F6BDB2C918CD64A300430653 /* Content */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
 			name = FrozenfrogTabulo;
@@ -372,6 +375,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6BDB2CA18CD64A300430653 /* Content in Resources */,
 				F60250D8187DDDC80029915C /* InfoPlist.strings in Resources */,
 				F6DF020118B90A8B00E7DF6C /* Default-Landscape~ipad.png in Resources */,
 				F6145D4618A883E500924636 /* TabuloDev.mobileprovision in Resources */,

@@ -172,9 +172,9 @@ enum TabuloDialogItem {
             break;
     }
     
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
     [_builder push:indicesHandle];
@@ -230,26 +230,26 @@ enum TabuloDialogItem {
     
     switch (_grade) {
             
-        case DIALOGITEM_Reset:
+        case GRADE_none:
             coordonatePoint = CGPointMake(1920.f, 0.f);
             break;
             
-        case DIALOGITEM_Play:
+        case GRADE_bronze:
             coordonatePoint = CGPointMake(1920.f, 128.f);
             break;
             
-        case DIALOGITEM_Next:
+        case GRADE_silver:
             coordonatePoint = CGPointMake(1920.f, 256.f);
             break;
             
-        case DIALOGITEM_Menu:
+        case GRADE_gold:
             coordonatePoint = CGPointMake(1920.f, 384.f);
             break;
     }
     
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
     [_builder push:indicesHandle];
@@ -269,9 +269,9 @@ enum TabuloDialogItem {
 
 - (void)buildDialogBox:(f3ViewBuilder *)_builder {
     
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
     [_builder push:indicesHandle];
@@ -334,11 +334,11 @@ enum TabuloDialogItem {
 
                 case GAME_Play:
 
-                    if (nextLevel < 7)
+                    if (nextLevel < 7) // tutorial
                     {
                         nextScene = [[fgTabuloTutorial alloc] init];
                     }
-                    else if (nextLevel < 13)
+                    else
                     {
                         nextScene = [[fgTabuloLevel01 alloc] init];
                     }

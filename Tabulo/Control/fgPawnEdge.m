@@ -39,7 +39,7 @@
     f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
 
     f3ControlCommand *command = [[f3ControlCommand alloc] init];
-    [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view Offset:translation]];
+    [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view translation:translation speed:0.05f]];
     [command appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:targetPoint]];
     [_builder push:command];
 }

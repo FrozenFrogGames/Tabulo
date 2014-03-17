@@ -8,24 +8,33 @@
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphCondition.h"
+#import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
-#import "fgHouseNode.h"
+#import "../../../Framework/Framework/IDataAdapter.h"
 #import "fgTabuloEvent.h"
+
+@class fgHouseNode;
 
 @interface fgGameState : f3GameState {
 
     f3ViewScene *currentScene;
-    double gameOverTimer, solverComputeTime;
-    NSUInteger gameLevel;
+    NSUInteger gameLevel, goldPathLength;
+    NSMutableArray *solutions;
+    bool hintEnable;
+    f3ViewComposite *hintLayer;
+    f3ControlCommand *hintCommand;
+    f3GraphEdge *hintEdge;
 }
 
 @property (readonly) int Level;
 
 - (id)init:(f3ViewScene *)_scene level:(NSUInteger)_level;
 
+- (void)bindSolution:(f3GraphConfig *)_config;
 - (void)buildMenu:(f3ViewBuilder *)_builder;
 
+- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data;
 - (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend;
 
 @end

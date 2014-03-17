@@ -68,7 +68,7 @@
     if (isPlankView)
     {
         f3ControlComponent *feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Node:node];
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
 
         [builder push:feedbackCommand];
         [builder push:scaleCommand];
@@ -76,7 +76,7 @@
     else if (isPawnView)
     {
         f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
 
         [builder push:feedbackCommand];
         [builder push:scaleCommand];
@@ -117,13 +117,13 @@
 
     if (isPlankView)
     {
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
 
         [builder push:scaleCommand];
     }
     else if (isPawnView)
     {
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view Scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
         
         [builder push:scaleCommand];
     }

@@ -6,14 +6,16 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
+#import "fgTabuloDirector.h"
+#import "fgViewCanvas.h"
+#import "fgGameState.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3ViewComposite.h"
-#import "../../../Framework/Framework/View/f3TranslationDecorator.h"
+#import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3Controller.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
-#import "fgTabuloDirector.h"
 
 @implementation fgTabuloDirector
 
@@ -24,7 +26,6 @@
     if (self != nil)
     {
         gameCanvas = nil;
-
         interface = nil;
         spritesheet = nil;
         background = nil;
@@ -40,27 +41,177 @@
         gameCanvas = (fgViewCanvas *)_canvas;
     }
 
-    interface = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"interface-prototype.png"]), nil];
-    spritesheet = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
-    background = [f3IntegerArray buildHandleForValues:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
+    interface = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"interface-prototype.png"]), nil];
+    spritesheet = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
+    background = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
 
-    switch (_resource) {
+    switch (_resource)
+    {
+        case RESOURCE_Interface: return interface;
 
-        case RESOURCE_Interface:
+        case RESOURCE_SpriteSheet: return spritesheet;
 
-            return interface;
-
-        case RESOURCE_SpriteSheet:
-
-            return spritesheet;
-
-        case RESOURCE_Background:
-
-            return background;
+        case RESOURCE_Background: return background;
     }
+}
+
+- (f3ViewAdaptee *)buildPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+    return nil;
+}
+
+- (f3ViewAdaptee *)buildSmallPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+    return nil;
+}
+
+- (f3ViewAdaptee *)buildMediumPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+    return nil;
+}
+
+- (f3ViewAdaptee *)buildLongPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+    return nil;
+}
+
+- (f3ControllerState *)buildControlState:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+    return nil;
+}
+
+- (void)buildController:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+}
+
+- (void)buildComposite:(NSObject<IDataAdapter> *)_data {
+    
+    [viewBuilder buildComposite:0xFFFF];
+}
+
+- (void)buildDecorator:(NSObject<IDataAdapter> *)_data {
+    
+    [viewBuilder buildDecorator:0xFFFF];
+}
+
+- (void)buildProperty:(NSObject<IDataAdapter> *)_data {
+    
+    [viewBuilder buildProperty:0xFFFF];
+}
+
+- (void)buildAdaptee:(NSObject<IDataAdapter> *)_data {
+    
+    [viewBuilder buildAdaptee:0xFFFF];
+}
+
+- (void)buildBackground:(NSObject<IDataAdapter> *)_data {
+
+}
+
+- (void)buildPillard:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols{
+
+}
+
+- (void)buildHouse:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgGameState *)_state {
+
+}
+
+- (void)buildEdgesForPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+}
+
+- (void)buildEdgesForPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+    
+}
+
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgGameState *)_state level:(NSUInteger)_level {
+
+    scene = [[f3ViewScene alloc] init];
+    
+    NSMutableArray *symbols = [NSMutableArray array];
+    uint8_t marker = [_data readMarker];
+
+    while (marker != 0xFF)
+    {
+        switch (marker)
+        {
+            case 0x00:
+                [symbols addObject:[[f3ModelData alloc] init:_data]];
+                break;
+
+            case 0x01:
+                [symbols addObject:[self buildPawn:_data symbols:symbols]];
+                break;
+            case 0x02:
+                [symbols addObject:[_state buildNodeWithExtend:_data]];
+                break;
+            case 0x03:
+                [symbols addObject:[_state buildNodeWithRadius:_data]];
+                break;
+            case 0x04:
+                [symbols addObject:[_state buildHouseNode:_data]];
+                break;
+            case 0x05:
+                [symbols addObject:[self buildSmallPlank:_data symbols:symbols]];
+                break;
+            case 0x06:
+                [symbols addObject:[self buildMediumPlank:_data symbols:symbols]];
+                break;
+            case 0x07:
+                [symbols addObject:[self buildLongPlank:_data symbols:symbols]];
+                break;
+            case 0x08:
+                [symbols addObject:[self buildControlState:_data symbols:symbols]];
+                break;
+
+            case 0x09:
+                [self buildController:_data symbols:symbols];
+                break;
+            case 0x0A:
+                [self buildComposite:_data];
+                break;
+            case 0x0B:
+                [self buildDecorator:_data];
+                break;
+            case 0x0C:
+                [self buildProperty:_data];
+                break;
+            case 0x0D:
+                [self buildAdaptee:_data];
+                break;
+            case 0x0E:
+                [self buildBackground:_data];
+                break;
+            case 0x0F:
+                [self buildPillard:_data symbols:symbols];
+                break;
+            case 0x10:
+                [self buildHouse:_data symbols:symbols state:_state];
+                break;
+            case 0x11:
+                [self buildEdgesForPawn:_data symbols:symbols];
+                break;
+            case 0x12:
+                [self buildEdgesForPlank:_data symbols:symbols];
+                break;
+
+            case 0x13:
+                [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
+                break;
+            case 0x14:
+                [_state appendComponent:[[f3GameAdaptee Producer].Builder popComponent]];
+                break;
+                
+            // TODO add GraphConfig and GraphResolver
+        }
+
+        marker = [_data readMarker];
+    }
+
+    [symbols removeAllObjects];
 }
 
 /*

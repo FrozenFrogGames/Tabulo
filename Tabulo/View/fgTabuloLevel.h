@@ -13,7 +13,7 @@
 
 @interface fgTabuloLevel : f3GameScene {
     
-    f3RotationDecorator *backgroundRotation;
+    f3AngleDecorator *backgroundRotation;
     f3IntegerArray *indicesHandle;
     f3FloatArray *vertexHandle;
 }

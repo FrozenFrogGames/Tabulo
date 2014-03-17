@@ -84,9 +84,9 @@
 
 - (void)buildPawn:(f3ViewBuilder *)_builder Position:(CGPoint)_position Type:(enum f3TabuloPawnType)_type {
     
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForValues:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForValues:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                     FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
 
     CGPoint textureCoordonate;
@@ -120,7 +120,7 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
 
-    [_builder push:[f3FloatArray buildHandleForValues:1, FLOAT_BOX(0.4f),nil]];
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.4f),nil]];
     [_builder buildProperty:0]; // reduce opacity
     
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)

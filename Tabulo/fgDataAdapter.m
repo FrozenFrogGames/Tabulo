@@ -25,31 +25,58 @@
 }
 
 - (id)initWithName:(NSString *)_filename {
-    
+
     self = [super init];
-    
+
     if (self != nil)
     {
-        data = [NSMutableData dataWithContentsOfFile:[_filename stringByExpandingTildeInPath]];
+        NSError *fileError = nil;
+
+        @try
+        {
+            NSString* path = [[NSBundle mainBundle] pathForResource:_filename ofType:@".F3G" inDirectory:@"Content"];
+            
+            data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
+        }
+        @catch(NSException* exception)
+        {
+            if (fileError != nil)
+            {
+                NSLog(@"Read failed with error: %@", fileError);
+            }
+            else
+            {
+                NSLog(@"Read failed with exception: %@", exception);
+            }
+            
+            return nil;
+        }
+
+        NSLog(@"Read filename: %@", _filename);
+
         marker = malloc(sizeof(uint8_t));
         cursor = 0;
-        
-        NSLog(@"read binary file : %@", _filename);
     }
     
     return self;
 }
 
-- (void)dealloc {
-    
-    free(marker);
-}
-
 - (void)closeWithName:(NSString *)_filename {
-    
-    [data writeToFile:[_filename stringByExpandingTildeInPath] atomically:true];
-    
-    NSLog(@"write binary file : %@", _filename);
+
+    NSError *fileError;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingString:@".F3G"];
+
+    BOOL success = [data writeToFile:path options:NSDataWritingAtomic error:&fileError];
+
+    if (success)
+    {
+        NSLog(@"Write filename: %@", _filename);
+    }
+    else
+    {
+        NSLog(@"Write failed with error: %@", fileError);
+    }
 }
 
 - (uint8_t)readMarker {
@@ -79,26 +106,31 @@
 }
 
 - (void)writeBytes:(const void *)_bytes length:(NSInteger)_length {
-    
+
     if (cursor >= [data length])
     {
         [data appendBytes:_bytes length:_length];
-        
+
         cursor = [data length];
     }
     else
     {
         NSUInteger lengthDiff = [data length] - cursor;
-        
+
         if (lengthDiff < _length)
         {
             [data increaseLengthBy:lengthDiff];
         }
-        
+
         [data replaceBytesInRange:NSMakeRange(cursor, _length) withBytes:_bytes];
-        
+
         cursor += _length;
     }
+}
+
+- (void)dealloc {
+    
+    free(marker);
 }
 
 @end

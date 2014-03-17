@@ -7,11 +7,11 @@
 //
 
 #import "fgTabuloTutorial.h"
-#import "fgDialogState.h"
 #import "../../../Framework/Framework/Control/f3ControlComposite.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
-#import "fgDragViewOverEdge.h"
 #import "../Control/fgGameState.h"
+#import "fgDragViewOverEdge.h"
+#import "fgDialogState.h"
 
 @implementation fgTabuloTutorial
 
@@ -43,6 +43,8 @@
             [self loadTutorialSix:_builder state:_state];
             break;
     }
+
+    [super build:_builder state:_state level:_level]; // compute solution
 }
 
 - (void)loadTutorialOne:(f3ViewBuilder *)_builder state:(f3GameState *)_state {

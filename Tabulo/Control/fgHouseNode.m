@@ -109,7 +109,7 @@
     float houseY1 = _home ? 0.334201390f : 0.222222222f;
     float houseY2 = _home ? 0.444444444f : 0.333333333f;
     
-    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForValues:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
+    f3FloatArray *houseCoordonate = [f3FloatArray buildHandleForFloat32:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.f),
                                      FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 2
                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
