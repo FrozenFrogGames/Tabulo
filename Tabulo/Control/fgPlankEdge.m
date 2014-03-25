@@ -56,22 +56,22 @@
         {
             rotationAngle += 360.f;
         }
-        
+
         switch (_flag)
         {
             case TABULO_HaveSmallPlank:
                 rotationRadius = 1.75f;
                 break;
-                
+
             case TABULO_HaveMediumPlank:
                 rotationRadius = 2.5f;
                 break;
-                
+
             case TABULO_HaveLongPlank:
                 rotationRadius = 4.0f; // TODO compute gameplay for long plank
                 break;
         }
-        
+
         rotationKey = _rotation.Key;
     }
 

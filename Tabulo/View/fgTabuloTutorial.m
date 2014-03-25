@@ -44,7 +44,7 @@
             break;
     }
 
-    [super build:_builder state:_state level:_level]; // compute solution
+    [super build:_builder state:_state level:_level];
 }
 
 - (void)loadTutorialOne:(f3ViewBuilder *)_builder state:(f3GameState *)_state {

@@ -33,7 +33,7 @@
 }
 
 - (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state level:(NSUInteger)_level {
-    
+
     if (_level < 7)
     {
 /*
@@ -114,6 +114,10 @@
         }
     }
  */
+    
+    [(fgGameState *)_state buildPauseButtton:_builder atPosition:CGPointMake(-7.f, -5.f) level:_level];
+    [_builder buildComposite:0];
+    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
 }
 
 - (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {

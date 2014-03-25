@@ -33,6 +33,7 @@
 
 - (void)bindSolution:(f3GraphConfig *)_config;
 - (void)buildMenu:(f3ViewBuilder *)_builder;
+- (void)buildPauseButtton:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position level:(NSUInteger)_level;
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data;
 - (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend;

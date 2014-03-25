@@ -22,7 +22,7 @@
 @implementation fgGameState
 
 const NSUInteger LEVEL_MAXIMUM = 18;
-const NSUInteger LEVEL_LOCKED = 17;
+const NSUInteger LEVEL_LOCKED = 19;
 
 enum TabuloLevelState {
 
@@ -120,6 +120,25 @@ enum TabuloLevelState {
     }
 }
 
+- (void)buildHeader:(f3ViewBuilder *)_builder {
+    
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+    
+    [_builder push:indicesHandle];
+    [_builder push:vertexHandle];
+    [_builder buildAdaptee:DRAW_TRIANGLES];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(0.f, 1216.f) withExtend:CGSizeMake(2048.f, 320.f)]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
+    [_builder buildDecorator:4];
+    [_builder push:[f3VectorHandle buildHandleForWidth:16.f height:3.f]];
+    [_builder buildDecorator:2];
+    [_builder push:[f3VectorHandle buildHandleForX:0.f y:4.5f]];
+    [_builder buildDecorator:1];
+}
+
 - (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state atPosition:(CGPoint)_position level:(NSUInteger)_level {
     
     enum TabuloLevelState state = (_level < LEVEL_LOCKED) ? LEVELSTATE_unlocked : LEVELSTATE_locked;
@@ -170,32 +189,38 @@ enum TabuloLevelState {
         f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
-        [_state appendComponent:[[f3Controller alloc] initState:controlView]]; // TODO use level controller
+        [_state appendComponent:[[f3Controller alloc] initState:controlView]];
     }
 }
 
-- (void)buildHeader:(f3ViewBuilder *)_builder {
-    
+- (void)buildPauseButtton:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position level:(NSUInteger)_level {
+
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-    
+
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
-    
+
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(0.f, 1216.f) withExtend:CGSizeMake(2048.f, 320.f)]];
+
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(1920.f, 512.f) withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
     [_builder buildDecorator:4];
-    [_builder push:[f3VectorHandle buildHandleForWidth:16.f height:3.f]];
+
+    [_builder push:[f3VectorHandle buildHandleForWidth:1.25f height:1.25f]];
     [_builder buildDecorator:2];
-    [_builder push:[f3VectorHandle buildHandleForX:0.f y:4.5f]];
+
+    [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
+
+    f3GraphNode *node = [self buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
+    fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:_level];
+    fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
+    [self appendComponent:[[f3Controller alloc] initState:controlView]];
 }
 
 - (f3ViewAdaptee *)buildHintcursor:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position {
-    
-    CGPoint coordonatePoint = CGPointMake(1920.f, 256.f);
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
@@ -208,7 +233,7 @@ enum TabuloLevelState {
     
     f3ViewAdaptee *view = (f3ViewAdaptee *)[_builder top];
 
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(1920.f, 256.f) withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
     [_builder buildDecorator:4];
     
@@ -396,7 +421,7 @@ enum TabuloLevelState {
                 }
             }
         }
-        
+
         if (nextConfig != nil)
         {
             hintEdge = [self findEdgeFor:_config next:nextConfig];
