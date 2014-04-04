@@ -22,7 +22,7 @@
     return self;
 }
 
-- (id)init:(NSUInteger)_event level:(NSUInteger)_index {
+- (id)init:(unsigned int)_event level:(NSUInteger)_index {
 
     self = [super init:_event];
 

@@ -8,7 +8,7 @@
 
 #import "fgTabuloDirector.h"
 #import "fgViewCanvas.h"
-#import "fgGameState.h"
+#import "fgLevelState.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3ViewComposite.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
@@ -26,9 +26,10 @@
     if (self != nil)
     {
         gameCanvas = nil;
-        interface = nil;
-        spritesheet = nil;
-        background = nil;
+        spritesheetMenu = nil;
+        spritesheetLevel = nil;
+        backgroundMenu = nil;
+        backgroundLevel = nil;
     }
 
     return self;
@@ -41,20 +42,23 @@
         gameCanvas = (fgViewCanvas *)_canvas;
     }
 
-    interface = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"interface-prototype.png"]), nil];
-    spritesheet = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
-    background = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
+    spritesheetMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-menu.png"]), nil];
+    spritesheetLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
+    backgroundLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
+    backgroundMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-menu.png"]), nil];
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
 
     switch (_resource)
     {
-        case RESOURCE_Interface: return interface;
+        case RESOURCE_SpritesheetMenu: return spritesheetMenu;
 
-        case RESOURCE_SpriteSheet: return spritesheet;
+        case RESOURCE_SpritesheetLevel: return spritesheetLevel;
 
-        case RESOURCE_Background: return background;
+        case RESOURCE_BackgroundMenu: return backgroundMenu;
+            
+        case RESOURCE_BackgroundLevel: return backgroundLevel;
     }
 }
 
@@ -115,7 +119,7 @@
 
 }
 
-- (void)buildHouse:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgGameState *)_state {
+- (void)buildHouse:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
 
 }
 
@@ -127,7 +131,7 @@
     
 }
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgGameState *)_state level:(NSUInteger)_level {
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level {
 
     scene = [[f3ViewScene alloc] init];
     

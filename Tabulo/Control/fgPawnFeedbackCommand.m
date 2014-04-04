@@ -126,7 +126,7 @@
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
                                          atPoint:CGPointMake(textureCoordonate.x, textureCoordonate.y)
                                       withExtend:CGSizeMake(128.f, 128.f)]];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
     [_builder buildDecorator:4];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];

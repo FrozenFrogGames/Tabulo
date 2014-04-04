@@ -15,6 +15,6 @@
 
 @property (readonly) NSUInteger Level;
 
-- (id)init:(NSUInteger)_event level:(NSUInteger)_index;
+- (id)init:(unsigned int)_event level:(NSUInteger)_index;
 
 @end

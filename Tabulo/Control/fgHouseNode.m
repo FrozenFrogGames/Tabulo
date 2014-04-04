@@ -120,7 +120,7 @@
     
     [director.Builder push:_component];
     [director.Builder push:houseCoordonate];
-    [director.Builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [director.Builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [director.Builder buildDecorator:4];
     
     return (f3TextureDecorator *)[director.Builder popComponent];

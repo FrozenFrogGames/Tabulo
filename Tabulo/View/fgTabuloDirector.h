@@ -43,22 +43,23 @@ enum f3TabuloHoleType {
 
 enum f3TabuloResource {
     
-    RESOURCE_Interface,
-    RESOURCE_SpriteSheet,
-    RESOURCE_Background
+    RESOURCE_SpritesheetMenu,
+    RESOURCE_SpritesheetLevel,
+    RESOURCE_BackgroundMenu,
+    RESOURCE_BackgroundLevel
 };
 
 @class fgViewCanvas;
-@class fgGameState;
+@class fgLevelState;
 
 @interface fgTabuloDirector : f3GameDirector {
 
     fgViewCanvas *gameCanvas;
-    f3IntegerArray  *interface, *spritesheet, *background;
+    f3IntegerArray  *spritesheetLevel, *spritesheetMenu, *backgroundLevel, *backgroundMenu;
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgGameState *)_state level:(NSUInteger)_level;
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level;
 
 @end

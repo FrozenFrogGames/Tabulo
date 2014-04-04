@@ -10,7 +10,7 @@
 #import "../../../Framework/Framework/Control/f3GraphResolver.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
-#import "../Control/fgGameState.h"
+#import "../Control/fgLevelState.h"
 #import "../fgDataAdapter.h"
 
 @implementation fgTabuloLevel
@@ -50,7 +50,7 @@
             NSLog(@"%@", resolver);
         }
 
-        NSUInteger *solutionIndexes;
+        unsigned int *solutionIndexes;
         NSUInteger solutionCount = [resolver getSolutionIndexes:&solutionIndexes];
         NSMutableArray *bestSolutions = [NSMutableArray array];
         NSUInteger pathLength, shortestPathLength = 0;
@@ -93,7 +93,7 @@
  */
         for (f3GraphConfig *solution in bestSolutions)
         {
-            [(fgGameState *)_state bindSolution:solution];
+            [(fgLevelState *)_state bindSolution:solution];
 
 //          [solution serialize:adapter];
         }
@@ -115,7 +115,7 @@
     }
  */
     
-    [(fgGameState *)_state buildPauseButtton:_builder atPosition:CGPointMake(-7.f, -5.f) level:_level];
+    [(fgLevelState *)_state buildPauseButtton:_builder atPosition:CGPointMake(-7.f, -5.f) level:_level];
     [_builder buildComposite:0];
     [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
 }
@@ -134,7 +134,7 @@
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
-    f3IntegerArray *background = [director getResourceIndex:RESOURCE_Background];
+    f3IntegerArray *background = [director getResourceIndex:RESOURCE_BackgroundLevel];
     
     if (background != nil)
     {
@@ -174,7 +174,7 @@
     [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
                                   atPoint:CGPointMake(1664.f, 512.f)
                                withExtend:CGSizeMake(384.f, 384.f)]];
-    [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
     [builder push:[f3VectorHandle buildHandleForWidth:3.f height:3.f]];
@@ -224,7 +224,7 @@
     f3ViewAdaptee *view = (f3ViewAdaptee *)[builder top];
     
     [builder push:houseCoordonate];
-    [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -283,7 +283,7 @@
     [builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
                                   atPoint:CGPointMake(textureCoordonate.x, textureCoordonate.y)
                                withExtend:CGSizeMake(128.f, 128.f)]];
-    [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
     [builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -344,7 +344,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
     [builder push:plankCoordonate];
-    [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
     [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
@@ -410,7 +410,7 @@
     f3ViewAdaptee *result = (f3ViewAdaptee *)[builder top];
     
     [builder push:plankCoordonate];
-    [builder push:[director getResourceIndex:RESOURCE_SpriteSheet]];
+    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
     [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];

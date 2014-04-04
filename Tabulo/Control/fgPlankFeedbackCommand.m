@@ -113,7 +113,7 @@
     [_builder buildProperty:0]; // reduce opacity
 
     [_builder push:plankCoordonate];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
     [_builder buildDecorator:4];
 
     [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];
@@ -171,7 +171,7 @@
     [_builder buildProperty:0]; // reduce opacity
 
     [_builder push:plankCoordonate];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpriteSheet]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
     [_builder buildDecorator:4];
 
     [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil]];

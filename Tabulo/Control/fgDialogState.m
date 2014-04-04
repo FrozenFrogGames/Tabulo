@@ -10,7 +10,8 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
-#import "fgGameState.h"
+#import "fgLevelState.h"
+#import "fgMenuState.h"
 #import "fgDialogState.h"
 #import "fgTabuloDirector.h"
 #import "fgEventOnClick.h"
@@ -187,7 +188,7 @@ enum TabuloDialogItem {
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f)
                                           atPoint:coordonatePoint
                                        withExtend:buttonSize]];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:radius height:radius]];
@@ -236,17 +237,11 @@ enum TabuloDialogItem {
         case GRADE_none:
             coordonatePoint = CGPointMake(1920.f, 0.f);
             break;
-            
+
         case GRADE_bronze:
-            coordonatePoint = CGPointMake(1920.f, 128.f);
-            break;
-            
         case GRADE_silver:
-            coordonatePoint = CGPointMake(1920.f, 256.f);
-            break;
-            
         case GRADE_gold:
-            coordonatePoint = CGPointMake(1920.f, 384.f);
+            coordonatePoint = CGPointMake(1920.f, 128.f);
             break;
     }
     
@@ -260,7 +255,7 @@ enum TabuloDialogItem {
     [_builder buildAdaptee:DRAW_TRIANGLES];
 
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 128.f)]];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
@@ -284,7 +279,7 @@ enum TabuloDialogItem {
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f)
                                           atPoint:CGPointMake(0.f, 320.f)
                                        withExtend:CGSizeMake(768.f, 896.f)]];
-    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_Interface]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:6.f height:7.f]];
@@ -319,49 +314,55 @@ enum TabuloDialogItem {
         if ([_event isKindOfClass:[fgTabuloEvent class]])
         {
             fgTabuloEvent *event = (fgTabuloEvent *)_event;
-            fgTabuloLevel *nextScene = nil;
-            fgGameState *nextState = nil;
             
-            NSUInteger nextLevel = event.Level;
-            switch (event.Event) {
+            if (event.Event == GAME_Over)
+            {
+                fgMenuState *nextState = [[fgMenuState alloc] init];
+                [nextState buildMenu:director.Builder];
+                [producer switchState:nextState];
+            }
+            else
+            {
+                fgTabuloLevel *nextScene = nil;
 
-                case GAME_Pause:
-                    
-                    [producer switchState:previousState];
-                    break;
-                    
-                case GAME_Next:
+                NSUInteger nextLevel = event.Level;
 
-                    ++nextLevel; // increment level before to trigger play
-//                  break;
+                switch (event.Event) {
 
-                case GAME_Play:
+                    case GAME_Pause:
+                        
+                        [producer switchState:previousState];
+                        return;
+                        
+                    case GAME_Next:
 
-                    if (nextLevel < 7) // tutorial
-                    {
-                        nextScene = [[fgTabuloTutorial alloc] init];
-                    }
-                    else
-                    {
-                        nextScene = [[fgTabuloLevel01 alloc] init];
-                    }
+                        ++nextLevel; // increment level before to trigger play
+//                      break;
 
-                    nextState = [[fgGameState alloc] init:nextScene level:nextLevel];
+                    case GAME_Play:
+
+                        if (nextLevel < 7) // tutorial
+                        {
+                            nextScene = [[fgTabuloTutorial alloc] init];
+                        }
+                        else
+                        {
+                            nextScene = [[fgTabuloLevel01 alloc] init];
+                        }
+                        break;
+                }
+
+                if (nextScene != nil)
+                {
+                    fgLevelState *nextState = [[fgLevelState alloc] init:nextScene level:nextLevel];
                     [nextScene build:director.Builder state:nextState level:nextLevel];
                     [producer switchState:nextState];
-                    break;
-
-                case GAME_Over:
-    
-                    nextState = [[fgGameState alloc] init];
-                    [nextState buildMenu:director.Builder];
-                    [producer switchState:nextState];
-                    break;
+                }
             }
         }
         else
         {
-            fgGameState *nextState = [[fgGameState alloc] init];
+            fgMenuState *nextState = [[fgMenuState alloc] init];
             [nextState buildMenu:director.Builder];
             [producer switchState:nextState];
         }

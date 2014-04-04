@@ -9,7 +9,7 @@
 #import "fgTabuloTutorial.h"
 #import "../../../Framework/Framework/Control/f3ControlComposite.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
-#import "../Control/fgGameState.h"
+#import "../Control/fgLevelState.h"
 #import "fgDragViewOverEdge.h"
 #import "fgDialogState.h"
 
@@ -55,7 +55,7 @@
 
     f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
-    fgHouseNode *node2 = [(fgGameState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node2 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f)];
     [self clearPoints];
     
     [self buildPillar:node0];
@@ -92,7 +92,7 @@
     f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
     f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
-    fgHouseNode *node4 = [(fgGameState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
     [self clearPoints];
 
     [self buildPillar:node0];
@@ -139,7 +139,7 @@
     f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
     f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
-    fgHouseNode *node6 = [(fgGameState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node6 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f)];
     [self clearPoints];
     
     [self buildPillar:node0];
@@ -186,9 +186,9 @@
     [self addPointFrom:4 Radius:2.5f Angle:330.f];
     [self computePoints];
 
-    fgHouseNode *node0 = [(fgGameState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f];
-    fgHouseNode *node2 = [(fgGameState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node2 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f];
     f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f];
@@ -250,9 +250,9 @@
     f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
     f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
-    fgHouseNode *node4 = [(fgGameState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
-    fgHouseNode *node6 = [(fgGameState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node6 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f)];
     [self clearPoints];
     
     [self buildPillar:node0];
@@ -308,11 +308,11 @@
     [self addPointFrom:5 Radius:2.5f Angle:45.f]; // 6
     [self computePoints];
     
-    fgHouseNode *node0 = [(fgGameState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f];
     f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f];
-    fgHouseNode *node4 = [(fgGameState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f)];
     f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f];
     f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f)];
     [self clearPoints];
