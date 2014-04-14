@@ -8,14 +8,7 @@
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
-
-enum fgTabuloGrade {
-    
-    GRADE_none,
-    GRADE_bronze,
-    GRADE_silver,
-    GRADE_gold
-};
+#import "../View/fgTabuloDirector.h"
 
 @interface fgDialogState : f3GameState {
     

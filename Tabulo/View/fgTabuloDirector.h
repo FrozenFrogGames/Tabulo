@@ -49,6 +49,14 @@ enum f3TabuloResource {
     RESOURCE_BackgroundLevel
 };
 
+enum fgTabuloGrade {
+    
+    GRADE_none,
+    GRADE_bronze,
+    GRADE_silver,
+    GRADE_gold
+};
+
 @class fgViewCanvas;
 @class fgLevelState;
 
@@ -56,9 +64,13 @@ enum f3TabuloResource {
 
     fgViewCanvas *gameCanvas;
     f3IntegerArray  *spritesheetLevel, *spritesheetMenu, *backgroundLevel, *backgroundMenu;
+    NSMutableArray *levelFlags;
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;
+
+- (enum fgTabuloGrade)getGradeForLevel:(NSUInteger)_level;
+- (void)setGrade:(enum fgTabuloGrade)_grade level:(NSUInteger)_level;
 
 - (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level;
 

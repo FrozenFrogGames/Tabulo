@@ -30,11 +30,11 @@
     
     if (self != nil)
     {
-        orientationHasChanged = false;
-
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
 
-        adaptee = [[f3GameAdaptee alloc] initState:[[fgMenuState alloc] init]]; // TODO provide tabulo game state at init
+        adaptee = [[f3GameAdaptee alloc] initState:[[fgMenuState alloc] init]];
+
+        orientationHasChanged = false;
     }
     
     return self;
@@ -52,7 +52,7 @@
     [super viewDidLoad];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    
+
     if (self.context != nil)
     {
         canvas = (fgViewCanvas *)self.view;
@@ -69,7 +69,7 @@
     [director loadResource:canvas];
 
     [(fgMenuState *)adaptee.State buildMenu:director.Builder];
-    [adaptee.State begin:nil owner:adaptee]; // assign current scene to director
+    [adaptee.State begin:nil owner:adaptee];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(viewOrientationDidChange:)
@@ -87,7 +87,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
+
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 

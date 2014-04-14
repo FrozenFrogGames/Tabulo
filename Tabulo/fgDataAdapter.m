@@ -24,30 +24,40 @@
     return self;
 }
 
-- (id)initWithName:(NSString *)_filename {
+- (id)initWithName:(NSString *)_filename fromBundle:(bool)_fromBundle {
 
     self = [super init];
 
     if (self != nil)
     {
         NSError *fileError = nil;
+        NSString *path;
 
         @try
         {
-            NSString* path = [[NSBundle mainBundle] pathForResource:_filename ofType:@".F3G" inDirectory:@"Content"];
-            
-            data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
-        }
-        @catch(NSException* exception)
-        {
-            if (fileError != nil)
+            if (_fromBundle)
             {
-                NSLog(@"Read failed with error: %@", fileError);
+                path = [[NSBundle mainBundle] pathForResource:_filename ofType:@".F3G" inDirectory:@"Content"];
             }
             else
             {
-                NSLog(@"Read failed with exception: %@", exception);
+                NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+
+                path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingPathExtension:@"F3G"];
             }
+
+            data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
+
+            if (fileError != nil)
+            {
+                NSLog(@"Read failed with error: %@", fileError);
+
+                return nil;
+            }
+        }
+        @catch (NSException* exception)
+        {
+            NSLog(@"Read failed with exception: %@", exception);
             
             return nil;
         }
@@ -64,18 +74,29 @@
 - (void)closeWithName:(NSString *)_filename {
 
     NSError *fileError;
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingString:@".F3G"];
+    NSString *path;
 
-    BOOL success = [data writeToFile:path options:NSDataWritingAtomic error:&fileError];
-
-    if (success)
+    @try
     {
-        NSLog(@"Write filename: %@", _filename);
+//      NSString *resourcePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Content"];
+//      NSString *path = [[resourcePath stringByAppendingPathComponent:_filename] stringByAppendingPathExtension:@"F3G"];
+
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+
+        path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingPathExtension:@"F3G"];
+
+        if ([data writeToFile:path options:NSDataWritingAtomic error:&fileError])
+        {
+            NSLog(@"Write filename: %@", _filename);
+        }
+        else if (fileError != nil)
+        {
+            NSLog(@"Write failed with error: %@", fileError);
+        }
     }
-    else
+    @catch (NSException* exception)
     {
-        NSLog(@"Write failed with error: %@", fileError);
+        NSLog(@"Write failed with exception: %@", exception);
     }
 }
 

@@ -14,13 +14,15 @@
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/IDataAdapter.h"
 #import "fgTabuloEvent.h"
+#import "fgTabuloDirector.h"
 
 @class fgHouseNode;
 
 @interface fgLevelState : f3GameState {
 
     f3ViewScene *currentScene;
-    NSUInteger gameLevel, goldPathLength;
+    NSUInteger levelIndex, minimumPathLength;
+    enum fgTabuloGrade levelGrade;
     NSMutableArray *solutions;
     bool hintEnable;
     f3ViewComposite *hintLayer;
@@ -35,7 +37,7 @@
 - (void)bindSolution:(f3GraphConfig *)_config;
 - (void)buildPauseButtton:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position level:(NSUInteger)_level;
 
-- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data;
-- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend;
+- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols;
+- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 @end

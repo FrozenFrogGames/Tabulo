@@ -50,12 +50,12 @@ const NSUInteger LEVEL_LOCKED = 19;
         {
             float offset = 1.5f -(((index -1) /6) *3.f);
             
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake(-6.25f, offset) level:index++];
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake(-3.75f, offset) level:index++];
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake(-1.25f, offset) level:index++];
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake( 1.25f, offset) level:index++];
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake( 3.75f, offset) level:index++];
-            [self buildLevelIcon:_builder state:self atPosition:CGPointMake( 6.25f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake(-6.25f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake(-3.75f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake(-1.25f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake( 1.25f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake( 3.75f, offset) level:index++];
+            [self buildLevelIcon:_builder state:self position:CGPointMake( 6.25f, offset) level:index++];
         }
         
         [_builder buildComposite:0];
@@ -96,10 +96,6 @@ const NSUInteger LEVEL_LOCKED = 19;
                        FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil]];
         [_builder push:background];
         [_builder buildDecorator:4];
-/*
-        [_builder push:[f3VectorHandle buildHandleForWidth:16.f height:12.f]];
-        [_builder buildDecorator:2];
- */
         [_builder push:[f3VectorHandle buildHandleForWidth:16.f height:9.5f]];
         [_builder buildDecorator:2];
         [_builder push:[f3VectorHandle buildHandleForX:0.f y:-1.25f]];
@@ -117,7 +113,7 @@ const NSUInteger LEVEL_LOCKED = 19;
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(0.f, 1216.f) withExtend:CGSizeMake(2048.f, 320.f)]];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(0.f, 0.f) withExtend:CGSizeMake(2048.f, 320.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     [_builder push:[f3VectorHandle buildHandleForWidth:16.f height:2.5f]];
@@ -126,35 +122,46 @@ const NSUInteger LEVEL_LOCKED = 19;
     [_builder buildDecorator:1];
 }
 
-- (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state atPosition:(CGPoint)_position level:(NSUInteger)_level {
-/*
-    enum TabuloLevelState state = (_level < LEVEL_LOCKED) ? LEVELSTATE_unlocked : LEVELSTATE_locked;
-    
-    switch (state) {
+- (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state position:(CGPoint)_position level:(NSUInteger)_level {
+
+    CGPoint coordonatePoint;
+
+    if (_level < LEVEL_LOCKED)
+    {
+        CGPoint leftPosition, rightPosition;
+
+        if (_level < 10)
+        {
+            [self buildDigitIcon:_builder position:_position digit:_level];
+        }
+        else if (_level < 20)
+        {
+            leftPosition.x = _position.x - (_level == 11 ? 0.375f : 0.575f);
+            leftPosition.y = _position.y;
+            [self buildDigitIcon:_builder position:leftPosition digit:(_level / 10)];
             
-        case LEVELSTATE_unlocked:
-            coordonatePoint = CGPointMake(768.f, 640.f);
-            break;
-            
-        case LEVELSTATE_locked:
-            coordonatePoint = CGPointMake(1088.f, 640.f);
-            break;
-            
-        case LEVELSTATE_bronze:
-            coordonatePoint = CGPointMake(768.f, 320.f);
-            break;
-            
-        case LEVELSTATE_silver:
-            coordonatePoint = CGPointMake(1088.f, 320.f);
-            break;
-            
-        case LEVELSTATE_gold:
-            coordonatePoint = CGPointMake(1408.f, 320.f);
-            break;
+            rightPosition.x = _position.x + 0.375f;
+            rightPosition.y = _position.y;
+            [self buildDigitIcon:_builder position:rightPosition digit:(_level % 10)];
+        }
+        else if (_level < 100)
+        {
+            leftPosition.x = _position.x - 0.5f;
+            leftPosition.y = _position.y;
+            [self buildDigitIcon:_builder position:leftPosition digit:(_level / 10)];
+
+            rightPosition.x = _position.x + 0.5;
+            rightPosition.y = _position.y;
+            [self buildDigitIcon:_builder position:rightPosition digit:(_level % 10)];
+        }
+
+        coordonatePoint = CGPointMake(768.f, 832.f);
     }
- */
-    CGPoint coordonatePoint = (_level < LEVEL_LOCKED) ? CGPointMake(768.f, 640.f) : CGPointMake(1088.f, 640.f);
-    
+    else
+    {
+        coordonatePoint = CGPointMake(1088.f, 1152.f);
+    }
+
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
 
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
@@ -163,21 +170,42 @@ const NSUInteger LEVEL_LOCKED = 19;
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:coordonatePoint withExtend:CGSizeMake(320.f, 320.f)]];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(320.f, 320.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     [_builder push:[f3VectorHandle buildHandleForWidth:2.5f height:2.5f]];
     [_builder buildDecorator:2];
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
-    
+
     if (_level < LEVEL_LOCKED)
     {
-        f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
+        f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
         [_state appendComponent:[[f3Controller alloc] initState:controlView]];
     }
+}
+
+- (void)buildDigitIcon:(f3ViewBuilder *)_builder position:(CGPoint)_position digit:(NSUInteger)_digit {
+
+    CGPoint coordonatePoint = CGPointMake((_digit *128.f) +768.f, 320.f);
+
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
+                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+
+    [_builder push:indicesHandle];
+    [_builder push:vertexHandle];
+    [_builder buildAdaptee:DRAW_TRIANGLES];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 256.f)]];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
+    [_builder buildDecorator:4];
+    [_builder push:[f3VectorHandle buildHandleForWidth:1.f/*1.0625f*/ height:2.f]];
+    [_builder buildDecorator:2];
+    [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
+    [_builder buildDecorator:1];
 }
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
@@ -199,11 +227,14 @@ const NSUInteger LEVEL_LOCKED = 19;
     
     if (_event.Event < GAME_EVENT_MAX && [_event isKindOfClass:[fgTabuloEvent class]])
     {
-        f3GameDirector *director = [f3GameDirector Director];
+        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        fgTabuloEvent * event = (fgTabuloEvent *)_event;
+
+        enum fgTabuloGrade grade = [director getGradeForLevel:event.Level];
 
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:_event.Event level:((fgTabuloEvent *)_event).Level grade:GRADE_none];
+        [dialogState build:director.Builder event:_event.Event level:event.Level grade:grade];
         [producer switchState:dialogState];
     }
     else

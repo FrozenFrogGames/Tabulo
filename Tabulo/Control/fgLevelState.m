@@ -22,31 +22,9 @@
 
 @implementation fgLevelState
 
-enum TabuloLevelState {
-
-    LEVELSTATE_unlocked,
-    LEVELSTATE_locked,
-    LEVELSTATE_bronze,
-    LEVELSTATE_silver,
-    LEVELSTATE_gold
-};
-
 - (id)init {
 
-    self = [super init];
-
-    if (self != nil)
-    {
-        currentScene = nil;
-        gameLevel = 0;
-        goldPathLength = 0;
-        solutions = nil;
-        hintEnable = true;
-        hintLayer = nil;
-        hintCommand = nil;
-    }
-
-    return self;
+    return nil;
 }
 
 - (id)init:(f3ViewScene *)_scene level:(NSUInteger)_level {
@@ -56,8 +34,9 @@ enum TabuloLevelState {
     if (self != nil)
     {
         currentScene = _scene;
-        gameLevel = _level;
-        goldPathLength = 0;
+        levelIndex = _level;
+        levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
+        minimumPathLength = 0;
         solutions = nil;
         hintEnable = true;
         hintLayer = nil;
@@ -76,9 +55,9 @@ enum TabuloLevelState {
     
     NSUInteger pathLength = _config.PathLength;
 
-    if (goldPathLength == 0 || pathLength < goldPathLength)
+    if (minimumPathLength == 0 || pathLength < minimumPathLength)
     {
-        goldPathLength = pathLength;
+        minimumPathLength = pathLength;
     }
 
     [solutions addObject:_config];
@@ -95,7 +74,7 @@ enum TabuloLevelState {
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
 
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(1920.f, 512.f) withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(1408.f, 832.f) withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
 
@@ -105,7 +84,7 @@ enum TabuloLevelState {
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
 
-    f3GraphNode *node = [self buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f)];
+    f3GraphNode *node = [self buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
     fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:_level];
     fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
     [self appendComponent:[[f3Controller alloc] initState:controlView]];
@@ -124,11 +103,11 @@ enum TabuloLevelState {
     
     f3ViewAdaptee *view = (f3ViewAdaptee *)[_builder top];
 
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1536.f) atPoint:CGPointMake(1920.f, 256.f) withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(1600.f, 1216.f) withExtend:CGSizeMake(64.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
-    [_builder push:[f3VectorHandle buildHandleForWidth:1.25f height:1.25f]];
+    [_builder push:[f3VectorHandle buildHandleForWidth:0.83f height:1.33f]];
     [_builder buildDecorator:2];
     
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
@@ -147,29 +126,36 @@ enum TabuloLevelState {
 
 - (void)onGameOver:(f3Controller *)_owner {
 
-    f3GameDirector *director = [f3GameDirector Director];
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
     enum fgTabuloGrade grade = configRevisited ? GRADE_bronze : GRADE_silver;
 
     if (grade == GRADE_silver)
     {
-        if (currentConfig.PathLength == goldPathLength)
+        if (currentConfig.PathLength == minimumPathLength)
         {
             grade = GRADE_gold;
         }
     }
 
-    if (gameLevel < 18)
+    if (grade > levelGrade)
+    {
+        [director setGrade:grade level:levelIndex];
+        
+        levelGrade = grade;
+    }
+
+    if (levelIndex < 18)
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:GAME_Next level:gameLevel grade:grade];
+        [dialogState build:director.Builder event:GAME_Next level:levelIndex grade:grade];
         [producer switchState:dialogState];
     }
     else
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:GAME_Over level:gameLevel grade:grade];
+        [dialogState build:director.Builder event:GAME_Over level:levelIndex grade:grade];
         [producer switchState:dialogState];
     }
 }
@@ -179,44 +165,84 @@ enum TabuloLevelState {
     currentScene = nil;
 }
 
-- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data {
+- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
 
-    return nil;
+    uint16_t dataLength = sizeof(float) *4;
+    float *dataArray = malloc(dataLength);
+
+    [_data readBytes:dataArray length:dataLength];
+    
+    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
+    CGSize extend = CGSizeMake(dataArray[2], dataArray[3]);
+    
+    fgHouseNode *node = [[fgHouseNode alloc] initPosition:position extend:extend];
+
+    [keys addObject:node.Key];
+    [grid appendNode:node];
+
+    free(dataArray);
+
+    if (_symbols != nil)
+    {
+        [_symbols addObject:node];
+    }
+    
+    return node;
 }
 
-- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend {
+- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+
+    if (_writer != nil)
+    {
+        uint16_t dataLength = sizeof(float) *4;
+        float *dataArray = malloc(dataLength);
+        dataArray[0] = (float)_position.x;
+        dataArray[1] = (float)_position.y;
+        dataArray[2] = (float)_extend.width;
+        dataArray[3] = (float)_extend.height;
+        
+        [_writer writeMarker:0x04];
+        [_writer writeBytes:dataArray length:dataLength];
+        
+        free(dataArray);
+    }
 
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
 
     [keys addObject:node.Key];
     [grid appendNode:node];
+    
+    if (_symbols != nil)
+    {
+        [_symbols addObject:node];
+    }
 
     return node;
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 
+    if (hintCommand != nil)
+    {
+        [[f3GameAdaptee Producer] removeComponent:hintCommand];
+        hintCommand = nil; // action interrupted
+    }
+    
+    if (hintLayer != nil)
+    {
+        [hintLayer removeAllComponents];
+        [currentScene removeComposite:hintLayer];
+        hintLayer = nil;
+    }
+
     if (_event.Event < GAME_EVENT_MAX)
     {
         f3GameDirector *director = [f3GameDirector Director];
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
-        if ([_event isKindOfClass:[fgTabuloEvent class]])
-        {
-            fgTabuloEvent * event = (fgTabuloEvent *)_event;
-
-            enum fgTabuloGrade grade = GRADE_none; // TODO obtain previous grade for that level
-
-            fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-            [dialogState build:director.Builder event:event.Event level:event.Level grade:grade];
-            [producer switchState:dialogState];
-        }
-        else
-        {
-            fgMenuState *nextState = [[fgMenuState alloc] init];
-            [nextState buildMenu:director.Builder];
-            [producer switchState:nextState];
-        }
+        fgDialogState *dialogState = [[fgDialogState alloc] init:self];
+        [dialogState build:director.Builder event:_event.Event level:levelIndex grade:levelGrade];
+        [producer switchState:dialogState];
     }
     else
     {
@@ -324,20 +350,20 @@ enum TabuloLevelState {
                 f3ViewAdaptee *view = [self buildHintcursor:builder atPosition:originPoint];
                 [builder buildComposite:0];
                 hintLayer = (f3ViewComposite *)[builder popComponent];
-                [currentScene appendComposite:hintLayer];
+                [[f3GameDirector Director].Scene appendComposite:hintLayer];
 
                 f3VectorHandle *targetPoint = [hintEdge.Target getPositionHandle];
                 f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
-                f3FloatArray *zoomOut = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:-0.25f], [[NSNumber alloc] initWithFloat:-0.25f], nil];
-                f3FloatArray *scale = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:1.f], [[NSNumber alloc] initWithFloat:1.f], nil];
-                f3FloatArray *zoomIn = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.25f], [[NSNumber alloc] initWithFloat:0.25f], nil];
+                f3FloatArray *zoomOut = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:-0.33f], [[NSNumber alloc] initWithFloat:-0.33f], nil];
+                f3FloatArray *scale = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.5f], [[NSNumber alloc] initWithFloat:1.f], nil];
+                f3FloatArray *zoomIn = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.33f], [[NSNumber alloc] initWithFloat:0.33f], nil];
 
                 hintCommand = [[f3ControlCommand alloc] init];
-                [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomOut speed:0.4f]];
-                [hintCommand appendComponent:[[f3TranslationCommand alloc] initWithView:view translation:translation speed:0.2f]];
+                [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomOut speed:0.5f]];
+                [hintCommand appendComponent:[[f3TranslationCommand alloc] initWithView:view translation:translation speed:0.33f]];
                 [hintCommand appendComponent:[[f3SetOffsetCommand alloc] initWithView:view Offset:targetPoint]];
                 [hintCommand appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:scale]];
-                [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomIn speed:0.2f]];
+                [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomIn speed:0.5f]];
                 [[f3GameAdaptee Producer] appendComponent:hintCommand];
             }
         }
