@@ -15,8 +15,7 @@
 #import "fgDialogState.h"
 #import "fgTabuloDirector.h"
 #import "fgEventOnClick.h"
-#import "fgTabuloTutorial.h"
-#import "fgTabuloLevel01.h"
+#import "fgTabuloLevel.h"
 
 @implementation fgDialogState
 
@@ -387,28 +386,19 @@ enum TabuloDialogItem {
                 else
                 {
                     NSUInteger nextLevel = event.Level;
+                    fgLevelState *nextState = nil;
 
                     if (event.Event == GAME_Next)
                     {
                         ++nextLevel; // increment level before to trigger play
                     }
 
-                    NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04d",nextLevel]];
-                    fgDataAdapter *dataWriter = [[fgDataAdapter alloc] initWithName:filename fromBundle:TRUE];
-                    fgLevelState *nextState;
+                    NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)nextLevel]];
+                    fgDataAdapter *dataWriter = [[fgDataAdapter alloc] initWithName:filename fromBundle:true];
 
                     if (dataWriter == nil)
                     {
-                        fgTabuloLevel *nextScene = nil;
-                        
-                        if (nextLevel < 7) // tutorial
-                        {
-                            nextScene = [[fgTabuloTutorial alloc] init];
-                        }
-                        else
-                        {
-                            nextScene = [[fgTabuloLevel01 alloc] init];
-                        }
+                        fgTabuloScene *nextScene = [[fgTabuloLevel alloc] init];
 
                         nextState = [[fgLevelState alloc] init:nextScene level:nextLevel];
                         
@@ -416,9 +406,11 @@ enum TabuloDialogItem {
                     }
                     else
                     {
+                        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
                         nextState = [[fgLevelState alloc] init:nil level:nextLevel];
                         
-                        [(fgTabuloDirector *)[f3GameDirector Director] buildScene:dataWriter state:(fgLevelState *)nextState level:nextLevel];
+                        [director buildScene:dataWriter state:(fgLevelState *)nextState level:nextLevel];
                     }
                     
                     [producer switchState:nextState];

@@ -1,766 +1,1435 @@
 //
-//  fgTabuloLevel.m
+//  fgTabuloEasy.m
 //  Tabulo
 //
-//  Created by Serge Menard on 2014-02-02.
+//  Created by Serge Menard on 2014-01-27.
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
 #import "fgTabuloLevel.h"
-#import "../../../Framework/Framework/Control/f3GraphResolver.h"
+#import "fgDialogState.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
-#import "../Control/fgPawnEdge.h"
-#import "../Control/fgPlankEdge.h"
-#import "../Control/fgLevelState.h"
-#import "../fgDataAdapter.h"
 #import "fgDragViewOverEdge.h"
+#import "../Control/fgLevelState.h"
 
 @implementation fgTabuloLevel
 
-- (id)init {
-    
-    self = [super init];
-
-    if (self != nil)
-    {
-        backgroundRotation = nil;
-        dataWriter = nil;
-        dataSymbols = nil;
-    }
-    
-    return self;
-}
-
 - (void)build:(f3ViewBuilder *)_builder state:(f3GameState *)_state level:(NSUInteger)_level {
-
-    if (dataWriter != nil)
-    {
-        f3GraphResolver *resolver = [[f3GraphResolver alloc] init:[_state getNodeKeys]];
-
-        while ([resolver computeAllConfig:_state])
-        {
-            NSLog(@"%@", resolver);
-        }
-
-        unsigned int *solutionIndexes;
-        NSUInteger solutionCount = [resolver getSolutionIndexes:&solutionIndexes];
-        NSMutableArray *bestSolutions = [NSMutableArray array];
-        NSUInteger pathLength, shortestPathLength = 0;
-
-        for (NSUInteger i = 0; i < solutionCount; ++i)
-        {
-            f3GraphConfig *solution = [resolver resolve:solutionIndexes[i] initial:0];
-            
-            if (solution != nil)
-            {
-                pathLength = solution.PathLength;
-                
-                if (shortestPathLength == 0 || pathLength < shortestPathLength)
-                {
-                    shortestPathLength = pathLength;
-
-                    [bestSolutions removeAllObjects];
-                }
-                
-                if (pathLength == shortestPathLength)
-                {
-                    [bestSolutions addObject:solution];
-                }
-            }
-            else
-            {
-                // TODO throw f3Exception
-            }
-        }
-
-        if (solutionIndexes != nil)
-        {
-            free(solutionIndexes);
-        }
-
-        for (f3GraphConfig *solution in bestSolutions)
-        {
-            [dataWriter writeMarker:0x0B];
-            [solution serialize:dataWriter];
-
-            [(fgLevelState *)_state bindSolution:solution];
-        }
-    }
     
-    [(fgLevelState *)_state buildPauseButtton:_builder atPosition:CGPointMake(-7.f, -5.f) level:_level];
-    [_builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
-}
+    dataWriter = [[fgDataAdapter alloc] init];
+    dataSymbols = [NSMutableArray array];
 
-- (void)deviceOrientationDidChange:(bool)_orientationIsPortrait {
-
-    [super deviceOrientationDidChange:_orientationIsPortrait];
-    
-    if (backgroundRotation != nil)
+    switch (_level)
     {
-        backgroundRotation.Ratio = (_orientationIsPortrait ? 1.f : 0.f);
-    }
-}
-
-- (void)buildBackground {
-
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6,
-                                     USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
-
-    f3FloatArray *coordonateHandle = [f3FloatArray buildHandleForFloat32:8,
-                                      FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f),
-                                      FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil];
-
-    CGSize scale = CGSizeMake(16.f, 12.f);
-    CGPoint position = CGPointZero;
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataResource = RESOURCE_BackgroundLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
-
-        free(dataArray);
-    }
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_BackgroundLevel]];
-    [builder buildDecorator:4];
-
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-/*
-    [builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.f), nil]];
-    [builder buildDecorator:3];
-    
-    backgroundRotation = (f3AngleDecorator *)[builder top]; // keep reference on decorator to rotate the background
-    [backgroundRotation applyRotation:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(90.f), nil]];
-    backgroundRotation.Ratio = (orientationIsPortrait ? 1.f : 0.f);
-*/
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-    }
-}
-
-- (void)buildComposite {
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-
-    [builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[builder popComponent]];
-
-    if (dataWriter != nil)
-    {
-        [dataWriter writeMarker:0x0A];
-    }
-}
-
-- (void)buildDragControl:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view {
-
-    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragViewOverEdge class]];
-
-    [_state appendComponent:[[f3Controller alloc] initState:controlPawn]];
-
-    if (dataWriter != nil)
-    {
-        [dataWriter writeMarker:0x09];
-        uint16_t node0Index = (uint16_t)[dataSymbols indexOfObject:_node];
-        [dataWriter writeBytes:&node0Index length:sizeof(uint16_t)];
-        uint16_t pawnIndex = (uint16_t)[dataSymbols indexOfObject:_view];
-        [dataWriter writeBytes:&pawnIndex length:sizeof(uint16_t)];
-    }
-}
-
-- (void)buildPillar:(f3GraphNode *)_node {
-
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6,
-                                     USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-    
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8,
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
-
-    f3FloatArray *coordonateHandle = [f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:CGPointMake(1664.f, 512.f)
-                                                         withExtend:CGSizeMake(384.f, 384.f)];
-
-    CGSize scale = CGSizeMake(3.f, 3.f);
-    CGPoint position = _node.Position;
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataResource = RESOURCE_SpritesheetLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
-
-        free(dataArray);
-    }
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
-    [builder buildDecorator:4];
-
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-    }
-}
-
-- (void)buildHouse:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GameState *)_state {
-
-    float houseX1 = (128.f +(_type *384.f)) /2048.f;
-    float houseX2 = (512.f +(_type *384.f)) /2048.f;
-    
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:12, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
-                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
-                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
-                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7), nil];
-
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:16, FLOAT_BOX(-1.5f), FLOAT_BOX(1.5f), // 0
-                                  FLOAT_BOX(1.5f), FLOAT_BOX(1.5f),
-                                  FLOAT_BOX(-1.5f), FLOAT_BOX(-0.5f), // 2
-                                  FLOAT_BOX(1.5f), FLOAT_BOX(-0.5f),
-                                  FLOAT_BOX(-1.5f), FLOAT_BOX(-0.5f), // 4
-                                  FLOAT_BOX(1.5f), FLOAT_BOX(-0.5f),
-                                  FLOAT_BOX(-1.5f), FLOAT_BOX(-1.5f), // 6
-                                  FLOAT_BOX(1.5f), FLOAT_BOX(-1.5f), nil];
-
-    f3FloatArray *coordonateHandle = [f3FloatArray buildHandleForFloat32:16, FLOAT_BOX(houseX1), FLOAT_BOX(0.f), // 0
-                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.f),
-                                      FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 2
-                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
-                                      FLOAT_BOX(houseX1), FLOAT_BOX(0.222222222f), // 4
-                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.222222222f),
-                                      FLOAT_BOX(houseX1), FLOAT_BOX(0.333333333f), // 6
-                                      FLOAT_BOX(houseX2), FLOAT_BOX(0.333333333f), nil];
-
-    CGSize scale = CGSizeMake(1.f, 1.f);
-    CGPoint position = _node.Position;
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataResource = RESOURCE_SpritesheetLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
-
-        free(dataArray);
-    }
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
-    [builder buildDecorator:4];
-
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-    
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-
-    f3GraphCondition *condition = [[f3GraphCondition alloc] init:_node.Key flag:_type result:true];
-    [_state bindCondition:condition]; // each house add its game condition
-    [_node bindView:_view type:_type]; // only used for visual feedback on the house
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-
-        if (dataWriter != nil)
-        {
-            [dataWriter writeMarker:0x0F];
-
-            uint16_t dataLength = sizeof(uint16_t) *2;
-            uint16_t *dataArray = malloc(dataLength);
-            dataArray[0] = (uint16_t)[dataSymbols indexOfObject:_node];
-            dataArray[1] = (uint16_t)[dataSymbols indexOfObject:_view];
-            [dataWriter writeBytes:dataArray length:dataLength];
-
-            uint8_t dataFlag = _type;
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
-
-            free(dataArray);
-        }
-    }
-}
-
-- (f3ViewAdaptee *)buildPawn:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type {
-
-    CGPoint textureCoordonate;
-    switch (_type) {
-        case TABULO_PawnOne:
-            textureCoordonate = CGPointMake(0.f, 0.f);
+        case 1:
+            [self loadTutorialOne:_builder state:_state];
             break;
             
-        case TABULO_PawnTwo:
-            textureCoordonate = CGPointMake(0.f, 128.f);
+        case 2:
+            [self loadTutorialTwo:_builder state:_state];
             break;
             
-        case TABULO_PawnThree:
-            textureCoordonate = CGPointMake(0.f, 256.f);
+        case 3:
+            [self loadTutorialThree:_builder state:_state];
             break;
             
-        case TABULO_PawnFour:
-            textureCoordonate = CGPointMake(0.f, 384.f);
+        case 4:
+            [self loadTutorialFour:_builder state:_state];
             break;
             
-        case TABULO_PawnFive:
-            textureCoordonate = CGPointMake(0.f, 512.f);
+        case 5:
+            [self loadTutorialFive:_builder state:_state];
             break;
             
-        case TABULO_PAWN_MAX:
-            // TODO throw f3Exception
-            return nil;
-    }
-    
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6,
-                                     USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-    
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+        case 6:
+            [self loadTutorialSix:_builder state:_state];
+            break;
 
-    f3FloatArray *coordonateHandle = [f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
-
-    CGSize scale = CGSizeMake(1.f, 1.f);
-    CGPoint position = _node.Position;
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataResource = RESOURCE_SpritesheetLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-        
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
-        
-        free(dataArray);
-    }
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
-    [builder buildDecorator:4];
-    
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-    
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-
-        if (dataWriter != nil)
-        {
-            [dataWriter writeMarker:0x05];
-
-            uint16_t dataIndex = (uint16_t)[dataSymbols indexOfObject:_node];
-            [dataWriter writeBytes:&dataIndex length:sizeof(uint16_t)];
+        case 7:
+            [self loadLevelTwo:_builder state:_state];
+            break;
             
-            uint8_t dataFlag = _type;
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
-        }
-    }
-    
-    [_node setFlag:_type value:true];
-    
-    return _view;
-}
-
-- (f3ViewAdaptee *)buildSmallPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
-
-    float holeOffset = 176.f; // +(_hole *256.f);
-
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
-                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
-                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
-                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
-                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
-                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
-
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.f), // 2
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(1.f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(1.f), nil];
-
-    f3FloatArray *coordonateHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
-                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
-                                      FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
-                                      FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
-                                      FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.444444444f), // 4
-                                      FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.444444444f),
-                                      FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 6
-                                      FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
-                                      FLOAT_BOX(0.1640625f), FLOAT_BOX(0.444444444f), // 8
-                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.444444444f),
-                                      FLOAT_BOX(0.1640625f), FLOAT_BOX(0.666666667f), // 10
-                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f), nil];
-
-    CGSize scale = CGSizeMake(2.f, 1.f);
-    CGPoint position = _node.Position;
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataResource = RESOURCE_SpritesheetLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
-
-        free(dataArray);
-    }
-
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
-    [builder buildDecorator:4];
-    
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-    
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-    
-    f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil];
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-
-        if (dataWriter != nil)
-        {
-            [dataWriter writeMarker:0x06];
-            [angleHandle.Data serialize:dataWriter];
-
-            uint16_t dataIndex = (uint16_t)[dataSymbols indexOfObject:_node];
-            [dataWriter writeBytes:&dataIndex length:sizeof(uint16_t)];
+        case 8:
+            [self loadLevelOne:_builder state:_state];
+            break;
             
-            uint8_t dataFlag = TABULO_HaveSmallPlank;
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
+        case 9:
+            [self loadLevelEight:_builder state:_state];
+            break;
+            
+        case 10:
+            [self loadLevelSeven:_builder state:_state];
+            break;
+            
+        case 11:
+            [self loadLevelFive:_builder state:_state];
+            break;
+            
+        case 12:
+            [self loadLevelTwelve:_builder state:_state];
+            break;
 
-            // TODO add hole information
-        }
+        case 13:
+            [self loadLevelThree:_builder state:_state];
+            break;
+
+        case 14:
+            [self loadLevelEleven:_builder state:_state];
+            break;
+            
+        case 15:
+            [self loadLevelNine:_builder state:_state];
+            break;
+
+        case 16:
+            [self loadLevelFour:_builder state:_state];
+            break;
+            
+        case 17:
+            [self loadLevelSix:_builder state:_state];
+            break;
+            
+        case 18:
+            [self loadLevelTen:_builder state:_state];
+            break;
     }
-    
-    [_node setFlag:TABULO_HaveSmallPlank value:true];
 
-    [builder push:angleHandle];
-    [builder buildDecorator:3];
-
-    return _view;
-}
-
-- (f3ViewAdaptee *)buildMediumPlank:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole {
-
-    float holeOffset = 112.f; // (_hole == 0) ? 112.f : 176. +(_hole *256.f);
-    
-    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
-                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
-                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
-                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
-                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
-                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
-    
-    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-1.5f), // 2
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
-                                  FLOAT_BOX(-0.5f), FLOAT_BOX(1.5f),
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
-                                  FLOAT_BOX(0.5f), FLOAT_BOX(1.5f), nil];
-    
-    f3FloatArray *coordonateHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
-                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
-                                      FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
-                                      FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
-                                      FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 4
-                                      FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
-                                      FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.888888889f), // 6
-                                      FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.888888889f),
-                                      FLOAT_BOX(0.1328125f), FLOAT_BOX(0.666666667f), // 8
-                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f),
-                                      FLOAT_BOX(0.1328125f), FLOAT_BOX(0.888888889f), // 10
-                                      FLOAT_BOX(0.1875f), FLOAT_BOX(0.888888889f), nil];
-
-    CGSize scale = CGSizeMake(2.f, 1.f);
-    CGPoint position = _node.Position;
+    [super build:_builder state:_state level:_level];
     
     if (dataWriter != nil)
     {
-        uint8_t dataResource = RESOURCE_SpritesheetLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
-
-        [dataWriter writeMarker:0x0E];
-        [indicesHandle.Data serialize:dataWriter];
-        [vertexHandle.Data serialize:dataWriter];
-        [coordonateHandle.Data serialize:dataWriter];
-        [dataWriter writeBytes:&dataResource length:sizeof(uint8_t)];
-        [dataWriter writeBytes:dataArray length:dataLength];
+        NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)_level]];
         
-        free(dataArray);
-    }
-    
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3ViewBuilder *builder = director.Builder;
-    
-    [builder push:indicesHandle];
-    [builder push:vertexHandle];
-    [builder buildAdaptee:DRAW_TRIANGLES];
-    
-    f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil];
-
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
-    
-    [builder push:coordonateHandle];
-    [builder push:[director getResourceIndex:RESOURCE_SpritesheetLevel]];
-    [builder buildDecorator:4];
-    
-    [builder push:angleHandle];
-    [builder buildDecorator:3];
-    
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-
-    if (dataSymbols != nil)
-    {
-        [dataSymbols addObject:_view];
-        
-        if (dataWriter != nil)
-        {
-            [dataWriter writeMarker:0x06];
-            [angleHandle.Data serialize:dataWriter];
-            
-            uint16_t dataIndex = (uint16_t)[dataSymbols indexOfObject:_node];
-            [dataWriter writeBytes:&dataIndex length:sizeof(uint16_t)];
-            
-            uint8_t dataFlag = TABULO_HaveMediumPlank;
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
-            
-            // TODO add hole information
-        }
-    }
-    
-    [_node setFlag:TABULO_HaveMediumPlank value:true];
-    
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-
-    return _view;
-}
-
-- (void)buildEdgesForPawn:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
-
-    if (dataWriter != nil)
-    {
-        uint8_t dataFlag = _type;
-
-        if (dataSymbols != nil)
-        {
-            uint16_t dataLength = sizeof(uint16_t) *3;
-            uint16_t *dataArray = malloc(dataLength);
-            dataArray[0] = (uint16_t)[dataSymbols indexOfObject:_node];
-            dataArray[1] = (uint16_t)[dataSymbols indexOfObject:_origin];
-            dataArray[2] = (uint16_t)[dataSymbols indexOfObject:_target];
-
-            [dataWriter writeMarker:0x10];
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
-            [dataWriter writeBytes:dataArray length:dataLength];
-            
-            free(dataArray);
-        }
-    }
-
-    for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
-    {
-        fgPawnEdge *edge = [[fgPawnEdge alloc] init:pawn origin:_origin target:_target input:_node];
-
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:pawn result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:_type result:true]];
-
-        switch (pawn) // restrict edge if a hole is present
-        {
-            case TABULO_PawnOne:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleOne result:false]];
-                break;
-                
-            case TABULO_PawnTwo:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleTwo result:false]];
-                break;
-                
-            case TABULO_PawnThree:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleThree result:false]];
-                break;
-                
-            case TABULO_PawnFive:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleFour result:false]];
-                break;
-                
-            case TABULO_PawnFour:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_HoleFive result:false]];
-                break;
-        }
-        
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnOne result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnTwo result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnThree result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFive result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFour result:false]];
+        [dataWriter closeWithName:filename];
     }
 }
 
-- (void)buildEdgesForPlank:(enum f3TabuloPlankType)_type Node:(f3GraphNode *)_node Origin:(f3GraphNode *)_origin Target:(f3GraphNode *)_target {
+- (void)loadTutorialOne:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
     
-    if (dataWriter != nil)
-    {
-        uint8_t dataFlag = _type;
-        
-        if (dataSymbols != nil)
-        {
-            uint16_t dataLength = sizeof(uint16_t) *3;
-            uint16_t *dataArray = malloc(dataLength);
-            dataArray[0] = (uint16_t)[dataSymbols indexOfObject:_node];
-            dataArray[1] = (uint16_t)[dataSymbols indexOfObject:_origin];
-            dataArray[2] = (uint16_t)[dataSymbols indexOfObject:_target];
-            
-            [dataWriter writeMarker:0x11];
-            [dataWriter writeBytes:&dataFlag length:sizeof(uint8_t)];
-            [dataWriter writeBytes:dataArray length:dataLength];
-            
-            free(dataArray);
-        }
-    }
+    [self addPointFrom:0 Radius:2.5f Angle:90.f];
+    [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
+    [self computePoints];
+    
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node2 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildPillar:node0];
+    [self buildHouse:node2 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+    
+    [self buildComposite]; // gameplay background
+    
+    f3ViewAdaptee *pawn = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawn];
+    
+    f3ViewAdaptee *plank = [self buildMediumPlank:node1 angle:270.f hole:0];
+    [self buildDragControl:_state node:node1 view:plank];
+    
+    [self buildComposite]; // gameplay elements
+    
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+}
 
-    for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
-    {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_type origin:_origin target:_target rotation:_node];
-        
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:_type result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:pawn result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:_type result:false]];
-    }
+- (void)loadTutorialTwo:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:1.75f Angle:90.f];
+    [self addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:0.f];
+    [self addPointFrom:3 Radius:1.75f Angle:0.f]; // 4
+    [self computePoints];
+    
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildPillar:node0];
+    [self buildPillar:node2];
+    [self buildHouse:node4 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+    
+    [self buildComposite];
+    
+    f3ViewAdaptee *pawn = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawn];
+    
+    f3ViewAdaptee *plank = [self buildSmallPlank:node1 angle:270.f hole:0];
+    [self buildDragControl:_state node:node1 view:plank];
+    
+    [self buildComposite];
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
+}
+
+- (void)loadTutorialThree:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:2.5f Angle:90.f];
+    [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:45.f];
+    [self addPointFrom:3 Radius:1.75f Angle:45.f]; // 4
+    [self addPointFrom:2 Radius:1.75f Angle:135.f];
+    [self addPointFrom:5 Radius:1.75f Angle:135.f]; // 6
+    [self computePoints];
+    
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node6 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildPillar:node0];
+    [self buildPillar:node2];
+    [self buildPillar:node4];
+    [self buildHouse:node6 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+    
+    [self buildComposite];
+    
+    f3ViewAdaptee *pawn = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawn];
+    
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node1 angle:90.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node3 angle:45.f hole:0];
+    [self buildDragControl:_state node:node3 view:plankTwo];
+    
+    [self buildComposite];
+    
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node2];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
+}
+
+- (void)loadTutorialFour:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:2.5f Angle:90.f];
+    [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:2.5f Angle:210.f];
+    [self addPointFrom:3 Radius:2.5f Angle:210.f]; // 4
+    [self addPointFrom:4 Radius:2.5f Angle:330.f];
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node2 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:2] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node2 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node4];
+    [self buildBackground];
+    
+    [self buildComposite];
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node2 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node2 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node1 angle:90.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildMediumPlank:node5 angle:150.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankTwo];
+    
+    [self buildComposite];
+    
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node0 Target:node4];
+    
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node5 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node3];
+}
+
+- (void)loadTutorialFive:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:1.75f Angle:180.f];
+    [self addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:225.f];
+    [self addPointFrom:3 Radius:1.75f Angle:225.f]; // 4
+    [self addPointFrom:2 Radius:1.75f Angle:135.f];
+    [self addPointFrom:5 Radius:1.75f Angle:135.f]; // 6
+    [self computePoints];
+    
+    f3GraphNode *node0 = [_state buildNode:[self getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node6 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildPillar:node0];
+    [self buildPillar:node2];
+    [self buildHouse:node4 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node6 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+    
+    [self buildComposite];
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node6 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node6 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node4 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node4 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node1 angle:0.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node5 angle:135.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankTwo];
+    
+    [self buildComposite];
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node2];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node5 Target:node3];
+}
+
+- (void)loadTutorialSix:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:2.5f Angle:45.f];
+    [self addPointFrom:1 Radius:2.5f Angle:45.f]; // 2
+    [self addPointFrom:2 Radius:2.5f Angle:135.f];
+    [self addPointFrom:3 Radius:2.5f Angle:135.f]; // 4
+    [self addPointFrom:4 Radius:2.5f Angle:45.f];
+    [self addPointFrom:5 Radius:2.5f Angle:45.f]; // 6
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node2];
+    [self buildHouse:node4 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node6];
+    [self buildBackground];
+    
+    [self buildComposite];
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node2 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node2 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node6 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node6 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node5 angle:45.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankOne];
+    
+    [self buildComposite];
+    
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node4 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node6 Target:node4];
+    
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node3];
+}
+
+- (void)loadLevelOne:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:2.5f Angle:90.f];
+    [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:180.f];
+    [self addPointFrom:2 Radius:2.5f Angle:135.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:180.f];
+    [self addPointFrom:4 Radius:2.5f Angle:135.f]; // 6
+    [self addPointFrom:5 Radius:1.75f Angle:90.f];
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node6 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:6] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node2];
+    [self buildPillar:node5];
+    [self buildHouse:node6 type:TABULO_PawnOne state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node6 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node6 view:pawnTwo];
+
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node7 angle:90.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildMediumPlank:node1 angle:270.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankTwo];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node6 Target:node5];
+
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
+}
+
+- (void)loadLevelTwo:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:90.f];
+    [self addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:180.f];
+    [self addPointFrom:3 Radius:1.75f Angle:180.f]; // 4
+    [self addPointFrom:4 Radius:1.75f Angle:270.f];
+    [self addPointFrom:5 Radius:1.75f Angle:270.f]; // 6
+    [self addPointFrom:6 Radius:1.75f Angle:0.f];
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node2];
+    [self buildHouse:node4 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node6];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node4 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node4 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node0 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node0 view:pawnTwo];
+
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node3 angle:180.f hole:0];
+    [self buildDragControl:_state node:node3 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node5 angle:270.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankTwo];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node0 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node6 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node4 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node4 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node6 Target:node4];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node1 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node7 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node5 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node5 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node5];
+}
+
+- (void)loadLevelThree:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:180.f];
+    [self addPointFrom:0 Radius:2.5f Angle:135.f]; // 2
+    [self addPointFrom:1 Radius:1.75f Angle:180.f];
+    [self addPointFrom:2 Radius:2.5f Angle:135.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:90.f];
+    [self addPointFrom:4 Radius:2.5f Angle:90.f]; // 6
+    [self addPointFrom:4 Radius:1.75f Angle:135.f];
+    [self addPointFrom:6 Radius:2.5f Angle:90.f]; // 8
+    [self addPointFrom:7 Radius:1.75f Angle:135.f];
+    [self addPointFrom:8 Radius:2.5f Angle:0.f]; // 10
+    [self addPointFrom:9 Radius:1.75f Angle:45.f];
+    [self addPointFrom:10 Radius:2.5f Angle:0.f]; // 12
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node12 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:12] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node3];
+    [self buildHouse:node4 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node8];
+    [self buildPillar:node9];
+    [self buildHouse:node12 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+    
+    [self buildComposite]; // gameplay background
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node4 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node4 view:pawnTwo];
+    
+    f3ViewAdaptee *pawnThree = [self buildPawn:node12 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node12 view:pawnThree];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node5 angle:90.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node7 angle:135.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankTwo];
+    
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node6 angle:90.f hole:0];
+    [self buildDragControl:_state node:node6 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node3 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node4 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node4 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node9 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node11 Origin:node8 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node4 Target:node8];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node8 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node10 Origin:node8 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node10 Origin:node12 Target:node8];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node5 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node7 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node9 Origin:node7 Target:node11];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node9 Origin:node11 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node8 Origin:node6 Target:node10];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node8 Origin:node10 Target:node6];
+}
+
+- (void)loadLevelFour:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+    
+    [self addPointFrom:0 Radius:1.75f Angle:180.f];
+    [self addPointFrom:1 Radius:1.75f Angle:180.f]; // 2
+    [self addPointFrom:2 Radius:2.5f Angle:135.f];
+    [self addPointFrom:2 Radius:1.75f Angle:180.f]; // 4
+    [self addPointFrom:3 Radius:2.5f Angle:135.f];
+    [self addPointFrom:4 Radius:1.75f Angle:180.f]; // 6
+    [self addPointFrom:5 Radius:2.5f Angle:90.f];
+    [self addPointFrom:6 Radius:1.75f Angle:90.f]; // 8
+    [self addPointFrom:7 Radius:2.5f Angle:90.f];
+    [self addPointFrom:9 Radius:2.5f Angle:0.f]; // 10
+    [self addPointFrom:10 Radius:2.5f Angle:0.f];
+    [self addPointFrom:11 Radius:1.75f Angle:0.f]; // 12
+    [self addPointFrom:11 Radius:2.5f Angle:315.f];
+    [self addPointFrom:12 Radius:1.75f Angle:0.f]; // 14
+    [self addPointFrom:13 Radius:2.5f Angle:315.f];
+    [self addPointFrom:14 Radius:1.75f Angle:270.f]; // 16
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node5 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:5] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_state buildNode:[self getPointAt:13] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node14 = [_state buildNode:[self getPointAt:14] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node15 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:15] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node16 = [_state buildNode:[self getPointAt:16] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node2];
+    [self buildPillar:node6];
+    [self buildHouse:node5 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node9];
+    [self buildPillar:node11];
+    [self buildPillar:node14];
+    [self buildHouse:node15 type:TABULO_PawnOne state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node5 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node5 view:pawnTwo];
+    
+    f3ViewAdaptee *pawnThree = [self buildPawn:node15 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node15 view:pawnThree];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node4 angle:0.f hole:0];
+    [self buildDragControl:_state node:node4 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node8 angle:90.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankTwo];
+    
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node7 angle:90.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankThree];
+    
+    f3ViewAdaptee *plankFour = [self buildSmallPlank:node12 angle:0.f hole:0];
+    [self buildDragControl:_state node:node12 view:plankFour];
+
+    [self buildComposite]; // gameplay elements
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node6 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node5 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node11 Target:node14];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node14 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node16 Origin:node14 Target:node15];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node16 Origin:node15 Target:node14];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node5 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node9 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node10 Origin:node9 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node10 Origin:node11 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node13 Origin:node11 Target:node15];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node13 Origin:node15 Target:node11];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node4 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node14 Origin:node12 Target:node16];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node14 Origin:node16 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node5 Origin:node7 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node9 Origin:node7 Target:node10];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node9 Origin:node10 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node10 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node13 Target:node10];
+}
+
+- (void)loadLevelFive:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:0.f];
+    [self addPointFrom:1 Radius:1.75f Angle:0.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:45.f];
+    [self addPointFrom:2 Radius:2.5f Angle:90.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:45.f];
+    [self addPointFrom:4 Radius:2.5f Angle:90.f]; // 6
+    [self addPointFrom:5 Radius:1.75f Angle:135.f];
+    [self addPointFrom:6 Radius:2.5f Angle:90.f]; // 8
+    [self addPointFrom:6 Radius:1.75f Angle:135.f];
+    [self addPointFrom:8 Radius:2.5f Angle:90.f]; // 10
+    [self addPointFrom:9 Radius:1.75f Angle:135.f];
+    [self addPointFrom:11 Radius:1.75f Angle:45.f]; // 12
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node11 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:11] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node2];
+    [self buildPillar:node5];
+    [self buildPillar:node6];
+    [self buildPillar:node10];
+    [self buildHouse:node11 type:TABULO_PawnOne state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node11 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node11 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node0 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node0 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node1 angle:0.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node7 angle:135.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankTwo];
+    
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node8 angle:90.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+    
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node6 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node6 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node11 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node10 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node11 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node6 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node10 Target:node6];
+    
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node9 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node12 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node6 Origin:node4 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node6 Origin:node8 Target:node4];
+}
+
+- (void)loadLevelSix:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:2.5f Angle:70.f];
+    [self addPointFrom:1 Radius:2.5f Angle:70.f]; // 2
+    [self addPointFrom:2 Radius:1.75f Angle:90.f];
+    [self addPointFrom:2 Radius:2.5f Angle:135.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:90.f];
+    [self addPointFrom:4 Radius:2.5f Angle:135.f]; // 6
+    [self addPointFrom:5 Radius:1.75f Angle:180.f];
+    [self addPointFrom:6 Radius:1.75f Angle:120.f]; // 8
+    [self addPointFrom:6 Radius:1.75f Angle:240.f];
+    [self addPointFrom:8 Radius:1.75f Angle:120.f]; // 10
+    [self addPointFrom:9 Radius:1.75f Angle:240.f];
+    [self addPointFrom:11 Radius:1.75f Angle:180.f]; // 12
+    [self addPointFrom:12 Radius:1.75f Angle:180.f];
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node5 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:5] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node13 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:13] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node2];
+    [self buildHouse:node5 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node6];
+    [self buildPillar:node10];
+    [self buildPillar:node11];
+    [self buildHouse:node13 type:TABULO_PawnFour state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node5 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node5 view:pawnTwo];
+    
+    f3ViewAdaptee *pawnThree = [self buildPawn:node13 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node13 view:pawnThree];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node12 angle:0.f hole:0];
+    [self buildDragControl:_state node:node12 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node8 angle:120.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankTwo];
+ 
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node4 angle:135.f hole:0];
+    [self buildDragControl:_state node:node4 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node6 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node6 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node10 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node6 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node11 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node11 Target:node13];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node13 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node6];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node7 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node9 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node9 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node12 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node1];
+}
+
+- (void)loadLevelSeven:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:2.5f Angle:90.f];
+    [self addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:2.5f Angle:45.f];
+    [self addPointFrom:2 Radius:1.75f Angle:90.f]; // 4
+    [self addPointFrom:2 Radius:2.5f Angle:180.f];
+    [self addPointFrom:3 Radius:2.5f Angle:45.f]; // 6
+    [self addPointFrom:4 Radius:1.75f Angle:90.f];
+    [self addPointFrom:5 Radius:2.5f Angle:180.f]; // 8
+    [self addPointFrom:6 Radius:1.75f Angle:180.f];
+    [self computePoints];
+    
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node7 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:7] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+    
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node2];
+    [self buildPillar:node6];
+    [self buildHouse:node7 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node8];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node8 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node8 view:pawnOne];
+    
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node0 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node0 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node9 angle:180.f hole:0];
+    [self buildDragControl:_state node:node9 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node4 angle:90.f hole:0];
+    [self buildDragControl:_state node:node4 view:plankTwo];
+
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node5 angle:180.f hole:0];
+    [self buildDragControl:_state node:node5 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node7 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node7];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node7 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node6 Target:node7];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node8 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node2 Target:node8];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node7 Origin:node4 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node7 Origin:node9 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node3 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node3 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node5 Target:node3];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node2 Origin:node5 Target:node1];
+}
+
+- (void)loadLevelEight:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:90.f];
+    [self addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
+    [self addPointFrom:2 Radius:2.5f Angle:135.f];
+    [self addPointFrom:2 Radius:1.75f Angle:180.f]; // 4
+    [self addPointFrom:3 Radius:2.5f Angle:135.f];
+    [self addPointFrom:4 Radius:1.75f Angle:180.f]; // 6
+    [self addPointFrom:5 Radius:1.75f Angle:180.f];
+    [self addPointFrom:5 Radius:1.75f Angle:270.f]; // 8
+    [self addPointFrom:6 Radius:2.5f Angle:135.f];
+    [self addPointFrom:7 Radius:1.75f Angle:180.f]; // 10
+    [self addPointFrom:10 Radius:2.5f Angle:90.f];
+    [self addPointFrom:11 Radius:2.5f Angle:90.f]; // 12
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node12 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:12] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node2];
+    [self buildPillar:node5];
+    [self buildPillar:node6];
+    [self buildPillar:node10];
+    [self buildHouse:node12 type:TABULO_PawnOne state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node12 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node12 view:pawnTwo];
+    
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node11 angle:90.f hole:0];
+    [self buildDragControl:_state node:node11 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node7 angle:180.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankTwo];
+
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node3 angle:135.f hole:0];
+    [self buildDragControl:_state node:node3 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node2 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node6 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node5 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node7 Origin:node10 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node5 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node6 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node2 Target:node5];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node2];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node6 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node9 Origin:node10 Target:node6];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node10 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node11 Origin:node12 Target:node10];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node2 Origin:node1 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node4 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node6 Origin:node8 Target:node4];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node7 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node5 Origin:node8 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node9 Target:node11];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node11 Target:node9];
+}
+
+- (void)loadLevelNine:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:2.5f Angle:180.f];
+    [self addPointFrom:0 Radius:2.5f Angle:240.f]; // 2
+    [self addPointFrom:1 Radius:2.5f Angle:180.f];
+    [self addPointFrom:2 Radius:2.5f Angle:240.f]; // 4
+    [self addPointFrom:3 Radius:2.5f Angle:300.f];
+    [self addPointFrom:4 Radius:1.75f Angle:225.f]; // 6
+    [self addPointFrom:4 Radius:2.5f Angle:270.f];
+    [self addPointFrom:4 Radius:1.75f Angle:315.f]; // 8
+    [self addPointFrom:6 Radius:1.75f Angle:225.f];
+    [self addPointFrom:7 Radius:2.5f Angle:270.f]; // 10
+    [self addPointFrom:8 Radius:1.75f Angle:315.f];
+    [self addPointFrom:9 Radius:1.75f Angle:315.f]; // 12
+    [self addPointFrom:10 Radius:1.75f Angle:45.f];
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node3 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:3] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node10 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:10] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_state buildNode:[self getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node3 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node4];
+    [self buildPillar:node9];
+    [self buildHouse:node10 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node11];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+    
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node3 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node3 view:pawnTwo];
+
+    f3ViewAdaptee *pawnThree = [self buildPawn:node10 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node10 view:pawnThree];
+
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node1 angle:0.f hole:0];
+    [self buildDragControl:_state node:node1 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node6 angle:45.f hole:0];
+    [self buildDragControl:_state node:node6 view:plankTwo];
+
+    f3ViewAdaptee *plankThree = [self buildSmallPlank:node8 angle:135.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node3 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node3 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node4 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node4 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node10 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node4 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node9 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node4 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node11 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node9 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node12 Origin:node10 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node10 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node11 Target:node10];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node6 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node8 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node9 Origin:node6 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node9 Origin:node12 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node10 Origin:node12 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node10 Origin:node13 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node8 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node13 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node5 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node1 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node2 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node1];
+}
+
+- (void)loadLevelTen:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:75.f];
+    [self addPointFrom:0 Radius:1.75f Angle:165.f]; // 2
+    [self addPointFrom:1 Radius:1.75f Angle:75.f];
+    [self addPointFrom:2 Radius:1.75f Angle:165.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:105.f];
+    [self addPointFrom:3 Radius:2.5f Angle:150.f]; // 6
+    [self addPointFrom:3 Radius:2.5f Angle:210.f];
+    [self addPointFrom:4 Radius:2.5f Angle:90.f]; // 8
+    [self addPointFrom:4 Radius:1.75f Angle:135.f];
+    [self addPointFrom:5 Radius:1.75f Angle:105.f]; // 10
+    [self addPointFrom:6 Radius:2.5f Angle:150.f];
+    [self addPointFrom:9 Radius:1.75f Angle:135.f]; // 12
+    [self addPointFrom:10 Radius:1.75f Angle:195.f];
+    [self addPointFrom:11 Radius:1.75f Angle:225.f]; // 14
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node3 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:3] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node10 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:10] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_state buildNode:[self getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node14 = [_state buildNode:[self getPointAt:14] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildHouse:node3 type:TABULO_PawnTwo state:_state];
+    [self buildPillar:node4];
+    [self buildHouse:node10 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node11];
+    [self buildPillar:node12];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node4 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node4 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node11 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node11 view:pawnTwo];
+
+    f3ViewAdaptee *pawnThree = [self buildPawn:node12 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node12 view:pawnThree];
+    
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node8 angle:90.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankOne];
+    
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node9 angle:135.f hole:0];
+    [self buildDragControl:_state node:node9 view:plankTwo];
+    
+    f3ViewAdaptee *plankThree = [self buildSmallPlank:node14 angle:45.f hole:0];
+    [self buildDragControl:_state node:node14 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node3 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node2 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node10 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node10 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node11 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node4 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node12 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node14 Origin:node11 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node14 Origin:node12 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node3 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node11 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node3 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node4 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node4 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node11 Target:node4];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node1 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node2 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node1 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node2 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node9 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node10 Origin:node5 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node10 Origin:node13 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node14 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node13 Target:node14];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node12 Origin:node9 Target:node14];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node12 Origin:node14 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node7 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node8 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node6 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node8 Target:node6];
+}
+
+- (void)loadLevelEleven:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:2.5f Angle:150.f];
+    [self addPointFrom:0 Radius:2.5f Angle:210.f]; // 2
+    [self addPointFrom:1 Radius:2.5f Angle:150.f];
+    [self addPointFrom:2 Radius:2.5f Angle:210.f]; // 4
+    [self addPointFrom:3 Radius:1.75f Angle:135.f];
+    [self addPointFrom:3 Radius:1.75f Angle:225.f]; // 6
+    [self addPointFrom:3 Radius:2.5f Angle:270.f];
+    [self addPointFrom:4 Radius:1.75f Angle:135.f]; // 8
+    [self addPointFrom:4 Radius:1.75f Angle:225.f];
+    [self addPointFrom:5 Radius:1.75f Angle:135.f]; // 10
+    [self addPointFrom:6 Radius:1.75f Angle:225.f];
+    [self addPointFrom:9 Radius:1.75f Angle:225.f]; // 12
+    [self addPointFrom:10 Radius:2.5f Angle:270.f];
+    [self addPointFrom:11 Radius:2.5f Angle:270.f]; // 14
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node10 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:10] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node12 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:12] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_state buildNode:[self getPointAt:13] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node14 = [_state buildNode:[self getPointAt:14] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnOne state:_state];
+    [self buildPillar:node3];
+    [self buildPillar:node4];
+    [self buildHouse:node10 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node11];
+    [self buildHouse:node12 type:TABULO_PawnTwo state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node12 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node12 view:pawnTwo];
+    
+    f3ViewAdaptee *pawnThree = [self buildPawn:node10 type:TABULO_PawnTwo];
+    [self buildDragControl:_state node:node10 view:pawnThree];
+
+    f3ViewAdaptee *plankOne = [self buildMediumPlank:node7 angle:90.f hole:0];
+    [self buildDragControl:_state node:node7 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node8 angle:135.f hole:0];
+    [self buildDragControl:_state node:node8 view:plankTwo];
+    
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node14 angle:90.f hole:0];
+    [self buildDragControl:_state node:node14 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node3 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node5 Origin:node10 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node3 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node6 Origin:node11 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node4 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node8 Origin:node11 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node4 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node9 Origin:node12 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node0 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node1 Origin:node3 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node2 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node3 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node4 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node13 Origin:node10 Target:node11];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node13 Origin:node11 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node14 Origin:node11 Target:node12];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node14 Origin:node12 Target:node11];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node8 Target:node9];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node4 Origin:node9 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node8 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node11 Origin:node6 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node5 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node3 Origin:node6 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node1 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node0 Origin:node2 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node1 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node7 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node2 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node13 Target:node14];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node11 Origin:node14 Target:node13];
+}
+
+- (void)loadLevelTwelve:(f3ViewBuilder *)_builder state:(f3GameState *)_state {
+
+    [self addPointFrom:0 Radius:1.75f Angle:75.f];
+    [self addPointFrom:0 Radius:1.75f Angle:165.f]; // 2
+    [self addPointFrom:1 Radius:1.75f Angle:75.f];
+    [self addPointFrom:2 Radius:1.75f Angle:165.f]; // 4
+    [self addPointFrom:3 Radius:2.5f Angle:90.f];
+    [self addPointFrom:3 Radius:2.5f Angle:150.f]; // 6
+    [self addPointFrom:3 Radius:2.5f Angle:210.f];
+    [self addPointFrom:4 Radius:2.5f Angle:90.f]; // 8
+    [self addPointFrom:5 Radius:2.5f Angle:90.f];
+    [self addPointFrom:6 Radius:2.5f Angle:150.f]; // 10
+    [self addPointFrom:9 Radius:1.75f Angle:165.f];
+    [self addPointFrom:9 Radius:2.5f Angle:210.f]; // 12
+    [self addPointFrom:10 Radius:1.75f Angle:75.f];
+    [self addPointFrom:11 Radius:1.75f Angle:165.f]; // 14
+    [self computePoints];
+
+    fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_state buildNode:[self getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_state buildNode:[self getPointAt:2] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[self getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node4 = [_state buildNode:[self getPointAt:4] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_state buildNode:[self getPointAt:5] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_state buildNode:[self getPointAt:6] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_state buildNode:[self getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_state buildNode:[self getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[self getPointAt:9] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_state buildNode:[self getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_state buildNode:[self getPointAt:11] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_state buildNode:[self getPointAt:12] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_state buildNode:[self getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node14 = [(fgLevelState *)_state buildHouseNode:[self getPointAt:14] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    [self clearPoints];
+
+    [self buildHouse:node0 type:TABULO_PawnFour state:_state];
+    [self buildPillar:node3];
+    [self buildPillar:node4];
+    [self buildPillar:node9];
+    [self buildPillar:node10];
+    [self buildHouse:node14 type:TABULO_PawnOne state:_state];
+    [self buildBackground];
+
+    [self buildComposite]; // gameplay background
+
+    f3ViewAdaptee *pawnOne = [self buildPawn:node0 type:TABULO_PawnOne];
+    [self buildDragControl:_state node:node0 view:pawnOne];
+
+    f3ViewAdaptee *pawnTwo = [self buildPawn:node14 type:TABULO_PawnFour];
+    [self buildDragControl:_state node:node14 view:pawnTwo];
+
+    f3ViewAdaptee *plankOne = [self buildSmallPlank:node2 angle:165.f hole:0];
+    [self buildDragControl:_state node:node2 view:plankOne];
+
+    f3ViewAdaptee *plankTwo = [self buildSmallPlank:node11 angle:165.f hole:0];
+    [self buildDragControl:_state node:node11 view:plankTwo];
+
+    f3ViewAdaptee *plankThree = [self buildMediumPlank:node6 angle:150.f hole:0];
+    [self buildDragControl:_state node:node6 view:plankThree];
+
+    [self buildComposite]; // gameplay elements
+
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node0 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node1 Origin:node3 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node2 Origin:node0 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node2 Origin:node4 Target:node0];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node11 Origin:node9 Target:node14];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node11 Origin:node14 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node10 Target:node14];
+    [self buildEdgesForPawn:TABULO_HaveSmallPlank Node:node13 Origin:node14 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node3 Target:node9];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node5 Origin:node9 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node3 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node6 Origin:node10 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node3 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node7 Origin:node4 Target:node3];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node4 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node8 Origin:node10 Target:node4];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node12 Origin:node9 Target:node10];
+    [self buildEdgesForPawn:TABULO_HaveMediumPlank Node:node12 Origin:node10 Target:node9];
+
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node1 Target:node2];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node0 Origin:node2 Target:node1];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node14 Origin:node11 Target:node13];
+    [self buildEdgesForPlank:TABULO_HaveSmallPlank Node:node14 Origin:node13 Target:node11];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node5 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node6 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node3 Origin:node7 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node7 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node4 Origin:node8 Target:node7];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node9 Origin:node5 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node9 Origin:node12 Target:node5];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node6 Target:node12];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node12 Target:node6];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node6 Target:node8];
+    [self buildEdgesForPlank:TABULO_HaveMediumPlank Node:node10 Origin:node8 Target:node6];
 }
 
 @end

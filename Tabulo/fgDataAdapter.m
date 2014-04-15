@@ -38,6 +38,7 @@
             if (_fromBundle)
             {
                 path = [[NSBundle mainBundle] pathForResource:_filename ofType:@".F3G" inDirectory:@"Content"];
+                // TODO fix for iOS 5.1
             }
             else
             {
