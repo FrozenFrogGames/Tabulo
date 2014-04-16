@@ -385,9 +385,10 @@ enum TabuloDialogItem {
                 }
                 else
                 {
-                    NSUInteger nextLevel = event.Level;
+                    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
                     fgLevelState *nextState = nil;
 
+                    NSUInteger nextLevel = event.Level;
                     if (event.Event == GAME_Next)
                     {
                         ++nextLevel; // increment level before to trigger play
@@ -406,14 +407,17 @@ enum TabuloDialogItem {
                     }
                     else
                     {
-                        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-
                         nextState = [[fgLevelState alloc] init:nil level:nextLevel];
                         
                         [director buildScene:dataWriter state:(fgLevelState *)nextState level:nextLevel];
                     }
-                    
-                    [producer switchState:nextState];
+
+                    if (nextState != nil)
+                    {
+                        [producer switchState:nextState];
+                        [nextState buildPauseButtton:director.Builder atPosition:CGPointMake(-7.f, -5.f) level:nextLevel];
+                        [director buildComposite];
+                    }
                 }
             }
         }

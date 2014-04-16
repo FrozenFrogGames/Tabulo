@@ -72,6 +72,7 @@ enum fgTabuloGrade {
 - (enum fgTabuloGrade)getGradeForLevel:(NSUInteger)_level;
 - (void)setGrade:(enum fgTabuloGrade)_grade level:(NSUInteger)_level;
 
+- (void)buildComposite;
 - (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level;
 
 @end

@@ -85,10 +85,6 @@
             [(fgLevelState *)_state bindSolution:solution];
         }
     }
-    
-    [(fgLevelState *)_state buildPauseButtton:_builder atPosition:CGPointMake(-7.f, -5.f) level:_level];
-    [_builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_builder popComponent]]; // gameplay background
 }
 
 - (void)buildBackground {

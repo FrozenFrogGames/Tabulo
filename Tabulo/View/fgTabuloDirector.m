@@ -205,6 +205,12 @@
     [dataFlags closeWithName:@"DATASAVE"];
 }
 
+- (void)buildComposite {
+    
+    [viewBuilder buildComposite:0];
+    [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
+}
+
 - (void)buildPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
 
     uint16_t dataIndex;
@@ -249,12 +255,6 @@
 
     f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragViewOverEdge class]];
     [_state appendComponent:[[f3Controller alloc] initState:controlState]];
-}
-
-- (void)buildComposite:(NSObject<IDataAdapter> *)_data {
-    
-    [viewBuilder buildComposite:0];
-    [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
 }
 
 - (void)buildSprite:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
@@ -443,7 +443,7 @@
                 [self buildDragControl:_data symbols:symbols state:_state];
                 break;
             case 0x0A:
-                [self buildComposite:_data];
+                [self buildComposite];
                 break;
             case 0x0B:
                 [self buildGraphSolution:_data state:_state];
