@@ -21,9 +21,6 @@
 
 @implementation fgMenuState
 
-const NSUInteger LEVEL_MAXIMUM = 18;
-const NSUInteger LEVEL_LOCKED = 19;
-
 - (id)init {
     
     self = [super init];
@@ -42,11 +39,13 @@ const NSUInteger LEVEL_LOCKED = 19;
     
     if (currentScene == nil)
     {
+        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
         currentScene = [[f3ViewScene alloc] init];
         
         NSUInteger index = 1;
         
-        while (index < LEVEL_MAXIMUM)
+        while (index < [director getLevelCount])
         {
             float offset = 1.5f -(((index -1) /6) *3.f);
             
@@ -76,7 +75,7 @@ const NSUInteger LEVEL_LOCKED = 19;
 }
 
 - (void)buildBackground:(f3ViewBuilder *)_builder {
-    
+
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
     f3IntegerArray *background = [director getResourceIndex:RESOURCE_BackgroundMenu];
@@ -124,9 +123,17 @@ const NSUInteger LEVEL_LOCKED = 19;
 
 - (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state position:(CGPoint)_position level:(NSUInteger)_level {
 
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    
+    bool isLevelLocked = [director isLevelLocked:_level];
+
     CGPoint coordonatePoint;
 
-    if (_level < LEVEL_LOCKED)
+    if (isLevelLocked)
+    {
+        coordonatePoint = CGPointMake(768.f, 1152.f);
+    }
+    else
     {
         CGPoint leftPosition, rightPosition;
 
@@ -157,10 +164,6 @@ const NSUInteger LEVEL_LOCKED = 19;
 
         coordonatePoint = CGPointMake(768.f, 832.f);
     }
-    else
-    {
-        coordonatePoint = CGPointMake(1088.f, 1152.f);
-    }
 
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
 
@@ -178,7 +181,7 @@ const NSUInteger LEVEL_LOCKED = 19;
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
 
-    if (_level < LEVEL_LOCKED)
+    if (!isLevelLocked)
     {
         f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];

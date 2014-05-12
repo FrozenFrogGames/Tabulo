@@ -108,6 +108,8 @@
 
 @implementation fgTabuloDirector
 
+const NSUInteger LEVEL_COUNT = 18;
+
 - (id)init:(Class )_adapterType {
 
     self = [super init:_adapterType];
@@ -120,6 +122,7 @@
         spritesheetLevel = nil;
         backgroundLevel = nil;
         levelFlags = [NSMutableArray array];
+        lockedLevelIndex = 7;
     }
 
     return self;
@@ -139,7 +142,7 @@
 
     fgDataAdapter *dataFlags = [[fgDataAdapter alloc] initWithName:@"DATASAVE" fromBundle:false];
 
-    for (NSUInteger i = 0; i < 18; ++i)
+    for (NSUInteger i = 0; i < LEVEL_COUNT; ++i)
     {
         if (dataFlags == nil)
         {
@@ -148,6 +151,14 @@
         else
         {
             [levelFlags addObject:[[__LevelFlags alloc] init:dataFlags]];
+        }
+    }
+    
+    if (dataFlags != nil) // if data has been saved then compute value of lockedLevelIndex
+    {
+        for (NSUInteger i = 1; i < (LEVEL_COUNT /6); ++i)
+        {
+            [self unlockLevel];
         }
     }
 }
@@ -170,9 +181,9 @@
 
 - (enum fgTabuloGrade)getGradeForLevel:(NSUInteger)_level {
 
-    if ([levelFlags count] > _level)
+    if (_level > 0 && _level <= [levelFlags count])
     {
-        return [(__LevelFlags *)[levelFlags objectAtIndex:_level] Grade];
+        return [(__LevelFlags *)[levelFlags objectAtIndex:_level -1] Grade];
     }
     
     return GRADE_none;
@@ -180,16 +191,46 @@
 
 - (void)setGrade:(enum fgTabuloGrade)_grade level:(NSUInteger)_level {
     
-    if ([levelFlags count] > _level)
+    if (_level > 0 && _level <= [levelFlags count])
     {
-        __LevelFlags *flags = [levelFlags objectAtIndex:_level];
+        __LevelFlags *flags = [levelFlags objectAtIndex:_level -1];
 
         if (flags.Grade != _grade)
         {
             flags.Grade = _grade;
             
+            [self unlockLevel];
+            
             [self writeLevelFlags];
         }
+    }
+}
+
+- (bool)isLevelLocked:(NSUInteger)_level {
+    
+    return (_level >= lockedLevelIndex);
+}
+
+- (NSUInteger)getLevelCount {
+    
+    return LEVEL_COUNT;
+}
+
+- (void)unlockLevel {
+
+    if (lockedLevelIndex < LEVEL_COUNT)
+    {
+        for (NSUInteger i = 6; i > 0; --i)
+        {
+            __LevelFlags *flags = [levelFlags objectAtIndex:lockedLevelIndex -i -1];
+            
+            if (flags.Grade == GRADE_none)
+            {
+                return;
+            }
+        }
+        
+        lockedLevelIndex += 6;
     }
 }
 

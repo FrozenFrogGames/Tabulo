@@ -38,7 +38,7 @@
         levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
         minimumPathLength = 0;
         solutions = nil;
-        hintEnable = true;
+        hintEnable = (_level < 7); // TODO implement hint button
         hintLayer = nil;
         hintCommand = nil;
     }
@@ -146,16 +146,16 @@
         levelGrade = grade;
     }
 
-    if (levelIndex < 18)
+    if ([director isLevelLocked:levelIndex+1])
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:GAME_Next level:levelIndex grade:grade];
+        [dialogState build:director.Builder event:GAME_Over level:levelIndex grade:grade];
         [producer switchState:dialogState];
     }
     else
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
-        [dialogState build:director.Builder event:GAME_Over level:levelIndex grade:grade];
+        [dialogState build:director.Builder event:GAME_Next level:levelIndex grade:grade];
         [producer switchState:dialogState];
     }
 }

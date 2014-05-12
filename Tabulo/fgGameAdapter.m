@@ -97,10 +97,10 @@
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-    
-    [super viewWillDisappear:animated];
-    
+
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidUnload
@@ -144,7 +144,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return YES;
+    return NO;
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -152,14 +152,14 @@
 - (void)update
 {
     [adaptee update:self.timeSinceLastUpdate];
-
+/*
     if (orientationHasChanged)
     {
         [(fgViewCanvas *)self.view deviceOrientationDidChange];
 
         orientationHasChanged = false;
     }
-
+ */
     [director.Scene refresh];
 }
 
