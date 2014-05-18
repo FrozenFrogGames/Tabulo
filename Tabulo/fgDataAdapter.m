@@ -50,19 +50,19 @@
 
             if (fileError != nil)
             {
-                NSLog(@"Read failed with error: %@", fileError);
+//              NSLog(@"Read failed with error: %@", fileError);
 
                 return nil;
             }
         }
         @catch (NSException* exception)
         {
-            NSLog(@"Read failed with exception: %@", exception);
+//          NSLog(@"Read failed with exception: %@", exception);
             
             return nil;
         }
 
-        NSLog(@"Read filename: %@", _filename);
+//      NSLog(@"Read filename: %@", _filename);
 
         marker = malloc(sizeof(uint8_t));
         cursor = 0;
@@ -87,11 +87,11 @@
 
         if ([data writeToFile:path options:NSDataWritingAtomic error:&fileError])
         {
-            NSLog(@"Write filename: %@", _filename);
+//          NSLog(@"Write filename: %@", _filename);
         }
         else if (fileError != nil)
         {
-            NSLog(@"Write failed with error: %@", fileError);
+//          NSLog(@"Write failed with error: %@", fileError);
         }
     }
     @catch (NSException* exception)

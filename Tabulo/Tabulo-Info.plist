@@ -8,19 +8,12 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIcons</key>
+	<dict/>
 	<key>CFBundleIcons~ipad</key>
-	<dict>
-		<key>CFBundlePrimaryIcon</key>
-		<dict>
-			<key>CFBundleIconFiles</key>
-			<array>
-				<string>Tabulo-Icon</string>
-				<string>tabulo-icon</string>
-			</array>
-		</dict>
-	</dict>
+	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>com.Frozenfrog.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.FrozenFrogGames.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -35,101 +28,6 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>UILaunchImageFile~ipad</key>
-	<string>Default</string>
-	<key>UILaunchImages~ipad</key>
-	<array>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Tabulo-Portrait</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Tabulo-Landscape</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default-Landscape</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default-Landscape</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Default</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Portrait</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Portrait</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Landscape</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-		<dict>
-			<key>UILaunchImageMinimumOSVersion</key>
-			<string>7.0</string>
-			<key>UILaunchImageName</key>
-			<string>Landscape</string>
-			<key>UILaunchImageOrientation</key>
-			<string>Landscape</string>
-			<key>UILaunchImageSize</key>
-			<string>{768, 1024}</string>
-		</dict>
-	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
