@@ -15,7 +15,7 @@
 #import "fgDialogState.h"
 #import "fgTabuloDirector.h"
 #import "fgEventOnClick.h"
-#import "fgTabuloLevel.h"
+#import "fgDataAdapter.h"
 
 @implementation fgDialogState
 
@@ -373,9 +373,7 @@ enum TabuloDialogItem {
             
             if (event.Event == GAME_Over)
             {
-                fgMenuState *nextState = [[fgMenuState alloc] init];
-                [nextState buildMenu:director.Builder];
-                [producer switchState:nextState];
+                [producer buildMenu:director.Builder];
             }
             else
             {
@@ -385,47 +383,31 @@ enum TabuloDialogItem {
                 }
                 else
                 {
-                    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-                    fgLevelState *nextState = nil;
-
                     NSUInteger nextLevel = event.Level;
+
                     if (event.Event == GAME_Next)
                     {
                         ++nextLevel; // increment level before to trigger play
                     }
 
                     NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)nextLevel]];
+
                     fgDataAdapter *dataWriter = [[fgDataAdapter alloc] initWithName:filename fromBundle:true];
-
-                    if (dataWriter == nil)
+                    if (dataWriter != nil)
                     {
-                        fgTabuloScene *nextScene = [[fgTabuloLevel alloc] init];
-
-                        nextState = [[fgLevelState alloc] init:nextScene level:nextLevel];
-                        
-                        [nextScene build:director.Builder state:nextState level:nextLevel];
-                    }
-                    else
-                    {
-                        nextState = [[fgLevelState alloc] init:nil level:nextLevel];
-                        
-                        [director buildScene:dataWriter state:(fgLevelState *)nextState level:nextLevel];
-                    }
-
-                    if (nextState != nil)
-                    {
-                        [producer switchState:nextState];
-                        [nextState buildPauseButtton:director.Builder atPosition:CGPointMake(-7.f, -5.f) level:nextLevel];
-                        [director buildComposite];
+                        fgLevelState *nextState = [[fgLevelState alloc] init:nextLevel];
+                        if (nextState != nil)
+                        {
+                            [(fgTabuloDirector *)director buildScene:dataWriter state:(fgLevelState *)nextState];
+                            [producer buildLayer:director.Builder state:nextState];
+                        }
                     }
                 }
             }
         }
         else
         {
-            fgMenuState *nextState = [[fgMenuState alloc] init];
-            [nextState buildMenu:director.Builder];
-            [producer switchState:nextState];
+            [producer buildMenu:director.Builder];
         }
     }
     else

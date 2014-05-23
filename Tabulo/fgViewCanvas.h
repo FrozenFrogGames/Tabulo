@@ -13,22 +13,12 @@
 
 @interface fgViewCanvas : GLKView<IViewCanvas> {
 
-    bool currentOrientationIsPortrait, targetOrientationIsPortrait, haveTextureCoordinates;
-
+    bool haveTextureCoordinates;
     NSMutableArray *textureLoaded;
     CGSize screenSize, unitSize;
-    
-    f3ViewScene *lastScene;
 }
 
-@property (readonly) bool OrientationIsPortrait;
-
-@property (readonly) CGSize Screen;
-@property (readonly) CGSize Unit;
-
 - (id)init:(EAGLContext *)_context;
-- (void)deviceOrientationDidChange;
-
 - (GLKTextureInfo *)getTexture:(NSInteger)_index;
 
 @end

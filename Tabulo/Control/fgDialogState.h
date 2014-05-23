@@ -11,7 +11,7 @@
 #import "../View/fgTabuloDirector.h"
 
 @interface fgDialogState : f3GameState {
-    
+
     f3ViewComposite *dialogLayer;
     f3GameState *previousState;
 }

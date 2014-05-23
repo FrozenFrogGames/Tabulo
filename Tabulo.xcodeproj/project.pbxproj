@@ -26,8 +26,6 @@
 		F6145D5018B04D5C00924636 /* background-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6145D4E18B04D5C00924636 /* background-gameplay.png */; };
 		F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5518B1B24200924636 /* fgTabuloEvent.m */; };
 		F6145D5918B2F3ED00924636 /* fgLevelState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5818B2F3ED00924636 /* fgLevelState.m */; };
-		F682185C189733D70041DA80 /* fgTabuloLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = F682185B189733D70041DA80 /* fgTabuloLevel.m */; };
-		F6821868189F26EC0041DA80 /* fgTabuloScene.m in Sources */ = {isa = PBXBuildFile; fileRef = F6821867189F26EC0041DA80 /* fgTabuloScene.m */; };
 		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6AA4C6C19283C3E00E93CAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6AA4C6B19283C3E00E93CAF /* Images.xcassets */; };
@@ -77,10 +75,6 @@
 		F6145D5518B1B24200924636 /* fgTabuloEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEvent.m; path = Control/fgTabuloEvent.m; sourceTree = "<group>"; };
 		F6145D5718B2F3ED00924636 /* fgLevelState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevelState.h; path = Control/fgLevelState.h; sourceTree = "<group>"; };
 		F6145D5818B2F3ED00924636 /* fgLevelState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevelState.m; path = Control/fgLevelState.m; sourceTree = "<group>"; };
-		F682185A189733D70041DA80 /* fgTabuloLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloLevel.h; path = View/fgTabuloLevel.h; sourceTree = "<group>"; };
-		F682185B189733D70041DA80 /* fgTabuloLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloLevel.m; path = View/fgTabuloLevel.m; sourceTree = "<group>"; };
-		F6821866189F26EC0041DA80 /* fgTabuloScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloScene.h; path = View/fgTabuloScene.h; sourceTree = "<group>"; };
-		F6821867189F26EC0041DA80 /* fgTabuloScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloScene.m; path = View/fgTabuloScene.m; sourceTree = "<group>"; };
 		F682186C189F444D0041DA80 /* fgEventOnClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgEventOnClick.h; path = Control/fgEventOnClick.h; sourceTree = "<group>"; };
 		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
@@ -129,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				F6AA4C6B19283C3E00E93CAF /* Images.xcassets */,
-				F60250D3187DDDC80029915C /* FrozenfrogTabulo */,
+				F60250D3187DDDC80029915C /* Tabulo */,
 				F60250C8187DDDC80029915C /* Frameworks */,
 				F60250C7187DDDC80029915C /* Products */,
 			);
@@ -156,7 +150,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		F60250D3187DDDC80029915C /* FrozenfrogTabulo */ = {
+		F60250D3187DDDC80029915C /* Tabulo */ = {
 			isa = PBXGroup;
 			children = (
 				F682185E189736720041DA80 /* Adapter */,
@@ -165,7 +159,6 @@
 				F6BDB2C918CD64A300430653 /* Content */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
-			name = FrozenfrogTabulo;
 			path = Tabulo;
 			sourceTree = "<group>";
 		};
@@ -239,7 +232,6 @@
 			children = (
 				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
 				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
-				F6DF01F418B462CA00E7DF6C /* Visitor */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -262,17 +254,6 @@
 				F6145D5518B1B24200924636 /* fgTabuloEvent.m */,
 			);
 			name = Event;
-			sourceTree = "<group>";
-		};
-		F6DF01F418B462CA00E7DF6C /* Visitor */ = {
-			isa = PBXGroup;
-			children = (
-				F6821866189F26EC0041DA80 /* fgTabuloScene.h */,
-				F6821867189F26EC0041DA80 /* fgTabuloScene.m */,
-				F682185A189733D70041DA80 /* fgTabuloLevel.h */,
-				F682185B189733D70041DA80 /* fgTabuloLevel.m */,
-			);
-			name = Visitor;
 			sourceTree = "<group>";
 		};
 		F6DF021D18BBE81D00E7DF6C /* Command */ = {
@@ -373,8 +354,6 @@
 				F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
-				F6821868189F26EC0041DA80 /* fgTabuloScene.m in Sources */,
-				F682185C189733D70041DA80 /* fgTabuloLevel.m in Sources */,
 				F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
@@ -473,7 +452,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "0411918E-441A-4B99-808A-49DDB3179F21";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -491,7 +470,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "50EDC085-6AD2-4DD6-A437-7221F365041A";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

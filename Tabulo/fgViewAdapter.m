@@ -162,8 +162,6 @@
     }
 
     [ressource prepareToDraw];
-    
-    // TODO support others draw methods based on adaptee property
 
     [_canvas drawItem:view.Type Vertex:view.Vertex Indices:view.Indices Count:view.Count];
 

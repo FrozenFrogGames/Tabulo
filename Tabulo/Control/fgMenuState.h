@@ -13,11 +13,9 @@
 
 @interface fgMenuState : f3GameState {
     
-    f3ViewScene *currentScene;
-    f3OffsetDecorator *offsetDecorator;
     float verticalOffset;
+    f3OffsetDecorator *offsetDecorator;
+    CGPoint lastOffsetPoint;
 }
-
-- (void)buildMenu:(f3ViewBuilder *)_builder;
 
 @end

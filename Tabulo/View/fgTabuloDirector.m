@@ -135,13 +135,60 @@ const NSUInteger LEVEL_COUNT = 18;
         gameCanvas = (fgViewCanvas *)_canvas;
     }
 
-    spritesheetMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-menu.png"]), nil];
-    backgroundMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-menu.png"]), nil];
-    spritesheetLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
-    backgroundLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
+    if (spritesheetMenu == nil)
+    {
+        spritesheetMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-menu.png"]), nil];
+    }
+
+    if (backgroundMenu == nil)
+    {
+        backgroundMenu = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-menu.png"]), nil];
+    }
+
+    if (spritesheetLevel == nil)
+    {
+        spritesheetLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"spritesheet-gameplay.png"]), nil];
+    }
+
+    if (backgroundLevel == nil)
+    {
+        backgroundLevel = [f3IntegerArray buildHandleForUInt16:1, USHORT_BOX([gameCanvas loadRessource:@"background-gameplay.png"]), nil];
+    }
+}
+
+- (void)clearResource {
+    
+    if (gameCanvas != nil)
+    {
+        [gameCanvas clearRessource];
+    }
+    
+    spritesheetMenu = nil;
+    backgroundMenu = nil;
+    spritesheetLevel = nil;
+    backgroundLevel = nil;
+}
+
+- (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
+
+    switch (_resource)
+    {
+        case RESOURCE_SpritesheetMenu: return spritesheetMenu;
+
+        case RESOURCE_SpritesheetLevel: return spritesheetLevel;
+
+        case RESOURCE_BackgroundMenu: return backgroundMenu;
+            
+        case RESOURCE_BackgroundLevel: return backgroundLevel;
+            
+        default: return nil;
+    }
+}
+
+- (void)loadSavegame {
 
     fgDataAdapter *dataFlags = [[fgDataAdapter alloc] initWithName:@"DATASAVE" fromBundle:false];
-
+    
     for (NSUInteger i = 0; i < LEVEL_COUNT; ++i)
     {
         if (dataFlags == nil)
@@ -160,22 +207,6 @@ const NSUInteger LEVEL_COUNT = 18;
         {
             [self unlockLevel];
         }
-    }
-}
-
-- (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource {
-
-    switch (_resource)
-    {
-        case RESOURCE_SpritesheetMenu: return spritesheetMenu;
-
-        case RESOURCE_SpritesheetLevel: return spritesheetLevel;
-
-        case RESOURCE_BackgroundMenu: return backgroundMenu;
-            
-        case RESOURCE_BackgroundLevel: return backgroundLevel;
-            
-        default: return nil;
     }
 }
 
@@ -440,7 +471,7 @@ const NSUInteger LEVEL_COUNT = 18;
     [(fgLevelState *)_state bindSolution:[[f3GraphConfig alloc] init:_data]];
 }
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level {
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state {
 
     scene = [[f3ViewScene alloc] init];
     

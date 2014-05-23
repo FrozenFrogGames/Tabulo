@@ -75,7 +75,6 @@ enum fgTabuloGrade {
 - (bool)isLevelLocked:(NSUInteger)_level;
 - (NSUInteger)getLevelCount;
 
-- (void)buildComposite;
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state level:(NSUInteger)_level;
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state;
 
 @end

@@ -32,7 +32,7 @@
     {
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
 
-        adaptee = [[f3GameAdaptee alloc] initState:[[fgMenuState alloc] init]];
+        adaptee = [[f3GameAdaptee alloc] initAdaptee:[fgMenuState class]];
 
         orientationHasChanged = false;
     }
@@ -51,6 +51,10 @@
 
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(viewOrientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
     if (self.context != nil)
@@ -66,14 +70,55 @@
     
     [EAGLContext setCurrentContext:self.context];
 
+    [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
+    
     [director loadResource:canvas];
 
-    [(fgMenuState *)adaptee.State buildMenu:director.Builder];
-    [adaptee.State begin:nil owner:adaptee];
+    [director loadSavegame];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(viewOrientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification object:nil];
+    [adaptee buildMenu:director.Builder];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+
+    [director loadResource:(fgViewCanvas *)self.view];
+    
+    [director.Scene refresh];
+
+    [super viewWillAppear:animated];
+
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+
+    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+
+    [super viewWillDisappear:animated];
+
+    [director clearResource];
+}
+
+- (void)viewOrientationDidChange:(NSNotification *)notification {
+    
+    orientationHasChanged = true;
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    
+    // TODO dispose of any resources that can be recreated.
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (UIDeviceOrientationIsLandscape(interfaceOrientation))
+    {
+        return YES;
+    }
+
+    return NO;
 }
 
 - (void)dealloc
@@ -82,69 +127,10 @@
     {
         [EAGLContext setCurrentContext:nil];
     }
-}
-
-- (void)viewWillAppear:(BOOL)animated {
     
-    [super viewWillAppear:animated];
-
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-}
-
-- (void)viewOrientationDidChange:(NSNotification *)notification {
+    director = nil;
     
-    orientationHasChanged = true;
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-
-    [super viewWillDisappear:animated];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    
-    [EAGLContext setCurrentContext:self.context];
-    
-    if ([EAGLContext currentContext] == self.context)
-    {
-        [EAGLContext setCurrentContext:nil];
-    }
-    
-	self.context = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    
-    if ([self isViewLoaded] && ([[self view] window] == nil))
-    {
-        self.view = nil;
-        
-        if ([EAGLContext currentContext] == self.context)
-        {
-            [EAGLContext setCurrentContext:nil];
-        }
-        
-        self.context = nil;
-        
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-
-        // TODO trigger f3Exception
-    }
-    
-    // TODO dispose of any resources that can be recreated.
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return NO;
+    adaptee = nil;
 }
 
 #pragma mark - GLKView and GLKViewController delegate methods
@@ -152,35 +138,30 @@
 - (void)update
 {
     [adaptee update:self.timeSinceLastUpdate];
-/*
+
     if (orientationHasChanged)
     {
-        [(fgViewCanvas *)self.view deviceOrientationDidChange];
+        [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
 
         orientationHasChanged = false;
     }
- */
+
     [director.Scene refresh];
 }
 
 #pragma mark - Touch based methods
 
-- (CGPoint)locationInRelative:(UITouch *)_touch {
-
-    fgViewCanvas *canvas = (fgViewCanvas *)self.view;
+- (CGPoint)absolutePointInTouch:(UITouch *)_touch {
 
     CGPoint absolutePoint = [_touch locationInView:self.view];
-    
+
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
     {
         absolutePoint.x = absolutePoint.x * [[UIScreen mainScreen] scale];
         absolutePoint.y = absolutePoint.y * [[UIScreen mainScreen] scale];
     }
 
-    float relativeX = (absolutePoint.x - (canvas.Screen.width / 2.f)) / canvas.Unit.width;
-    float relativeY = ((canvas.Screen.height - absolutePoint.y) - (canvas.Screen.height / 2.f)) / canvas.Unit.height;
-
-    return CGPointMake(relativeX, relativeY);
+    return absolutePoint;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -189,7 +170,7 @@
 
     for (id touch in touchArray)
     {
-        CGPoint relativePoint = [self locationInRelative:touch];
+        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
 
         [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
     }
@@ -201,7 +182,7 @@
     
     for (id touch in touchArray)
     {
-        CGPoint relativePoint = [self locationInRelative:touch];
+        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
 
         [adaptee notifyInput:relativePoint type:INPUT_MOVED];
     }
@@ -213,7 +194,7 @@
     
     for (id touch in touchArray)
     {
-        CGPoint relativePoint = [self locationInRelative:touch];
+        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
 
         [adaptee notifyInput:relativePoint type:INPUT_ENDED];
     }

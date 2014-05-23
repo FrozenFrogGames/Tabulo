@@ -21,44 +21,13 @@
     {
         self.context = _context;
 
-        targetOrientationIsPortrait = false;
-        currentOrientationIsPortrait = false;
-
-        screenSize = CGSizeZero;
-        unitSize = CGSizeMake(64.f, 64.f);
         textureLoaded = [NSMutableArray array];
+        
+        screenSize = CGSizeZero;
+        unitSize = CGSizeZero;
     }
 
     return self;
-}
-
-- (CGSize) Screen {
-    
-    return screenSize;
-}
-
-- (CGSize) Unit {
-    
-    return unitSize;
-}
-
-- (bool)OrientationIsPortrait {
-
-    return targetOrientationIsPortrait;
-}
-
-- (void)deviceOrientationDidChange {
-
-    const UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-
-    if (UIDeviceOrientationIsPortrait(deviceOrientation))
-    {
-        targetOrientationIsPortrait = true;
-    }
-    else if (UIDeviceOrientationIsLandscape(deviceOrientation))
-    {
-        targetOrientationIsPortrait = false;
-    }
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -67,108 +36,23 @@
 
     glClearColor(1.f, 1.f, 1.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    f3ViewScene *scene = [f3GameDirector Director].Scene;
     
-    if (scene != lastScene)
+    if (!CGSizeEqualToSize(screenSize, CGSizeZero) && !CGSizeEqualToSize(unitSize, CGSizeZero))
     {
-        
-    }
-    
-    lastScene = scene;
-    
-    if (CGSizeEqualToSize(screenSize, CGSizeZero))
-    {
-        const UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
-        
-        if (UIDeviceOrientationIsPortrait(deviceOrientation))
+        f3ViewScene *scene = [f3GameDirector Director].Scene;
+        if (scene != nil)
         {
-            targetOrientationIsPortrait = true;
-        }
-        else if (UIDeviceOrientationIsLandscape(deviceOrientation))
-        {
-            targetOrientationIsPortrait = false;
-        }
-
-        currentOrientationIsPortrait = targetOrientationIsPortrait;
-
-        const CGSize deviceResolution = [[UIScreen mainScreen] bounds].size;
-
-        if (currentOrientationIsPortrait)
-        {
-            screenSize = deviceResolution;
-        }
-        else
-        {
-            screenSize.width = deviceResolution.height;
-            screenSize.height = deviceResolution.width;
-        }
-
-        if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES)
-        {
-            screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];
-            screenSize.height = screenSize.height * [[UIScreen mainScreen] scale];
-        }
-
-        unitSize = [[f3GameAdaptee Producer] computeUnitSize:screenSize];
-        
-        [scene deviceOrientationDidChange:currentOrientationIsPortrait];
-    }
-    else
-    {
-        bool bOrientationHasChanged = (currentOrientationIsPortrait != targetOrientationIsPortrait);
-
-        if (bOrientationHasChanged)
-        {
-            const CGSize deviceResolution = [[UIScreen mainScreen] bounds].size;
-
-            if (targetOrientationIsPortrait)
+            fgViewAdapter *currentView = (fgViewAdapter *)[scene firstView];
+            while (currentView != nil)
             {
-                screenSize = deviceResolution;
+                [currentView updatePosition:screenSize Scale:unitSize];
+
+                [currentView drawItem:(NSObject<IViewCanvas> *)self];
+
+                currentView = (fgViewAdapter *)[scene nextView];
             }
-            else
-            {
-                screenSize.width = deviceResolution.height;
-                screenSize.height = deviceResolution.width;
-            }
-
-            if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // support RETINA display
-            {
-                screenSize.width = screenSize.width * [[UIScreen mainScreen] scale];
-                screenSize.height = screenSize.height * [[UIScreen mainScreen] scale];
-            }
-
-            currentOrientationIsPortrait = targetOrientationIsPortrait;
-        }
-
-        [scene deviceOrientationDidChange:currentOrientationIsPortrait];
-    }
-
-    if (scene != nil)
-    {
-        fgViewAdapter *currentView = (fgViewAdapter *)[scene firstView];
-        
-        while (currentView != nil)
-        {
-            [currentView updatePosition:screenSize Scale:unitSize];
-
-            [currentView drawItem:(NSObject<IViewCanvas> *)self];
-
-            currentView = (fgViewAdapter *)[scene nextView];
         }
     }
-}
-
-- (void)clearRessource {
-
-    for (NSUInteger index =0; index < [textureLoaded count]; ++index)
-    {
-        GLKTextureInfo *textureInfo = [textureLoaded objectAtIndex:index];
-        GLuint textureName = textureInfo.name;
-        glDeleteTextures(1, &textureName);
-    }
-    
-    [textureLoaded removeAllObjects];
 }
 
 - (NSUInteger)loadRessource:(NSString *)_name {
@@ -186,6 +70,24 @@
     }
 
     return NSUIntegerMax;
+}
+
+- (void)clearRessource {
+    
+    for (NSUInteger index =0; index < [textureLoaded count]; ++index)
+    {
+        GLKTextureInfo *textureInfo = [textureLoaded objectAtIndex:index];
+        GLuint textureName = textureInfo.name;
+        glDeleteTextures(1, &textureName);
+    }
+    
+    [textureLoaded removeAllObjects];
+}
+
+- (void)setScreen:(CGSize)_screen unit:(CGSize)_unit {
+    
+    screenSize = _screen;
+    unitSize = _unit;
 }
 
 - (GLKTextureInfo *)getTexture:(NSInteger)_index {

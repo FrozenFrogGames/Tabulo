@@ -27,20 +27,20 @@
     return nil;
 }
 
-- (id)init:(f3ViewScene *)_scene level:(NSUInteger)_level {
+- (id)init:(NSUInteger)_level {
 
     self = [super init];
 
     if (self != nil)
     {
-        currentScene = _scene;
         levelIndex = _level;
         levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
         minimumPathLength = 0;
         solutions = nil;
-        hintEnable = (_level < 7); // TODO implement hint button
-        hintLayer = nil;
+        overlayLayer = [[f3ViewComposite alloc] init];
+        hintView = nil;
         hintCommand = nil;
+        hintEnable = (_level < 7); // TODO implement hint button
     }
 
     return self;
@@ -63,7 +63,7 @@
     [solutions addObject:_config];
 }
 
-- (void)buildPauseButtton:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position level:(NSUInteger)_level {
+- (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
 
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
 
@@ -81,11 +81,16 @@
     [_builder push:[f3VectorHandle buildHandleForWidth:1.25f height:1.25f]];
     [_builder buildDecorator:2];
 
-    [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
-    [_builder buildDecorator:1];
+    float x = 0.75f -(_screen.width /2.f /_unit.width);
+    float y = 0.75f -(_screen.height /2.f /_unit.height);
 
-    f3GraphNode *node = [self buildNode:_position withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
-    fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:_level];
+    [_builder push:[f3VectorHandle buildHandleForWidth:x height:y]];
+    [_builder buildDecorator:1];
+    
+    [overlayLayer appendComponent:[_builder popComponent]];
+
+    f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
+    fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
     fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
     [self appendComponent:[[f3Controller alloc] initState:controlView]];
 }
@@ -118,9 +123,20 @@
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
     
-    if (currentScene != nil)
+    f3ViewScene *scene = [f3GameDirector Director].Scene;
+
+    [scene appendComposite:overlayLayer];
+}
+
+- (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
+
+    [super update:_elapsed owner:_owner];
+
+    if (hintView != nil && hintCommand != nil && hintCommand.finished)
     {
-        [[f3GameDirector Director] loadScene:currentScene];
+        [overlayLayer removeComponent:hintView];
+        hintView = nil;
+        hintCommand = nil;
     }
 }
 
@@ -162,7 +178,9 @@
 
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
-    currentScene = nil;
+    f3ViewScene *scene = [f3GameDirector Director].Scene;
+
+    [scene removeComposite:overlayLayer];
 }
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
@@ -222,23 +240,18 @@
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 
-    if (hintCommand != nil)
-    {
-        [[f3GameAdaptee Producer] removeComponent:hintCommand];
-        hintCommand = nil; // action interrupted
-    }
-    
-    if (hintLayer != nil)
-    {
-        [hintLayer removeAllComponents];
-        [currentScene removeComposite:hintLayer];
-        hintLayer = nil;
-    }
-
     if (_event.Event < GAME_EVENT_MAX)
     {
         f3GameDirector *director = [f3GameDirector Director];
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
+
+        if (hintView != nil && hintCommand != nil && _event.Event == GAME_Over)
+        {
+            [overlayLayer removeComponent:hintView];
+            [hintCommand instantKill];
+            hintView = nil;
+            hintCommand = nil;
+        }
 
         fgDialogState *dialogState = [[fgDialogState alloc] init:self];
         [dialogState build:director.Builder event:_event.Event level:levelIndex grade:levelGrade];
@@ -247,25 +260,6 @@
     else
     {
         [super notifyEvent:_event];
-    }
-}
-
-- (void)onActionCompleted:(f3ControlComponent *)_action owner:(f3Controller *)_owner {
-    
-    if (_action == hintCommand)
-    {
-        hintCommand = nil;
-
-        if (hintLayer != nil)
-        {
-            [hintLayer removeAllComponents];
-            [currentScene removeComposite:hintLayer];
-            hintLayer = nil;
-        }
-    }
-    else
-    {
-        [super onActionCompleted:_action owner:_owner];
     }
 }
 
@@ -296,17 +290,12 @@
 
     if (hintEnable)
     {
-        if (hintCommand != nil)
+        if (hintView != nil && hintCommand != nil)
         {
-            [controls removeComponent:hintCommand];
+            [overlayLayer removeComponent:hintView];
+            [hintCommand instantKill];
+            hintView = nil;
             hintCommand = nil;
-        }
-
-        if (hintLayer != nil)
-        {
-            [hintLayer removeAllComponents];
-            [currentScene removeComposite:hintLayer];
-            hintLayer = nil;
         }
 
         f3GraphConfig *nextConfig = nil;
@@ -341,22 +330,23 @@
 
         if (nextConfig != nil)
         {
-            hintEdge = [self findEdgeFor:_config next:nextConfig];
+            f3GraphEdge *hintEdge = [self findEdgeFor:_config next:nextConfig];
 
             if (hintEdge != nil)
             {
                 CGPoint originPoint = hintEdge.Origin.Position;
-                f3ViewBuilder *builder = [[f3GameDirector Director] Builder];
-                f3ViewAdaptee *view = [self buildHintcursor:builder atPosition:originPoint];
-                [builder buildComposite:0];
-                hintLayer = (f3ViewComposite *)[builder popComponent];
-                [[f3GameDirector Director].Scene appendComposite:hintLayer];
-
                 f3VectorHandle *targetPoint = [hintEdge.Target getPositionHandle];
                 f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
                 f3FloatArray *zoomOut = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:-0.33f], [[NSNumber alloc] initWithFloat:-0.33f], nil];
                 f3FloatArray *scale = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.5f], [[NSNumber alloc] initWithFloat:1.f], nil];
                 f3FloatArray *zoomIn = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.33f], [[NSNumber alloc] initWithFloat:0.33f], nil];
+
+                f3ViewBuilder *builder = [[f3GameDirector Director] Builder];
+                f3ViewAdaptee *view = [self buildHintcursor:builder atPosition:originPoint];
+
+                [builder buildComposite:0];
+                hintView = (f3ViewComposite *)[builder popComponent];
+                [overlayLayer appendComponent:hintView];
 
                 hintCommand = [[f3ControlCommand alloc] init];
                 [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomOut speed:0.5f]];
@@ -364,7 +354,7 @@
                 [hintCommand appendComponent:[[f3SetOffsetCommand alloc] initWithView:view Offset:targetPoint]];
                 [hintCommand appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:scale]];
                 [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomIn speed:0.5f]];
-                [[f3GameAdaptee Producer] appendComponent:hintCommand];
+                [controls appendComponent:hintCommand];
             }
         }
     }
