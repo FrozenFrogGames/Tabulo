@@ -278,8 +278,9 @@ const NSUInteger LEVEL_COUNT = 18;
 }
 
 - (void)buildComposite {
-    
+
     [viewBuilder buildComposite:0];
+
     [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
 }
 
@@ -465,7 +466,6 @@ const NSUInteger LEVEL_COUNT = 18;
     }
 }
 
-
 - (void)buildGraphSolution:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state {
 
     [(fgLevelState *)_state bindSolution:[[f3GraphConfig alloc] init:_data]];
@@ -538,8 +538,6 @@ const NSUInteger LEVEL_COUNT = 18;
             case 0x11:
                 [self buildEdgesForPlank:_data symbols:symbols];
                 break;
-                
-            // TODO add GraphConfig and GraphResolver
         }
 
         marker = [_data readMarker];

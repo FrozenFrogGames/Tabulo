@@ -2,63 +2,99 @@
   "images" : [
     {
       "size" : "29x29",
-      "idiom" : "ipad",
-      "filename" : "tabulo-setting58.png",
-      "scale" : "2x"
-    },
-    {
-      "size" : "72x72",
-      "idiom" : "ipad",
-      "filename" : "tabulo-icon72.png",
+      "idiom" : "iphone",
+      "filename" : "tabulo-setting29pod.png",
       "scale" : "1x"
     },
     {
-      "size" : "72x72",
-      "idiom" : "ipad",
-      "filename" : "tabulo-icon144.png",
-      "scale" : "2x"
-    },
-    {
-      "size" : "76x76",
-      "idiom" : "ipad",
-      "filename" : "tabulo-icon76.png",
-      "scale" : "1x"
-    },
-    {
-      "size" : "76x76",
-      "idiom" : "ipad",
-      "filename" : "tabulo-icon152.png",
-      "scale" : "2x"
-    },
-    {
-      "size" : "50x50",
-      "idiom" : "ipad",
-      "filename" : "tabulo-spot50.png",
-      "scale" : "1x"
-    },
-    {
-      "size" : "50x50",
-      "idiom" : "ipad",
-      "filename" : "tabulo-spot100.png",
+      "size" : "29x29",
+      "idiom" : "iphone",
+      "filename" : "tabulo-setting58pod.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
-      "idiom" : "ipad",
-      "filename" : "tabulo-spot40.png",
+      "idiom" : "iphone",
+      "filename" : "tabulo-spot80pod.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "tabulo-icon57pod.png",
       "scale" : "1x"
     },
     {
-      "size" : "40x40",
-      "idiom" : "ipad",
-      "filename" : "tabulo-spot80.png",
+      "size" : "57x57",
+      "idiom" : "iphone",
+      "filename" : "tabulo-icon114pod.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "60x60",
+      "idiom" : "iphone",
+      "filename" : "tabulo-icon120pod.png",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "tabulo-setting29.png",
+      "filename" : "tabulo-setting29pad.png",
       "scale" : "1x"
+    },
+    {
+      "size" : "29x29",
+      "idiom" : "ipad",
+      "filename" : "tabulo-setting58pad.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "tabulo-spot40pad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "40x40",
+      "idiom" : "ipad",
+      "filename" : "tabulo-spot80pad.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "tabulo-spot50pad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "50x50",
+      "idiom" : "ipad",
+      "filename" : "tabulo-spot100pad.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "tabulo-icon72pad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "72x72",
+      "idiom" : "ipad",
+      "filename" : "tabulo-icon144pad.png",
+      "scale" : "2x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "tabulo-icon76pad.png",
+      "scale" : "1x"
+    },
+    {
+      "size" : "76x76",
+      "idiom" : "ipad",
+      "filename" : "tabulo-icon152pad.png",
+      "scale" : "2x"
     }
   ],
   "info" : {

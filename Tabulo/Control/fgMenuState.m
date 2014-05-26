@@ -220,7 +220,7 @@
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
 }
-
+/*
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
 
     [super update:_elapsed owner:_owner];
@@ -230,7 +230,7 @@
         lastOffsetPoint =  lastInputPoint;
     }
 }
-
+ */
 - (void)notifyInput:(CGPoint)_relativePoint type:(enum f3InputType)_type {
     
     _relativePoint.y -= verticalOffset;

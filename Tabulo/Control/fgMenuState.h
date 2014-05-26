@@ -15,7 +15,7 @@
     
     float verticalOffset;
     f3OffsetDecorator *offsetDecorator;
-    CGPoint lastOffsetPoint;
+//  CGPoint lastOffsetPoint;
 }
 
 @end

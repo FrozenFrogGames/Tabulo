@@ -96,33 +96,33 @@
 }
 
 - (f3ViewAdaptee *)buildHintcursor:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position {
-    
+
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
-    
+
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
-    
+
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
-    
+
     f3ViewAdaptee *view = (f3ViewAdaptee *)[_builder top];
 
     [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(1600.f, 1216.f) withExtend:CGSizeMake(64.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
-    
+
     [_builder push:[f3VectorHandle buildHandleForWidth:0.83f height:1.33f]];
     [_builder buildDecorator:2];
-    
+
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
-    
+
     return view;
 }
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
-    
+
     f3ViewScene *scene = [f3GameDirector Director].Scene;
 
     [scene appendComposite:overlayLayer];
