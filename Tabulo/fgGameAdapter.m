@@ -25,15 +25,15 @@
 @synthesize context = _context;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-
+    
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     
     if (self != nil)
     {
         director = [[fgTabuloDirector alloc] init:[fgViewAdapter class]];
-
+        
         adaptee = [[f3GameAdaptee alloc] initAdaptee:[fgMenuState class]];
-
+        
         orientationHasChanged = false;
     }
     
@@ -48,7 +48,7 @@
 - (void)viewDidLoad
 {
     fgViewCanvas *canvas = nil;
-
+    
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -56,7 +56,7 @@
                                                  name:UIDeviceOrientationDidChangeNotification object:nil];
     
     self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-
+    
     if (self.context != nil)
     {
         canvas = (fgViewCanvas *)self.view;
@@ -69,33 +69,33 @@
     }
     
     [EAGLContext setCurrentContext:self.context];
-
+    
     [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
     
     [director loadResource:canvas];
-
+    
     [director loadSavegame];
-
+    
     [adaptee buildMenu:director.Builder];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-
+    
     [director loadResource:(fgViewCanvas *)self.view];
     
     [director.Scene refresh];
-
+    
     [super viewWillAppear:animated];
-
+    
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-
+    
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-
+    
     [super viewWillDisappear:animated];
-
+    
     [director clearResource];
 }
 
@@ -117,7 +117,7 @@
     {
         return YES;
     }
-
+    
     return NO;
 }
 
@@ -138,40 +138,40 @@
 - (void)update
 {
     [adaptee update:self.timeSinceLastUpdate];
-
-    if (orientationHasChanged)
+    
+    if (adaptee.StateHasChanged || orientationHasChanged)
     {
         [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
-
+        
         orientationHasChanged = false;
     }
-
+    
     [director.Scene refresh];
 }
 
 #pragma mark - Touch based methods
 
 - (CGPoint)absolutePointInTouch:(UITouch *)_touch {
-
+    
     CGPoint absolutePoint = [_touch locationInView:self.view];
-
+    
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)] == YES) // to support RETINA display
     {
         absolutePoint.x = absolutePoint.x * [[UIScreen mainScreen] scale];
         absolutePoint.y = absolutePoint.y * [[UIScreen mainScreen] scale];
     }
-
+    
     return absolutePoint;
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-
+    
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
-
+    
     for (id touch in touchArray)
     {
         CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-
+        
         [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
     }
 }
@@ -183,19 +183,19 @@
     for (id touch in touchArray)
     {
         CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-
+        
         [adaptee notifyInput:relativePoint type:INPUT_MOVED];
     }
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
-
+    
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
     
     for (id touch in touchArray)
     {
         CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-
+        
         [adaptee notifyInput:relativePoint type:INPUT_ENDED];
     }
 }

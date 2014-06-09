@@ -110,7 +110,6 @@
 
 - (void)bindTextureCoordinates:(const GLvoid*)_coordinates {
 
-    glBindVertexArrayOES(0);
     glEnableVertexAttribArray(GLKVertexAttribTexCoord0);
     glVertexAttribPointer(GLKVertexAttribTexCoord0, 2, GL_FLOAT, GL_FALSE, 0, _coordinates);
 

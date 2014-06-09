@@ -11,12 +11,13 @@
 #import "../View/fgTabuloDirector.h"
 
 @interface fgDialogState : f3GameState {
-
+    
     f3ViewComposite *dialogLayer;
     f3GameState *previousState;
+    fgTabuloEvent *dialogEvent;
+    float dialogScale;
 }
 
-- (id)init:(f3GameState *)_previousState;
-- (void)build:(f3ViewBuilder *)_builder event:(enum f3GameEvent)_event level:(NSUInteger)_level grade:(enum fgTabuloGrade)_grade;
+- (id)init:(f3GameState *)_previousState event:(fgTabuloEvent *)_event;
 
 @end
