@@ -27,6 +27,11 @@
 		F61CD766193EBEED006F3C04 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD765193EBEED006F3C04 /* GameKit.framework */; };
 		F61CD768193EBEF3006F3C04 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD767193EBEF3006F3C04 /* StoreKit.framework */; };
 		F61CD76A193EC146006F3C04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD769193EC146006F3C04 /* UIKit.framework */; };
+		F61CD77619589C49006F3C04 /* fgGame0001.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77519589C49006F3C04 /* fgGame0001.m */; };
+		F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77A1958A030006F3C04 /* fgTabuloScene.m */; };
+		F61CD77E1958A291006F3C04 /* fgTabuloGame.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77D1958A291006F3C04 /* fgTabuloGame.m */; };
+		F61CD7821958D385006F3C04 /* fgGame0019.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7811958D385006F3C04 /* fgGame0019.m */; };
+		F61CD7851958D6EC006F3C04 /* fgGame0003.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7841958D6EC006F3C04 /* fgGame0003.m */; };
 		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6AA4C6C19283C3E00E93CAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6AA4C6B19283C3E00E93CAF /* Images.xcassets */; };
@@ -77,6 +82,17 @@
 		F61CD765193EBEED006F3C04 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		F61CD767193EBEF3006F3C04 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		F61CD769193EC146006F3C04 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		F61CD77419589C49006F3C04 /* fgGame0001.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgGame0001.h; path = Editor/fgGame0001.h; sourceTree = "<group>"; };
+		F61CD77519589C49006F3C04 /* fgGame0001.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgGame0001.m; path = Editor/fgGame0001.m; sourceTree = "<group>"; };
+		F61CD77719589CF7006F3C04 /* fgTabuloHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fgTabuloHeader.h; path = Editor/fgTabuloHeader.h; sourceTree = "<group>"; };
+		F61CD7791958A030006F3C04 /* fgTabuloScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloScene.h; path = Editor/fgTabuloScene.h; sourceTree = "<group>"; };
+		F61CD77A1958A030006F3C04 /* fgTabuloScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloScene.m; path = Editor/fgTabuloScene.m; sourceTree = "<group>"; };
+		F61CD77C1958A291006F3C04 /* fgTabuloGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloGame.h; path = Editor/fgTabuloGame.h; sourceTree = "<group>"; };
+		F61CD77D1958A291006F3C04 /* fgTabuloGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloGame.m; path = Editor/fgTabuloGame.m; sourceTree = "<group>"; };
+		F61CD7801958D385006F3C04 /* fgGame0019.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgGame0019.h; path = Editor/fgGame0019.h; sourceTree = "<group>"; };
+		F61CD7811958D385006F3C04 /* fgGame0019.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgGame0019.m; path = Editor/fgGame0019.m; sourceTree = "<group>"; };
+		F61CD7831958D6EC006F3C04 /* fgGame0003.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgGame0003.h; path = Editor/fgGame0003.h; sourceTree = "<group>"; };
+		F61CD7841958D6EC006F3C04 /* fgGame0003.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgGame0003.m; path = Editor/fgGame0003.m; sourceTree = "<group>"; };
 		F682186C189F444D0041DA80 /* fgEventOnClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgEventOnClick.h; path = Control/fgEventOnClick.h; sourceTree = "<group>"; };
 		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
@@ -215,6 +231,32 @@
 			name = State;
 			sourceTree = "<group>";
 		};
+		F61CD77319589BD6006F3C04 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				F61CD77719589CF7006F3C04 /* fgTabuloHeader.h */,
+				F61CD7791958A030006F3C04 /* fgTabuloScene.h */,
+				F61CD77A1958A030006F3C04 /* fgTabuloScene.m */,
+				F61CD77C1958A291006F3C04 /* fgTabuloGame.h */,
+				F61CD77D1958A291006F3C04 /* fgTabuloGame.m */,
+				F61CD77F1958D172006F3C04 /* Data */,
+			);
+			name = Editor;
+			sourceTree = "<group>";
+		};
+		F61CD77F1958D172006F3C04 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				F61CD77419589C49006F3C04 /* fgGame0001.h */,
+				F61CD77519589C49006F3C04 /* fgGame0001.m */,
+				F61CD7831958D6EC006F3C04 /* fgGame0003.h */,
+				F61CD7841958D6EC006F3C04 /* fgGame0003.m */,
+				F61CD7801958D385006F3C04 /* fgGame0019.h */,
+				F61CD7811958D385006F3C04 /* fgGame0019.m */,
+			);
+			name = Data;
+			sourceTree = "<group>";
+		};
 		F682185E189736720041DA80 /* Adapter */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,6 +290,7 @@
 				F6BDB2B318C277D900430653 /* Event */,
 				F6118608188C4E22004497C2 /* Graph */,
 				F611860C188C4F46004497C2 /* State */,
+				F61CD77319589BD6006F3C04 /* Editor */,
 			);
 			name = Control;
 			sourceTree = "<group>";
@@ -356,17 +399,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F61CD7821958D385006F3C04 /* fgGame0019.m in Sources */,
 				F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */,
 				F60250DA187DDDC80029915C /* main.m in Sources */,
 				F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */,
 				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
+				F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgLevelState.m in Sources */,
 				F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */,
 				F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */,
+				F61CD7851958D6EC006F3C04 /* fgGame0003.m in Sources */,
 				F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */,
 				F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */,
+				F61CD77619589C49006F3C04 /* fgGame0001.m in Sources */,
+				F61CD77E1958A291006F3C04 /* fgTabuloGame.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,

@@ -30,36 +30,55 @@
 
     if (self != nil)
     {
-        NSError *fileError = nil;
         NSString *path;
+        NSError *fileError = nil;
 
-        @try
+        data = nil;
+
+        if (_fromBundle)
         {
-            if (_fromBundle)
+            @try
             {
                 path = [[NSBundle mainBundle] pathForResource:_filename ofType:@"F3G" inDirectory:@"Content"];
+
+                data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
+
+                if (fileError != nil)
+                {
+//                  NSLog(@"Read failed with error: %@", fileError);
+
+                    return nil;
+                }
             }
-            else
+            @catch (NSException* exception)
             {
-                NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-
-                path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingPathExtension:@"F3G"];
-            }
-
-            data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
-
-            if (fileError != nil)
-            {
-//              NSLog(@"Read failed with error: %@", fileError);
-
-                return nil;
+//              NSLog(@"Read failed with exception: %@", exception);
             }
         }
-        @catch (NSException* exception)
+
+        if (data == nil)
         {
-//          NSLog(@"Read failed with exception: %@", exception);
-            
-            return nil;
+            @try
+            {
+                NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                
+                path = [[[paths objectAtIndex:0] stringByAppendingPathComponent:_filename] stringByAppendingPathExtension:@"F3G"];
+                
+                data = [NSMutableData dataWithContentsOfFile:[path stringByExpandingTildeInPath] options:NSDataReadingMappedAlways error:&fileError];
+                
+                if (fileError != nil)
+                {
+//                  NSLog(@"Read failed with error: %@", fileError);
+                    
+                    return nil;
+                }
+            }
+            @catch (NSException* exception)
+            {
+//              NSLog(@"Read failed with exception: %@", exception);
+                
+                return nil;
+            }
         }
 
 //      NSLog(@"Read filename: %@", _filename);

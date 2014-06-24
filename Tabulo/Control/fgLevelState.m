@@ -13,6 +13,7 @@
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
+#import "../../../Framework/Framework/Control/f3GraphEvent.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../Control/fgEventOnClick.h"
 #import "fgTabuloDirector.h"
@@ -40,7 +41,7 @@
         overlayLayer = [[f3ViewComposite alloc] init];
         hintView = nil;
         hintCommand = nil;
-        hintEnable = (_level < 7); // TODO implement hint button
+        hintEnable = true; //(_level < 7);
     }
     
     return self;
@@ -252,11 +253,11 @@
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
-    
+
     if (_event.Event < GAME_EVENT_MAX)
     {
         fgDialogState *dialogState;
-        
+
         if ([_event isKindOfClass:[fgTabuloEvent class]])
         {
             dialogState = [[fgDialogState alloc] init:self event:(fgTabuloEvent *)_event];
@@ -265,7 +266,7 @@
         {
             dialogState = [[fgDialogState alloc] init:self event:[[fgTabuloEvent alloc] init:_event.Event level:levelIndex]];
         }
-        
+
         if (hintView != nil && hintCommand != nil && _event.Event == GAME_Over)
         {
             [overlayLayer removeComponent:hintView];
@@ -273,7 +274,7 @@
             hintView = nil;
             hintCommand = nil;
         }
-        
+
         [[f3GameAdaptee Producer] buildDialog:[f3GameDirector Director].Builder state:dialogState];
     }
     else
@@ -292,7 +293,7 @@
         {
             if ([edge evaluateConditions:_current keys:keys])
             {
-                f3GraphConfig *config = [[f3GraphConfig alloc] init:keys previous:_current event:[edge buildGraphEvent]];
+                f3GraphConfig *config = [[f3GraphConfig alloc] init:keys previous:_current edge:edge];
                 
                 if ([config isEqual:_next])
                 {
@@ -341,7 +342,7 @@
                 
                 if (nextConfig != nil)
                 {
-                    //                  NSLog(@"target config:%@", nextConfig);
+//                  NSLog(@"target config:%@", nextConfig);
                     break;
                 }
             }

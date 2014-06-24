@@ -9,13 +9,17 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
+#import "../../../Framework/Framework/View/f3ViewComposite.h"
 #import "fgTabuloEvent.h"
 
 @interface fgMenuState : f3GameState {
-    
-    float verticalOffset;
+
     f3OffsetDecorator *offsetDecorator;
-//  CGPoint lastOffsetPoint;
+    NSTimeInterval inputElapsedTime, motionElapsedTime;
+    float offsetPadding, currentOffset, pendingOffset;
+    float lastOffset, lastDelta;
+    f3ViewComposite *levelContainer;
+    bool levelHasMoved;
 }
 
 @end

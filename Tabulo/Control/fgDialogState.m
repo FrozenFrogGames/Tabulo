@@ -16,6 +16,7 @@
 #import "fgTabuloDirector.h"
 #import "fgEventOnClick.h"
 #import "fgDataAdapter.h"
+#import "../Editor/fgTabuloHeader.h"
 
 @implementation fgDialogState
 
@@ -367,59 +368,81 @@ enum TabuloDialogItem {
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
-    
+
     if (_event.Event < GAME_EVENT_MAX)
     {
-        f3GameAdaptee *producer = [f3GameAdaptee Producer];
-        f3GameDirector *director = [f3GameDirector Director];
-        
-        if ([_event isKindOfClass:[fgTabuloEvent class]])
+        if ([[f3GameDirector Director] isKindOfClass:[fgTabuloDirector class]])
         {
-            fgTabuloEvent *event = (fgTabuloEvent *)_event;
-            
-            if (event.Event == GAME_Over)
+            f3GameAdaptee *producer = [f3GameAdaptee Producer];
+            fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
+            if ([_event isKindOfClass:[fgTabuloEvent class]])
             {
-                [producer buildMenu:director.Builder];
-            }
-            else
-            {
-                if (event.Event == GAME_Pause)
+                fgTabuloEvent *event = (fgTabuloEvent *)_event;
+
+                if (event.Event == GAME_Over)
                 {
-                    [producer switchState:previousState];
+                    [producer buildMenu:director.Builder];
                 }
                 else
                 {
-                    NSUInteger nextLevel = event.Level;
-                    
-                    if (event.Event == GAME_Next)
+                    if (event.Event == GAME_Pause)
                     {
-                        ++nextLevel; // increment level before to trigger play
+                        [producer switchState:previousState];
                     }
-                    
-                    NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)nextLevel]];
-                    
-                    fgDataAdapter *dataWriter = [[fgDataAdapter alloc] initWithName:filename fromBundle:true];
-                    if (dataWriter != nil)
+                    else
                     {
-                        fgLevelState *nextState = [[fgLevelState alloc] init:nextLevel];
-                        if (nextState != nil)
+                        NSUInteger nextLevel = event.Level;
+                        
+                        if (event.Event == GAME_Next)
                         {
-                            [(fgTabuloDirector *)director buildScene:dataWriter state:(fgLevelState *)nextState];
-                            [producer buildLayer:director.Builder state:nextState];
+                            ++nextLevel; // increment to next level
                         }
+
+                        fgLevelState *nextState = [[fgLevelState alloc] init:nextLevel];
+                        
+                        NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)nextLevel]];
+
+                        NSObject<IDataAdapter> *dataWriter = [[fgDataAdapter alloc] initWithName:filename fromBundle:true];
+                        
+                        if (dataWriter != nil)
+                        {
+                            [director buildScene:dataWriter state:(fgLevelState *)nextState];
+                        }
+                        else
+                        {
+                            @try
+                            {
+                                NSString *classname = [@"fgGame" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)nextLevel]];
+                                
+                                fgTabuloGame *game = [[NSClassFromString(classname) alloc] init];
+
+                                [game buildScene:(fgTabuloDirector *)director state:nextState];
+                                
+                                dataWriter = [game closeWriter:nextLevel];
+                            }
+                            @catch (NSException *exception)
+                            {
+                                NSLog(@"Editor failed with exception: %@", exception);
+
+                                return;
+                            }
+                        }
+
+                        [producer buildLayer:director.Builder state:nextState];
                     }
                 }
             }
-        }
-        else
-        {
-            [producer buildMenu:director.Builder];
+            else
+            {
+                [producer buildMenu:director.Builder];
+            }
+            
+            return;
         }
     }
-    else
-    {
-        [super notifyEvent:_event];
-    }
+
+    [super notifyEvent:_event];
 }
 
 @end

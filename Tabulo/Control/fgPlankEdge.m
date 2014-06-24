@@ -7,7 +7,7 @@
 //
 
 #import "fgPlankEdge.h"
-#import "fgTabuloDirector.h"
+#import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
 #import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/Control/f3TransformCommand.h"
@@ -81,6 +81,76 @@
 - (float)Angle {
 
     return targetAngle;
+}
+
+- (f3GraphEvent *)buildGraphEvent {
+    
+    f3GraphNode *originNode = [f3GraphNode nodeForKey:originKey];
+    
+    f3GraphEvent *graphEvent = [[f3GraphEvent alloc] init:flagIndex origin:[originKey intValue] target:[targetKey intValue]];
+    
+    for (unsigned char oneHole = TABULO_OneHole_One; oneHole <= TABULO_OneHole_Five; ++oneHole)
+    {
+        if ([originNode getFlag:oneHole])
+        {
+            [graphEvent bindFlag:oneHole];
+        }
+    }
+    
+    for (unsigned char twoHoles = TABULO_TwoHoles_OneTwo; twoHoles <= TABULO_TwoHoles_FourFive; ++twoHoles)
+    {
+        if ([originNode getFlag:twoHoles])
+        {
+            [graphEvent bindFlag:twoHoles];
+        }
+    }
+    
+    for (unsigned char threeHoles = TABULO_ThreeHoles_OneTwoThree; threeHoles <= TABULO_ThreeHoles_ThreeFourFire; ++threeHoles)
+    {
+        if ([originNode getFlag:threeHoles])
+        {
+            [graphEvent bindFlag:threeHoles];
+        }
+    }
+    
+    return graphEvent;
+}
+
+- (f3GraphEvent *)buildGraphEvent:(const f3NodeFlags)_flags {
+
+    f3GraphEvent *graphEvent = [[f3GraphEvent alloc] init:flagIndex origin:[originKey intValue] target:[targetKey intValue]];
+
+    for (unsigned char oneHole = TABULO_OneHole_One; oneHole <= TABULO_OneHole_Five; ++oneHole)
+    {
+        f3NodeFlags mask = 0x00000001 << oneHole;
+        
+        if ((_flags & mask) != 0)
+        {
+            [graphEvent bindFlag:oneHole];
+        }
+    }
+
+    for (unsigned char twoHoles = TABULO_TwoHoles_OneTwo; twoHoles <= TABULO_TwoHoles_FourFive; ++twoHoles)
+    {
+        f3NodeFlags mask = 0x00000001 << twoHoles;
+        
+        if ((_flags & mask) != 0)
+        {
+            [graphEvent bindFlag:twoHoles];
+        }
+    }
+
+    for (unsigned char threeHoles = TABULO_ThreeHoles_OneTwoThree; threeHoles <= TABULO_ThreeHoles_ThreeFourFire; ++threeHoles)
+    {
+        f3NodeFlags mask = 0x00000001 << threeHoles;
+        
+        if ((_flags & mask) != 0)
+        {
+            [graphEvent bindFlag:threeHoles];
+        }
+    }
+
+    return graphEvent;
 }
 
 - (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view {

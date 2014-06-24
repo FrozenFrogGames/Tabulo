@@ -13,7 +13,7 @@
 #import "../../../Framework/Framework/IDataAdapter.h"
 
 enum f3TabuloPawnType {
-    
+
     TABULO_PawnOne   = 0,
     TABULO_PawnTwo   = 1,
     TABULO_PawnThree = 2,
@@ -24,21 +24,45 @@ enum f3TabuloPawnType {
 };
 
 enum f3TabuloPlankType {
-    
+
     TABULO_HaveSmallPlank  = 5,
     TABULO_HaveMediumPlank = 6,
     TABULO_HaveLongPlank   = 7,
-    
+
     TABULO_PLANK_MAX = 8
 };
 
 enum f3TabuloHoleType {
+
+    TABULO_OneHole_One              = 0,
+    TABULO_OneHole_Two              = 1,
+    TABULO_OneHole_Three            = 2,
+    TABULO_OneHole_Four             = 3,
+    TABULO_OneHole_Five             = 4,
+
+    TABULO_TwoHoles_OneTwo          = 8,
+    TABULO_TwoHoles_OneThree        = 9,
+    TABULO_TwoHoles_OneFour         = 10,
+    TABULO_TwoHoles_OneFive         = 11,
+    TABULO_TwoHoles_TwoThree        = 12,
+    TABULO_TwoHoles_TwoFour         = 13,
+    TABULO_TwoHoles_TwoFive         = 14,
+    TABULO_TwoHoles_ThreeFour       = 15,
+    TABULO_TwoHoles_ThreeFive       = 16,
+    TABULO_TwoHoles_FourFive        = 17,
+
+    TABULO_ThreeHoles_OneTwoThree   = 18,
+    TABULO_ThreeHoles_OneTwoFour    = 19,
+    TABULO_ThreeHoles_OneTwoFive    = 20,
+    TABULO_ThreeHoles_OneThreeFour  = 21,
+    TABULO_ThreeHoles_OneThreeFive  = 22,
+    TABULO_ThreeHoles_OneFourFive   = 23,
+    TABULO_ThreeHoles_TwoThreeFour  = 24,
+    TABULO_ThreeHoles_TwoThreeFive  = 25,
+    TABULO_ThreeHoles_TwoFourFive   = 26,
+    TABULO_ThreeHoles_ThreeFourFire = 27,
     
-    TABULO_HoleOne   = 8,
-    TABULO_HoleTwo   = 9,
-    TABULO_HoleThree = 10,
-    TABULO_HoleFour  = 11,
-    TABULO_HoleFive  = 12
+    TABULO_HOLE_MAX = 28
 };
 
 enum f3TabuloResource {
