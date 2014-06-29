@@ -26,7 +26,14 @@
 
 - (void)onActionCompleted:(f3ControlComponent *)_action owner:(f3Controller *)_owner {
 
-    [[f3GameAdaptee Producer] notifyEvent:eventToTrigger];
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+
+    if (producer != nil && [producer.State isKindOfClass:[f3GameState class]])
+    {
+        f3GameState *gameState =(f3GameState *)producer.State;
+        
+        [gameState notifyEvent:eventToTrigger];
+    }
 
     [super onActionCompleted:_action owner:_owner];
 }

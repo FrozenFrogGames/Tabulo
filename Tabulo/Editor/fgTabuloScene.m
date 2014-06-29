@@ -257,7 +257,7 @@
     }
 }
 
-- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     CGPoint textureCoordonate;
     switch (_type) {
@@ -351,14 +351,35 @@
         }
     }
     
-    [_node setFlag:_type value:true];
+    [_state setNodeFlag:_node.Key flag:_type value:true];
     
     return _view;
 }
 
-- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    float holeOffset = 176.f; // +(_hole *256.f);
+    float holeOffset;
+    
+    switch (_hole) {
+        case TABULO_OneHole_One:
+            holeOffset = 432.f;
+            break;
+        case TABULO_OneHole_Two:
+            holeOffset = 688.f;
+            break;
+        case TABULO_OneHole_Three:
+            holeOffset = 944.f;
+            break;
+        case TABULO_OneHole_Four:
+            holeOffset = 1200.f;
+            break;
+        case TABULO_OneHole_Five:
+            holeOffset = 1456.f;
+            break;
+        default:
+            holeOffset = 176.f;
+            break;
+    }
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -453,7 +474,7 @@
             
             uint8_t dataPlank = TABULO_HaveSmallPlank;
             [_writer writeBytes:&dataPlank length:sizeof(uint8_t)];
-            
+
             if (haveHole)
             {
                 uint8_t dataHole = _hole;
@@ -462,11 +483,11 @@
         }
     }
 
-    [_node setFlag:TABULO_HaveSmallPlank value:true];
+    [_state setNodeFlag:_node.Key flag:TABULO_HaveSmallPlank value:true];
 
     if (haveHole)
     {
-        [_node setFlag:_hole value:true];
+        [_state setNodeFlag:_node.Key flag:_hole value:true];
     }
 
     [builder push:angleHandle];
@@ -475,10 +496,36 @@
     return _view;
 }
 
-- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    float holeOffset = 112.f; // (_hole == 0) ? 112.f : 176. +(_hole *256.f);
-    
+    float holeOffset = 112.f;
+
+    switch (_hole) {
+        case TABULO_TwoHoles_OneTwo:
+        case TABULO_TwoHoles_OneThree:
+        case TABULO_TwoHoles_OneFour:
+        case TABULO_TwoHoles_OneFive:
+        case TABULO_TwoHoles_TwoThree:
+        case TABULO_TwoHoles_TwoFour:
+        case TABULO_TwoHoles_TwoFive:
+        case TABULO_TwoHoles_ThreeFour:
+        case TABULO_TwoHoles_ThreeFive:
+        case TABULO_TwoHoles_FourFive:
+        case TABULO_ThreeHoles_OneTwoThree:
+        case TABULO_ThreeHoles_OneTwoFour:
+        case TABULO_ThreeHoles_OneTwoFive:
+        case TABULO_ThreeHoles_OneThreeFour:
+        case TABULO_ThreeHoles_OneThreeFive:
+        case TABULO_ThreeHoles_OneFourFive:
+        case TABULO_ThreeHoles_TwoThreeFour:
+        case TABULO_ThreeHoles_TwoThreeFive:
+        case TABULO_ThreeHoles_TwoFourFive:
+        case TABULO_ThreeHoles_ThreeFourFire:
+        default:
+            holeOffset = 112.f;
+            break;
+    }
+
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                      USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
@@ -555,13 +602,16 @@
     [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
     [builder buildDecorator:2];
     
+    bool haveHole = (_hole != TABULO_HaveSmallPlank && _hole != TABULO_HaveMediumPlank && _hole != TABULO_HaveLongPlank && _hole < TABULO_HOLE_MAX);
+    
     if (_symbols != nil)
     {
         [_symbols addObject:_view];
         
         if (_writer != nil)
         {
-            [_writer writeMarker:0x06];
+            [_writer writeMarker:(haveHole ? 0x07 : 0x06)];
+
             [angleHandle.Data serialize:_writer];
             
             uint16_t dataIndex = (uint16_t)[_symbols indexOfObject:_node];
@@ -570,12 +620,21 @@
             uint8_t dataFlag = TABULO_HaveMediumPlank;
             [_writer writeBytes:&dataFlag length:sizeof(uint8_t)];
             
-            // TODO add hole information
+            if (haveHole)
+            {
+                uint8_t dataHole = _hole;
+                [_writer writeBytes:&dataHole length:sizeof(uint8_t)];
+            }
         }
     }
-    
-    [_node setFlag:TABULO_HaveMediumPlank value:true];
-    
+
+    [_state setNodeFlag:_node.Key flag:TABULO_HaveMediumPlank value:true];
+
+    if (haveHole)
+    {
+        [_state setNodeFlag:_node.Key flag:_hole value:true];
+    }
+
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     

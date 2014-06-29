@@ -31,7 +31,7 @@
     
     [_director loadScene:scene];
 
-    f3GraphResolver *resolver = [[f3GraphResolver alloc] init:[_state getNodeKeys]];
+    f3GraphResolver *resolver = [_state buildGraphResolver];
     
     while ([resolver computeAllConfig:_state])
     {
@@ -83,11 +83,9 @@
     }
 }
 
-- (NSObject<IDataAdapter> *)closeWriter:(NSInteger)_level {
+- (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename {
     
-    NSString *filename = [@"DATA" stringByAppendingString:[NSString stringWithFormat:@"%04lu",(unsigned long)_level]];
-    
-    [dataWriter closeWithName:filename];
+    [dataWriter closeWithName:_filename];
     
     return dataWriter;
 }

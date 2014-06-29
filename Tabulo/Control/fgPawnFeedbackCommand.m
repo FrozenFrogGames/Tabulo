@@ -33,32 +33,31 @@
     NSArray *edges = [f3GraphEdge edgesFromNode:pawnNode.Key];
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
-    
-    if ([pawnNode getFlag:TABULO_PawnOne])
+    f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+
+    if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnOne])
     {
         pawnType = TABULO_PawnOne;
     }
-    else if ([pawnNode getFlag:TABULO_PawnTwo])
+    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnTwo])
     {
         pawnType = TABULO_PawnTwo;
     }
-    else if ([pawnNode getFlag:TABULO_PawnThree])
+    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnThree])
     {
         pawnType = TABULO_PawnThree;
     }
-    else if ([pawnNode getFlag:TABULO_PawnFour])
+    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnFour])
     {
         pawnType = TABULO_PawnFour;
     }
-    else if ([pawnNode getFlag:TABULO_PawnFive])
+    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnFive])
     {
         pawnType = TABULO_PawnFive;
     }
     
     if (pawnType < TABULO_PAWN_MAX)
     {
-        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
-
         for (f3GraphEdge *edge in edges)
         {
             if ([gameState evaluateEdge:edge])

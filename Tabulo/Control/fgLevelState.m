@@ -140,6 +140,8 @@
     f3ViewScene *scene = [f3GameDirector Director].Scene;
     
     [scene appendComposite:overlayLayer];
+    
+    [self onConfigChanged:initialConfig];
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
@@ -293,7 +295,7 @@
         {
             if ([edge evaluateConditions:_current keys:keys])
             {
-                f3GraphConfig *config = [[f3GraphConfig alloc] init:keys previous:_current edge:edge];
+                f3GraphConfig *config = [[f3GraphConfig alloc] init:keys edge:edge next:_current];
                 
                 if ([config isEqual:_next])
                 {
@@ -342,7 +344,7 @@
                 
                 if (nextConfig != nil)
                 {
-//                  NSLog(@"target config:%@", nextConfig);
+                    NSLog(@"target config:%@", nextConfig);
                     break;
                 }
             }

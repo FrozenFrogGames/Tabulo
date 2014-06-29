@@ -355,15 +355,11 @@
 
 - (void)notifyEvent:(f3GameEvent *)_event {
     
-    if (_event.Event < GAME_EVENT_MAX && [_event isKindOfClass:[fgTabuloEvent class]])
+    if ([_event isKindOfClass:[fgTabuloEvent class]])
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self event:(fgTabuloEvent *)_event];
         
         [[f3GameAdaptee Producer] buildDialog:[f3GameDirector Director].Builder state:dialogState];
-    }
-    else
-    {
-        [super notifyEvent:_event];
     }
 }
 

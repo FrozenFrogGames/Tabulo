@@ -24,11 +24,11 @@
 
 - (void)buildDragControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 - (void)buildEdgesForPawn:(fgTabuloDirector *)_director type:(enum f3TabuloPlankType)_type node:(f3GraphNode *)_node origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 

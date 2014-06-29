@@ -1,0 +1,13 @@
+//
+//  fgLevel018.h
+//  Tabulo
+//
+//  Created by Serge Menard on 2014-06-27.
+//  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
+//
+
+#import "../Editor/fgTabuloGame.h"
+
+@interface fgLevel018 : fgTabuloGame
+
+@end

@@ -12,7 +12,7 @@
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "fgTabuloEdge.h"
 #import "fgHouseNode.h"
-#import "fgTabuloDirector.h"
+#import "../View/fgTabuloDirector.h"
 #import "fgPawnFeedbackCommand.h"
 #import "fgPlankFeedbackCommand.h"
 #import "fgRemoveFeedbackCommand.h"
@@ -25,15 +25,17 @@
     
     if (self != nil)
     {
-        isPawnView = ( [_node getFlag:TABULO_PawnOne]
-                      || [_node getFlag:TABULO_PawnTwo]
-                      || [_node getFlag:TABULO_PawnThree]
-                      || [_node getFlag:TABULO_PawnFour]
-                      || [_node getFlag:TABULO_PawnFive] );
+        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+
+        isPawnView = ( [gameState getNodeFlag:_node.Key flag:TABULO_PawnOne]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnTwo]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnThree]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFour]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFive] );
         
-        isPlankView = ( [_node getFlag:TABULO_HaveSmallPlank]
-                       || [_node getFlag:TABULO_HaveMediumPlank]
-                       || [_node getFlag:TABULO_HaveLongPlank] );
+        isPlankView = ( [gameState getNodeFlag:_node.Key flag:TABULO_HaveSmallPlank]
+                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveMediumPlank]
+                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveLongPlank] );
     }
     
     return self;
@@ -45,15 +47,17 @@
     
     if (self != nil)
     {
-        isPawnView = ( [_node getFlag:TABULO_PawnOne]
-                    || [_node getFlag:TABULO_PawnTwo]
-                    || [_node getFlag:TABULO_PawnThree]
-                    || [_node getFlag:TABULO_PawnFour]
-                    || [_node getFlag:TABULO_PawnFive] );
+        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
 
-        isPlankView = ( [_node getFlag:TABULO_HaveSmallPlank]
-                     || [_node getFlag:TABULO_HaveMediumPlank]
-                     || [_node getFlag:TABULO_HaveLongPlank] );
+        isPawnView = ( [gameState getNodeFlag:_node.Key flag:TABULO_PawnOne]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnTwo]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnThree]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFour]
+                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFive] );
+
+        isPlankView = ( [gameState getNodeFlag:_node.Key flag:TABULO_HaveSmallPlank]
+                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveMediumPlank]
+                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveLongPlank] );
     }
 
     return self;

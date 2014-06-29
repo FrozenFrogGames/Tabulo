@@ -28,12 +28,12 @@
 }
 
 - (void)update:(NSTimeInterval)_elapsed {
-    
+/*
     for (fgHouseNode *node in feedbackOnNodes)
     {
         [node clearHouseFeedback];
     }
-    
+ */
     [super update:_elapsed];
     
     [feedbackOnNodes removeAllObjects];

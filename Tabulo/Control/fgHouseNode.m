@@ -39,16 +39,6 @@
     return self;
 }
 
-- (void)setFlag:(unsigned char)_index value:(bool)_value {
-
-    [super setFlag:_index value:_value];
-
-    if (_index == houseType)
-    {
-        [self replaceHouseTexture:_value];
-    }
-}
-
 - (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
     
     houseView = _view;
@@ -61,11 +51,6 @@
     {
         [self replaceHouseTexture:true];
     }
-}
-
-- (void)clearHouseFeedback {
-
-    [self replaceHouseTexture:[self getFlag:houseType]];
 }
 
 - (void)replaceHouseTexture:(bool)_result {

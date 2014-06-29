@@ -18,6 +18,5 @@
 
 - (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
 - (void)buildHouseFeedback:(enum f3TabuloPawnType)_type;
-- (void)clearHouseFeedback;
 
 @end

@@ -7,8 +7,7 @@
 //
 
 #import "fgTabuloDirector.h"
-#import "fgViewCanvas.h"
-#import "fgLevelState.h"
+#import "../fgViewCanvas.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3ViewComposite.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
@@ -21,6 +20,7 @@
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/Control/f3GraphConfig.h"
 #import "../Control/fgDragViewOverEdge.h"
+#import "../Control/fgLevelState.h"
 #import "../Control/fgHouseNode.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
@@ -284,57 +284,57 @@ const NSUInteger LEVEL_COUNT = 36;
     [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
 }
 
-- (void)buildPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+- (void)buildPawn:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
 
     uint16_t dataIndex;
     [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *_node = [_symbols objectAtIndex:dataIndex];
+    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
     
     uint8_t dataPawn;
     [_data readBytes:&dataPawn length:sizeof(uint8_t)];
-    enum f3TabuloPawnType _type = dataPawn;
+    enum f3TabuloPawnType pawnType = dataPawn;
 
-    [_node setFlag:_type value:true];
+    [_state setNodeFlag:node.Key flag:pawnType value:true];
 }
 
-- (void)buildPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+- (void)buildPlank:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
 
     uint16_t dataIndex;
     [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *_node = [_symbols objectAtIndex:dataIndex];
+    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
 
     uint8_t dataPlank;
     [_data readBytes:&dataPlank length:sizeof(uint8_t)];
-    enum f3TabuloPlankType _type = dataPlank;
+    enum f3TabuloPlankType plankType = dataPlank;
 
-    [_node setFlag:_type value:true];
+    [_state setNodeFlag:node.Key flag:plankType value:true];
 
     [viewBuilder push:angleHandle];
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
+- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
 
     uint16_t dataIndex;
     [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *_node = [_symbols objectAtIndex:dataIndex];
+    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
 
     uint8_t dataPlank;
     [_data readBytes:&dataPlank length:sizeof(uint8_t)];
-    enum f3TabuloPlankType _type = dataPlank;
+    enum f3TabuloPlankType plankType = dataPlank;
 
     uint8_t dataHole;
     [_data readBytes:&dataHole length:sizeof(uint8_t)];
-    enum f3TabuloHoleType _hole = dataHole;
+    enum f3TabuloHoleType plankHole = dataHole;
 
-    [_node setFlag:_type value:true];
-    [_node setFlag:_hole value:true];
+    [_state setNodeFlag:node.Key flag:plankType value:true];
+    [_state setNodeFlag:node.Key flag:plankHole value:true];
 
     [viewBuilder push:angleHandle];
     [viewBuilder buildDecorator:3];
@@ -486,7 +486,7 @@ const NSUInteger LEVEL_COUNT = 36;
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
                 
-            case TABULO_PawnFive:
+            case TABULO_PawnFour:
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Four result:false]];
                 
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
@@ -502,7 +502,7 @@ const NSUInteger LEVEL_COUNT = 36;
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
                 
-            case TABULO_PawnFour:
+            case TABULO_PawnFive:
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Five result:false]];
                 
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
@@ -518,7 +518,7 @@ const NSUInteger LEVEL_COUNT = 36;
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
         }
-        
+
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnOne result:false]];
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnTwo result:false]];
         [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnThree result:false]];
@@ -570,7 +570,7 @@ const NSUInteger LEVEL_COUNT = 36;
                 //
                 break;
             case 0x01:
-                //
+                [_state buildConfig:nil];
                 break;
 
             case 0x02:
@@ -583,13 +583,13 @@ const NSUInteger LEVEL_COUNT = 36;
                 [_state buildHouseNode:_data symbols:symbols];
                 break;
             case 0x05:
-                [self buildPawn:_data symbols:symbols];
+                [self buildPawn:_data state:_state symbols:symbols];
                 break;
             case 0x06:
-                [self buildPlank:_data symbols:symbols];
+                [self buildPlank:_data state:_state symbols:symbols];
                 break;
             case 0x07:
-                [self buildPlankWithHole:_data symbols:symbols];
+                [self buildPlankWithHole:_data state:_state symbols:symbols];
                 break;
             case 0x08:
                 //

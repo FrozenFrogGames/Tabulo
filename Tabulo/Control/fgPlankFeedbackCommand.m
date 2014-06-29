@@ -42,15 +42,15 @@
             {
                 float targetAngle = [(fgPlankEdge *)edge Angle];
                 
-                if ([plankNode getFlag:TABULO_HaveSmallPlank])
+                if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveSmallPlank])
                 {
                     [self buildSmallPlank:builder Position:edge.Target.Position Angle:targetAngle];
                 }
-                else if ([plankNode getFlag:TABULO_HaveMediumPlank])
+                else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveMediumPlank])
                 {
                     [self buildMediumPlank:builder Position:edge.Target.Position Angle:targetAngle];
                 }
-                else if ([plankNode getFlag:TABULO_HaveLongPlank])
+                else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveLongPlank])
                 {
                     // TODO support long plank
                 }
