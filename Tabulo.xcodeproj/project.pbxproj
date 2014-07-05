@@ -48,6 +48,8 @@
 		F61CD7B2195E16F1006F3C04 /* fgLevel016.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7B1195E16F1006F3C04 /* fgLevel016.m */; };
 		F61CD7B5195E170C006F3C04 /* fgLevel017.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7B4195E170C006F3C04 /* fgLevel017.m */; };
 		F61CD7B8195E172A006F3C04 /* fgLevel018.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7B7195E172A006F3C04 /* fgLevel018.m */; };
+		F61CD7BB19687DCC006F3C04 /* fgLevel020.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BA19687DCC006F3C04 /* fgLevel020.m */; };
+		F61CD7BE19688C16006F3C04 /* fgLevel021.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BD19688C16006F3C04 /* fgLevel021.m */; };
 		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6AA4C6C19283C3E00E93CAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6AA4C6B19283C3E00E93CAF /* Images.xcassets */; };
@@ -141,6 +143,10 @@
 		F61CD7B4195E170C006F3C04 /* fgLevel017.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel017.m; path = Editor/fgLevel017.m; sourceTree = "<group>"; };
 		F61CD7B6195E172A006F3C04 /* fgLevel018.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel018.h; path = Editor/fgLevel018.h; sourceTree = "<group>"; };
 		F61CD7B7195E172A006F3C04 /* fgLevel018.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel018.m; path = Editor/fgLevel018.m; sourceTree = "<group>"; };
+		F61CD7B919687DCC006F3C04 /* fgLevel020.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel020.h; path = Editor/fgLevel020.h; sourceTree = "<group>"; };
+		F61CD7BA19687DCC006F3C04 /* fgLevel020.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel020.m; path = Editor/fgLevel020.m; sourceTree = "<group>"; };
+		F61CD7BC19688C16006F3C04 /* fgLevel021.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel021.h; path = Editor/fgLevel021.h; sourceTree = "<group>"; };
+		F61CD7BD19688C16006F3C04 /* fgLevel021.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel021.m; path = Editor/fgLevel021.m; sourceTree = "<group>"; };
 		F682186C189F444D0041DA80 /* fgEventOnClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgEventOnClick.h; path = Control/fgEventOnClick.h; sourceTree = "<group>"; };
 		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
@@ -333,6 +339,10 @@
 				F61CD7B7195E172A006F3C04 /* fgLevel018.m */,
 				F61CD7801958D385006F3C04 /* fgLevel019.h */,
 				F61CD7811958D385006F3C04 /* fgLevel019.m */,
+				F61CD7B919687DCC006F3C04 /* fgLevel020.h */,
+				F61CD7BA19687DCC006F3C04 /* fgLevel020.m */,
+				F61CD7BC19688C16006F3C04 /* fgLevel021.h */,
+				F61CD7BD19688C16006F3C04 /* fgLevel021.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -484,6 +494,7 @@
 				F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */,
 				F60250DA187DDDC80029915C /* main.m in Sources */,
 				F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */,
+				F61CD7BE19688C16006F3C04 /* fgLevel021.m in Sources */,
 				F61CD7A0195E1640006F3C04 /* fgLevel010.m in Sources */,
 				F611860B188C4E42004497C2 /* fgTabuloEdge.m in Sources */,
 				F61CD79D195E1624006F3C04 /* fgLevel009.m in Sources */,
@@ -511,6 +522,7 @@
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
+				F61CD7BB19687DCC006F3C04 /* fgLevel020.m in Sources */,
 				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
 				F61CD78B195CA4D0006F3C04 /* fgLevel002.m in Sources */,
 				F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */,

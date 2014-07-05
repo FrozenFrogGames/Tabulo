@@ -498,9 +498,24 @@
 
 - (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    float holeOffset = 112.f;
+    float holeOffset;
 
     switch (_hole) {
+        case TABULO_OneHole_One:
+            holeOffset = 432.f;
+            break;
+        case TABULO_OneHole_Two:
+            holeOffset = 688.f;
+            break;
+        case TABULO_OneHole_Three:
+            holeOffset = 944.f;
+            break;
+        case TABULO_OneHole_Four:
+            holeOffset = 1200.f;
+            break;
+        case TABULO_OneHole_Five:
+            holeOffset = 1456.f;
+            break;
         case TABULO_TwoHoles_OneTwo:
         case TABULO_TwoHoles_OneThree:
         case TABULO_TwoHoles_OneFour:

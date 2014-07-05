@@ -73,7 +73,7 @@
     
     f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_state node:node4 angle:135.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
     [scene buildDragControl:_director state:_state node:node4 view:plankThree writer:dataWriter symbols:dataSymbols];
-    
+
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay elements
     
     [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node3 origin:node2 target:node5 writer:dataWriter symbols:dataSymbols];
@@ -103,7 +103,7 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveSmallPlank node:node11 origin:node12 target:node9 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node2 origin:node1 target:node4 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node2 origin:node4 target:node1 writer:dataWriter symbols:dataSymbols];
-    
+
     [super buildScene:_director state:_state];
 }
 
