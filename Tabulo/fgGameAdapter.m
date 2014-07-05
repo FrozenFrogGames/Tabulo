@@ -165,39 +165,27 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    
+
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
-    
-    for (id touch in touchArray)
-    {
-        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-        
-        [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
-    }
+    CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
+
+    [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
-    
-    for (id touch in touchArray)
-    {
-        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-        
-        [adaptee notifyInput:relativePoint type:INPUT_MOVED];
-    }
+    CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
+
+    [adaptee notifyInput:relativePoint type:INPUT_MOVED];
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
     
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
+    CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
     
-    for (id touch in touchArray)
-    {
-        CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:touch]];
-        
-        [adaptee notifyInput:relativePoint type:INPUT_ENDED];
-    }
+    [adaptee notifyInput:relativePoint type:INPUT_ENDED];
 }
 
 @end

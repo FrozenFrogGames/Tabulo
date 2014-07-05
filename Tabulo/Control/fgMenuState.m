@@ -14,7 +14,7 @@
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../Control/fgEventOnClick.h"
-#import "fgTabuloDirector.h"
+#import "../View/fgTabuloDirector.h"
 #import "fgTabuloEvent.h"
 #import "fgDialogState.h"
 #import "fgHouseNode.h"
@@ -28,23 +28,20 @@
     if (self != nil)
     {
         offsetDecorator = nil;
-        lastOffset = -99.f;
-        motionElapsedTime = -1.f;
-        inputElapsedTime = 0.f;
         levelContainer = nil;
-        levelHasMoved = false;
+        offsetPadding = 0.f;
     }
 
     return self;
 }
 
 - (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
-    
+
     offsetPadding = _screen.height /4 /_unit.height;
 
     float paddingWidth = _screen.width /6 /_unit.width;
     float iconScale, yOffset = (offsetPadding *2.f) - (offsetPadding /2.f);
-    
+
     if (paddingWidth > offsetPadding)
     {
         iconScale = offsetPadding *0.95f;
@@ -72,15 +69,12 @@
         [self buildLevelIcon:_builder state:self position:CGPointMake(xOffset, yOffset) scale:iconScale level:index++];
         yOffset -= offsetPadding;
     }
-    
+
     [_builder buildComposite:0];
-    
+
     levelContainer = (f3ViewComposite *)[_builder top];
 
-    currentOffset = 0.f; //-offsetPadding;
-    pendingOffset = currentOffset;
-
-    [_builder push:[f3VectorHandle buildHandleForX:0.f y:currentOffset]];
+    [_builder push:[f3VectorHandle buildHandleForX:0.f y:-offsetPadding]];
     [_builder buildDecorator:1];
     offsetDecorator = (f3OffsetDecorator *)[_builder pop];
     
@@ -150,6 +144,7 @@
 - (void)buildLevelIcon:(f3ViewBuilder *)_builder state:(f3GameState *)_state position:(CGPoint)_position scale:(float)_scale level:(NSUInteger)_level {
     
     bool isLevelLocked = [(fgTabuloDirector *)[f3GameDirector Director] isLevelLocked:_level];
+
     CGPoint coordonatePoint;
     if (isLevelLocked)
     {
@@ -244,19 +239,36 @@
     return 1.f;
 }
 
+- (void)computePadding:(NSUInteger)_level {
+    
+    float targetPadding = (floorf((_level -1) /6.f) -1) *offsetPadding;
+
+    f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:targetPadding];
+    f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
+    
+    if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
+    {
+        offsetDecorator = decorator;
+    }
+}
+
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
 
     [super update:_elapsed owner:_owner];
 
     if (offsetDecorator != nil)
     {
-        if (motionElapsedTime > -1)
+        if (motionTotalTime > 0)
         {
-            motionElapsedTime += _elapsed;
+            motionTimeInterval -= _elapsed;
 
-            if (motionElapsedTime >= 0.3)
+            if (motionTimeInterval <= 0)
             {
-                f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:pendingOffset];
+                offsetDecorator.Ratio = 1.f;
+
+                const float currentOffsetY = offsetDecorator.Offset[1];
+
+                f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:currentOffsetY];
                 f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
 
                 if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
@@ -264,101 +276,107 @@
                     offsetDecorator = decorator;
                 }
 
-                motionElapsedTime = -1;
+                motionTimeInterval = 0;
+                motionTotalTime = 0;
             }
             else
             {
-                offsetDecorator.Ratio = motionElapsedTime /0.3;
+                float ratio = 1.f - (motionTimeInterval /motionTotalTime);
+
+                offsetDecorator.Ratio = ratio;
             }
         }
-        
-        if (inputPending)
+
+        float inputOffset = inputCurrentY - inputBeginY;
+
+        if (fabsf(inputOffset) >= 0.3f || inputBeginY != inputEndY)
         {
-            inputElapsedTime += _elapsed;
+            float motion = inputOffset;
 
-            if (lastOffset < -99.f || motionElapsedTime > -1)
+            const float currentOffsetY = offsetDecorator.Offset[1];
+
+            f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:currentOffsetY];
+            f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
+
+            if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
             {
-                lastOffset = lastInputPoint.y;
-
-                inputElapsedTime = 0;
+                offsetDecorator = decorator;
             }
-            else if (inputElapsedTime > 0.1f)
+
+            if (inputBeginY != inputEndY)
             {
-                float delta = lastInputPoint.y -lastOffset;
+                float step = (inputOffset > 0.f) ? ceilf(currentOffsetY /offsetPadding) : floorf(currentOffsetY /offsetPadding);
 
-                if (fabsf(delta) > 1.f)
-                {
-                    NSLog(@"Scroll delta: %f, elapsed: %f", delta, inputElapsedTime);
-
-                    float translation = (delta > 0.f ? offsetPadding : -offsetPadding);
-
-                    if (fabsf(delta) > 4.f)
-                    {
-                        translation *= 3.f;
-                    }
-                    else if (fabsf(delta) > 2.f)
-                    {
-                        translation *= 2.f;
-                    }
-
-                    float minPadding = -offsetPadding, maxPadding = (offsetPadding *2.f);
-
-                    float targetOffset = pendingOffset +translation;
-
-                    if (targetOffset < minPadding)
-                    {
-                        targetOffset = minPadding;
-                    }
-                    else if (targetOffset > maxPadding)
-                    {
-                        targetOffset = maxPadding;
-                    }
-
-                    if (targetOffset != pendingOffset)
-                    {
-                        motionElapsedTime = 0;
-
-                        [offsetDecorator applyTranslation:[f3VectorHandle buildHandleForX:0.f y:(targetOffset -pendingOffset)]];
-
-                        pendingOffset = targetOffset;
-                    }
-                }
-                else if ((delta > 0.f && lastDelta < delta) || (delta < 0.f && lastDelta > delta))
-                {
-                    inputElapsedTime = 0.f;
-                }
-
-                lastDelta = delta;
+                motion = (step *offsetPadding) - currentOffsetY;
             }
+
+            const float minimunOffset = offsetPadding *-1.f -(inputBeginY == inputEndY ? offsetPadding /5.f : 0.f);
+            NSUInteger maximumLevel = [(fgTabuloDirector *)[f3GameDirector Director] getLevelCount] -1;
+            const float maximumOffset = (floorf(maximumLevel /6.f) -3) *offsetPadding +(inputBeginY == inputEndY ? offsetPadding /5.f : 0.f);
+
+            if ((currentOffsetY +motion) < minimunOffset)
+            {
+                motion = minimunOffset -currentOffsetY;
+
+                inputBeginY = inputCurrentY +motion;
+            }
+            else if ((currentOffsetY +motion) > maximumOffset)
+            {
+                motion = maximumOffset -currentOffsetY;
+
+                inputBeginY = inputCurrentY +motion;
+            }
+
+            if (fabsf(motion) > 0.f)
+            {
+                motionTotalTime = fabsf(motion) /offsetPadding *0.3f;
+                motionTimeInterval = motionTotalTime;
+
+                [offsetDecorator applyTranslation:[f3VectorHandle buildHandleForX:0.f y:motion]];
+
+                inputBeginY = inputCurrentY;
+                notInMotion = false;
+            }
+
+            inputEndY = inputBeginY;
         }
     }
 }
 
 - (void)notifyInput:(CGPoint)_relativePoint type:(enum f3InputType)_type {
 
-    if (currentOffset != pendingOffset && _type == INPUT_ENDED)
-    {
-        currentOffset = pendingOffset;
-    }
-    else if (_relativePoint.y < offsetPadding)
-    {
-        _relativePoint.y -= currentOffset;
+    switch (_type) {
 
-        [super notifyInput:_relativePoint type:_type];
+        case INPUT_BEGAN:
+            inputBeginY = _relativePoint.y;
+            notInMotion = true;
+//          break;
+
+        case INPUT_ENDED:
+        case INPUT_CANCELED:
+            inputEndY = _relativePoint.y;
+//          break;
+
+        case INPUT_MOVED:
+            inputCurrentY = _relativePoint.y;
+            break;
     }
+
+    const float currentOffsetY = offsetDecorator.Offset[1];
+
+    CGPoint inputPoint = CGPointMake(_relativePoint.x, _relativePoint.y - currentOffsetY);
+
+    [super notifyInput:inputPoint type:_type];
     
-    if (_type != INPUT_MOVED)
-    {
-        lastOffset = -100.f;
-    }
+    insideOfArea = (_relativePoint.y < offsetPadding);
 }
 
 - (void)notifyEvent:(f3GameEvent *)_event {
-    
-    if ([_event isKindOfClass:[fgTabuloEvent class]])
+
+    if ([_event isKindOfClass:[fgTabuloEvent class]] && insideOfArea && notInMotion)
     {
         fgDialogState *dialogState = [[fgDialogState alloc] init:self event:(fgTabuloEvent *)_event];
-        
+
         [[f3GameAdaptee Producer] buildDialog:[f3GameDirector Director].Builder state:dialogState];
     }
 }

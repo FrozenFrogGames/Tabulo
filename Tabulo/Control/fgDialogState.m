@@ -63,7 +63,8 @@ enum TabuloDialogItem {
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
                 itemNode = [self buildNode:CGPointMake(1.8f *dialogScale, -2.25f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+                itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
+                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [controls appendComponent:[[f3Controller alloc] initState:itemState]];
                 
                 break;
@@ -84,7 +85,8 @@ enum TabuloDialogItem {
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
                 itemNode = [self buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+                itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
+                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [controls appendComponent:[[f3Controller alloc] initState:itemState]];
                 
                 break;
@@ -124,7 +126,8 @@ enum TabuloDialogItem {
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
                 itemNode = [self buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
-                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:[[f3GameEvent alloc] init]];
+                itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
+                itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [controls appendComponent:[[f3Controller alloc] initState:itemState]];
                 
                 break;
@@ -379,6 +382,8 @@ enum TabuloDialogItem {
         if (event.Event == GAME_Over)
         {
             [producer buildMenu:director.Builder];
+            
+            [(fgMenuState *)producer.State computePadding:event.Level];
         }
         else
         {
@@ -430,10 +435,6 @@ enum TabuloDialogItem {
                 [producer buildLayer:director.Builder state:nextState];
             }
         }
-    }
-    else
-    {
-        [producer buildMenu:director.Builder];
     }
 }
 

@@ -15,11 +15,12 @@
 @interface fgMenuState : f3GameState {
 
     f3OffsetDecorator *offsetDecorator;
-    NSTimeInterval inputElapsedTime, motionElapsedTime;
-    float offsetPadding, currentOffset, pendingOffset;
-    float lastOffset, lastDelta;
     f3ViewComposite *levelContainer;
-    bool levelHasMoved;
+    float offsetPadding, inputBeginY, inputCurrentY, inputEndY;
+    NSTimeInterval motionTimeInterval, motionTotalTime;
+    bool notInMotion, insideOfArea;
 }
+
+- (void)computePadding:(NSUInteger)_level;
 
 @end
