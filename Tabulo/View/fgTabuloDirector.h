@@ -34,35 +34,35 @@ enum f3TabuloPlankType {
 
 enum f3TabuloHoleType {
 
-    TABULO_OneHole_One              = 0,
-    TABULO_OneHole_Two              = 1,
-    TABULO_OneHole_Three            = 2,
-    TABULO_OneHole_Four             = 3,
-    TABULO_OneHole_Five             = 4,
+    TABULO_OneHole_One              = 8,
+    TABULO_OneHole_Two              = 9,
+    TABULO_OneHole_Three            = 10,
+    TABULO_OneHole_Four             = 11,
+    TABULO_OneHole_Five             = 12,
 
-    TABULO_TwoHoles_OneTwo          = 8,
-    TABULO_TwoHoles_OneThree        = 9,
-    TABULO_TwoHoles_OneFour         = 10,
-    TABULO_TwoHoles_OneFive         = 11,
-    TABULO_TwoHoles_TwoThree        = 12,
-    TABULO_TwoHoles_TwoFour         = 13,
-    TABULO_TwoHoles_TwoFive         = 14,
-    TABULO_TwoHoles_ThreeFour       = 15,
-    TABULO_TwoHoles_ThreeFive       = 16,
-    TABULO_TwoHoles_FourFive        = 17,
+    TABULO_TwoHoles_OneTwo          = 13,
+    TABULO_TwoHoles_OneThree        = 14,
+    TABULO_TwoHoles_OneFour         = 15,
+    TABULO_TwoHoles_OneFive         = 16,
+    TABULO_TwoHoles_TwoThree        = 17,
+    TABULO_TwoHoles_TwoFour         = 18,
+    TABULO_TwoHoles_TwoFive         = 19,
+    TABULO_TwoHoles_ThreeFour       = 20,
+    TABULO_TwoHoles_ThreeFive       = 21,
+    TABULO_TwoHoles_FourFive        = 22,
 
-    TABULO_ThreeHoles_OneTwoThree   = 18,
-    TABULO_ThreeHoles_OneTwoFour    = 19,
-    TABULO_ThreeHoles_OneTwoFive    = 20,
-    TABULO_ThreeHoles_OneThreeFour  = 21,
-    TABULO_ThreeHoles_OneThreeFive  = 22,
-    TABULO_ThreeHoles_OneFourFive   = 23,
-    TABULO_ThreeHoles_TwoThreeFour  = 24,
-    TABULO_ThreeHoles_TwoThreeFive  = 25,
-    TABULO_ThreeHoles_TwoFourFive   = 26,
-    TABULO_ThreeHoles_ThreeFourFire = 27,
+    TABULO_ThreeHoles_OneTwoThree   = 23,
+    TABULO_ThreeHoles_OneTwoFour    = 24,
+    TABULO_ThreeHoles_OneTwoFive    = 25,
+    TABULO_ThreeHoles_OneThreeFour  = 26,
+    TABULO_ThreeHoles_OneThreeFive  = 27,
+    TABULO_ThreeHoles_OneFourFive   = 28,
+    TABULO_ThreeHoles_TwoThreeFour  = 29,
+    TABULO_ThreeHoles_TwoThreeFive  = 30,
+    TABULO_ThreeHoles_TwoFourFive   = 31,
+    TABULO_ThreeHoles_ThreeFourFire = 32,
     
-    TABULO_HOLE_MAX = 28
+    TABULO_HOLE_MAX = 33
 };
 
 enum f3TabuloResource {

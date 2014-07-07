@@ -13,7 +13,7 @@
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
-#import "../../../Framework/Framework/Control/f3GraphEvent.h"
+#import "../../../Framework/Framework/Control/f3GameEvent.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../Control/fgEventOnClick.h"
 #import "fgTabuloDirector.h"
@@ -141,7 +141,10 @@
     
     [scene appendComposite:overlayLayer];
     
-    [self onConfigChanged:initialConfig];
+    if (initialConfig != nil)
+    {
+        [self onConfigChanged:initialConfig];
+    }
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
@@ -344,7 +347,7 @@
                 
                 if (nextConfig != nil)
                 {
-                    NSLog(@"target config:%@", nextConfig);
+//                  NSLog(@"<-- hint %@ -->", nextConfig);
                     break;
                 }
             }
@@ -356,8 +359,11 @@
             
             if (hintEdge != nil)
             {
-                CGPoint originPoint = hintEdge.Origin.Position;
-                f3VectorHandle *targetPoint = [hintEdge.Target getPositionHandle];
+                f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
+                CGPoint originPoint = originNode.Position;
+                f3GraphNode *targetNode = [f3GraphNode nodeForKey:hintEdge.TargetKey];
+                f3VectorHandle *targetPoint = [targetNode getPositionHandle];
+
                 f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
                 f3FloatArray *zoomOut = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:-0.33f], [[NSNumber alloc] initWithFloat:-0.33f], nil];
                 f3FloatArray *scale = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.5f], [[NSNumber alloc] initWithFloat:1.f], nil];
@@ -380,6 +386,8 @@
             }
         }
     }
+    
+    [super onConfigChanged:_config];
 }
 
 @end

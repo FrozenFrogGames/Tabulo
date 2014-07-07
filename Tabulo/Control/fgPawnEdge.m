@@ -14,14 +14,14 @@
 
 @implementation fgPawnEdge
 
-- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target input:(f3GraphNode *)_input {
+- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey input:(f3GraphNode *)_input {
 
     if (_input == nil)
     {
         return nil; // TODO throw f3Exception
     }
 
-    self = [super init:_flag origin:_origin target:_target];
+    self = [super initFrom:_originKey targetKey:_targetKey];
     
     if (self != nil)
     {

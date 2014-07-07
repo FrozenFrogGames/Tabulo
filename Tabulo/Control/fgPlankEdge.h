@@ -16,6 +16,8 @@
 
 @property (readonly) float Angle;
 
-- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target rotation:(f3GraphNode *)_rotation;
+- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey rotation:(f3GraphNode *)_rotation;
+
+- (void)setPlankType:(unsigned char)_type;
 
 @end

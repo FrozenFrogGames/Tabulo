@@ -17,28 +17,30 @@
 
 @implementation fgPlankEdge
 
-- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target rotation:(f3GraphNode *)_rotation {
+- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey rotation:(f3GraphNode *)_rotation {
     
-    self = [super init:_flag origin:_origin target:_target];
+    self = [super initFrom:_originKey targetKey:_targetKey];
     
     if (self != nil)
     {
-        CGPoint originPoint = _origin.Position, targetPoint = _target.Position, rotationPoint = _rotation.Position;
+        f3GraphNode *originNode = [f3GraphNode nodeForKey:_originKey], *targetNode = [f3GraphNode nodeForKey:_targetKey];
+        CGPoint originPoint = originNode.Position, targetPoint = targetNode.Position, rotationPoint = _rotation.Position;
 
-        NSArray *pawnEdges = [fgTabuloEdge edgesFromNode:_rotation withInput:_target];
+        NSArray *pawnEdges = [fgTabuloEdge edgesFromNode:_rotation withInput:targetNode];
         if ([pawnEdges count] > 0)
         {
             fgTabuloEdge *edge = (fgTabuloEdge *)[pawnEdges objectAtIndex:0];
-            f3GraphNode *inputNode = edge.Target;
+            inputKey = edge.TargetKey;
+
             for (int i = 1; i < [pawnEdges count]; ++i)
             {
                 edge = (fgTabuloEdge *)[pawnEdges objectAtIndex:i];
-                if (inputNode != edge.Target)
+
+                if (inputKey != edge.TargetKey)
                 {
                     // TODO throw f3Exception
                 }
             }
-            inputKey = inputNode.Key;
         }
         
         if (inputKey == nil)
@@ -48,6 +50,7 @@
         
         targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
         rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
+        rotationRadius = 0.f;
 
         if (rotationAngle > 180.f)
         {
@@ -56,21 +59,6 @@
         else if (rotationAngle < -180.f)
         {
             rotationAngle += 360.f;
-        }
-
-        switch (_flag)
-        {
-            case TABULO_HaveSmallPlank:
-                rotationRadius = 1.75f;
-                break;
-
-            case TABULO_HaveMediumPlank:
-                rotationRadius = 2.5f;
-                break;
-
-            case TABULO_HaveLongPlank:
-                rotationRadius = 4.0f; // TODO compute gameplay for long plank
-                break;
         }
 
         rotationKey = _rotation.Key;
@@ -84,44 +72,22 @@
     return targetAngle;
 }
 
-- (f3GraphEvent *)buildGraphEvent:(f3GraphConfig *)_config keys:(NSMutableArray *)_keys {
-
-    f3GraphEvent *graphEvent = [[f3GraphEvent alloc] init:flagIndex origin:[originKey intValue] target:[targetKey intValue]];
-
-    const NSUInteger originIndex = [_keys indexOfObject:originKey];
-    const f3NodeFlags originFlags = [_config getNodeFlags:originIndex];
-
-    for (unsigned char oneHole = TABULO_OneHole_One; oneHole <= TABULO_OneHole_Five; ++oneHole)
+- (void)setPlankType:(unsigned char)_type {
+    
+    switch (_type)
     {
-        const f3NodeFlags mask = 0x00000001 << oneHole;
-
-        if ((originFlags & mask) != 0)
-        {
-            [graphEvent bindFlag:oneHole];
-        }
+        case TABULO_HaveSmallPlank:
+            rotationRadius = 1.75f;
+            break;
+            
+        case TABULO_HaveMediumPlank:
+            rotationRadius = 2.5f;
+            break;
+            
+        case TABULO_HaveLongPlank:
+            rotationRadius = 4.0f; // TODO compute gameplay for long plank
+            break;
     }
-
-    for (unsigned char twoHoles = TABULO_TwoHoles_OneTwo; twoHoles <= TABULO_TwoHoles_FourFive; ++twoHoles)
-    {
-        const f3NodeFlags mask = 0x00000001 << twoHoles;
-
-        if ((originFlags & mask) != 0)
-        {
-            [graphEvent bindFlag:twoHoles];
-        }
-    }
-
-    for (unsigned char threeHoles = TABULO_ThreeHoles_OneTwoThree; threeHoles <= TABULO_ThreeHoles_ThreeFourFire; ++threeHoles)
-    {
-        f3NodeFlags mask = 0x00000001 << threeHoles;
-        
-        if ((originFlags & mask) != 0)
-        {
-            [graphEvent bindFlag:threeHoles];
-        }
-    }
-
-    return graphEvent;
 }
 
 - (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view {

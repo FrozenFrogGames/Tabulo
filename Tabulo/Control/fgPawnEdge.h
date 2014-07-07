@@ -10,6 +10,6 @@
 
 @interface fgPawnEdge : fgTabuloEdge
 
-- (id)init:(int)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target input:(f3GraphNode *)_input;
+- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey input:(f3GraphNode *)_input;
 
 @end

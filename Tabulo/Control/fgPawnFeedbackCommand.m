@@ -62,8 +62,8 @@
         {
             if ([gameState evaluateEdge:edge])
             {
-                f3GraphNode *node = edge.Target;
-                
+                f3GraphNode *node = [f3GraphNode nodeForKey:edge.TargetKey];
+
                 if ([node isKindOfClass:[fgHouseNode class]])
                 {
                     [(fgHouseNode *)node buildHouseFeedback:pawnType];

@@ -40,15 +40,16 @@
         {
             if ([edge isKindOfClass:[fgPlankEdge class]])
             {
+                f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
                 float targetAngle = [(fgPlankEdge *)edge Angle];
                 
                 if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveSmallPlank])
                 {
-                    [self buildSmallPlank:builder Position:edge.Target.Position Angle:targetAngle];
+                    [self buildSmallPlank:builder Position:targetNode.Position Angle:targetAngle];
                 }
                 else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveMediumPlank])
                 {
-                    [self buildMediumPlank:builder Position:edge.Target.Position Angle:targetAngle];
+                    [self buildMediumPlank:builder Position:targetNode.Position Angle:targetAngle];
                 }
                 else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveLongPlank])
                 {

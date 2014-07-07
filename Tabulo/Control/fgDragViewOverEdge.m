@@ -160,11 +160,12 @@
             
             for (fgTabuloEdge *edge in edges)
             {
-                if ([edge.Target isKindOfClass:[fgHouseNode class]])
+                f3GraphNode *houseNode = [f3GraphNode nodeForKey:edge.TargetKey];
+                if ([houseNode isKindOfClass:[fgHouseNode class]])
                 {
-                    if (currentEdge == nil || currentEdge.Target != edge.Target)
+                    if (currentEdge == nil || currentEdge.TargetKey != edge.TargetKey)
                     {
-                        [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)edge.Target];
+                        [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)houseNode];
                     }
                 }
             }
@@ -184,19 +185,24 @@
         
         for (fgTabuloEdge *edge in edges)
         {
-            if (edge.Target == nil || edge.Input == nil)
+            f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+            if ([nodeListening containsObject:targetNode])
             {
-                continue; // TODO throw f3Exception
+                // TODO throw f3Exception
             }
-
-            if (![nodeListening containsObject:edge.Target])
+            else
             {
-                [nodeListening addObject:edge.Target];
+                [nodeListening addObject:targetNode];
             }
             
-            if (![nodeListening containsObject:edge.Input])
+            f3GraphNode *inputNode = [f3GraphNode nodeForKey:edge.InputKey];
+            if ([nodeListening containsObject:inputNode])
             {
-                [nodeListening addObject:edge.Input];
+                // TODO throw f3Exception
+            }
+            else
+            {
+                [nodeListening addObject:inputNode];
             }
         }
         
@@ -226,7 +232,7 @@
 
                     for (fgTabuloEdge *edge in edges)
                     {
-                        if (edge.Target == _node || edge.Input == _node)
+                        if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
                         {
                             if ([gameState evaluateEdge:edge])
                             {
@@ -238,7 +244,7 @@
                         }
                     }
                 }
-                else if (_type == INPUT_MOVED && currentEdge.Target == _node)
+                else if (_type == INPUT_MOVED && currentEdge.TargetKey == _node.Key)
                 {
                     shouldKeepFocus = true;
                 }

@@ -16,6 +16,6 @@
 
 + (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input;
 
-@property (readonly) f3GraphNode *Input;
+@property (readonly) NSNumber *InputKey;
 
 @end

@@ -429,14 +429,20 @@ const NSUInteger LEVEL_COUNT = 36;
     f3GraphNode *_origin = [_symbols objectAtIndex:dataArray[1]];
     f3GraphNode *_target = [_symbols objectAtIndex:dataArray[2]];
     
-    for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
+    for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
     {
-        fgPawnEdge *edge = [[fgPawnEdge alloc] init:pawn origin:_origin target:_target input:_node];
-        
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:pawn result:true]];
+        fgPawnEdge *edge = [[fgPawnEdge alloc] initFrom:_origin.Key targetKey:_target.Key input:_node];
+
         [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:_type result:true]];
-        
-        switch (pawn) // restrict edge if a hole is present
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.OriginKey flag:pawnType result:true]];
+
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
+
+        switch (pawnType) // restrict edge if a hole is present
         {
             case TABULO_PawnOne:
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_One result:false]];
@@ -518,12 +524,6 @@ const NSUInteger LEVEL_COUNT = 36;
                 [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
         }
-
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnOne result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnTwo result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnThree result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFive result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:TABULO_PawnFour result:false]];
     }
 }
 
@@ -540,13 +540,14 @@ const NSUInteger LEVEL_COUNT = 36;
     f3GraphNode *_origin = [_symbols objectAtIndex:dataArray[1]];
     f3GraphNode *_target = [_symbols objectAtIndex:dataArray[2]];
     
-    for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
+    for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
     {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_type origin:_origin target:_target rotation:_node];
-        
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Origin.Key flag:_type result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:pawn result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.Target.Key flag:_type result:false]];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] initFrom:_origin.Key targetKey:_target.Key rotation:_node];
+        [edge setPlankType:_type];
+    
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.OriginKey flag:_type result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:pawnType result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:_type result:false]];
     }
 }
 

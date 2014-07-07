@@ -11,9 +11,9 @@
 
 @implementation fgTabuloEdge
 
-- (id)init:(unsigned char)_flag origin:(f3GraphNode *)_origin target:(f3GraphNode *)_target {
+- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey {
 
-    self = [super init:_flag origin:_origin target:_target];
+    self = [super initFrom:_originKey targetKey:_targetKey];
 
     if (self != nil)
     {
@@ -28,15 +28,9 @@
     [f3GraphEdge removeEdgesForKeys:_keys];
 }
 
+- (NSNumber *)InputKey {
 
-- (f3GraphNode *)Input {
-
-    if (inputKey != nil)
-    {
-        return [f3GraphNode nodeForKey:inputKey];
-    }
-
-    return nil;
+    return inputKey;
 }
 
 + (NSArray *)edgesFromNode:(f3GraphNode *)_node withInput:(f3GraphNode *)_input {
@@ -48,8 +42,9 @@
     for (NSUInteger i =0; i <[edgesFrom count]; ++i)
     {
         fgTabuloEdge *edge = (fgTabuloEdge *)[edgesFrom objectAtIndex:i];
+        f3GraphNode *inputNode = [f3GraphNode nodeForKey:edge.InputKey];
         
-        if (edge.Input == _input)
+        if (inputNode == _input)
         {
             [edges addObject:edge];
         }
