@@ -37,6 +37,8 @@
 
 - (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
 
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+    
     offsetPadding = _screen.height /4 /_unit.height;
 
     float paddingWidth = _screen.width /6 /_unit.width;
@@ -52,7 +54,7 @@
     }
 
     NSUInteger index = 1;
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
     while (index < [director getLevelCount])
     {
         float xOffset = (paddingWidth /2.f) - (paddingWidth *3.f);
@@ -85,7 +87,7 @@
     
     f3ViewScene *currentScene = [[f3ViewScene alloc] init];
     [currentScene appendComposite:(f3ViewComposite *)[_builder popComponent]];
-    [director loadScene:currentScene];
+    [director loadScene:currentScene state:self];
 }
 
 - (void)buildBackground:(f3ViewBuilder *)_builder height:(float)_height width:(float)_width {

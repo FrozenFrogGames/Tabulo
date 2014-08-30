@@ -627,6 +627,8 @@ const NSUInteger LEVEL_COUNT = 36;
 
         marker = [_data readMarker];
     }
+    
+    [_state sceneDidLoad:scene];
 
     [symbols removeAllObjects];
 }

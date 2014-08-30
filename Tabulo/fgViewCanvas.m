@@ -129,6 +129,7 @@
             break;
 
         case DRAW_LINE_STRIP:
+        case DRAW_LINE_LOOP:
         case DRAW_TRIANGLE_FAN:
             glDrawArrays(_type, 0, _count);
             break;

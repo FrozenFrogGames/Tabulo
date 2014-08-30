@@ -11,7 +11,7 @@
 @implementation fgLevel001
 
 - (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
-
+    
     [scene addPointFrom:0 Radius:2.5f Angle:90.f];
     [scene addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
     [scene computePoints];

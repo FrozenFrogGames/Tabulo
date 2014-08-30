@@ -28,3 +28,5 @@
 #import "../Editor/fgLevel020.h"
 #import "../Editor/fgLevel021.h"
 #import "../Editor/fgLevel022.h"
+#import "../Editor/fgLevel023.h"
+#import "../Editor/fgLevel024.h"

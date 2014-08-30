@@ -77,15 +77,15 @@
     switch (_type)
     {
         case TABULO_HaveSmallPlank:
-            rotationRadius = 1.75f;
+            rotationRadius = 1.75f; // small plank is 3.5 (3.42) units
             break;
             
-        case TABULO_HaveMediumPlank:
+        case TABULO_HaveMediumPlank: // medium plank is 5 (4.95) units
             rotationRadius = 2.5f;
             break;
             
         case TABULO_HaveLongPlank:
-            rotationRadius = 4.0f; // TODO compute gameplay for long plank
+            rotationRadius = 3.5f; // long plank is 7 (7.07) units length
             break;
     }
 }
@@ -97,7 +97,8 @@
     f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(targetAngle), nil];
 
     f3ControlCommand *command = [[f3ControlCommand alloc] init];
-    f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle] Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:0.7f];
+    f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle]
+                                                                    Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:0.7f];
     [command appendComponent:transform];
     f3ControlComposite *composite = [[f3ControlComposite alloc] init];
     [composite appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:[targetNode getPositionHandle]]];

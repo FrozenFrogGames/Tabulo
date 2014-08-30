@@ -29,7 +29,7 @@
 
 - (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
     
-    [_director loadScene:scene];
+    [_director loadScene:scene state:_state];
 
     f3GraphResolver *resolver = [_state buildGraphResolver];
     

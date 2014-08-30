@@ -216,7 +216,7 @@
     }
 }
 
-- (void)notifyInput:(enum f3InputType)_type fromNode:(f3GraphNode *)_node {
+- (void)notifyInput:(enum f3InputType)_type forKey:(f3GraphNode *)_node {
 
     if ([nodeListening containsObject:_node])
     {
