@@ -6,62 +6,18 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgDragViewOverEdge.h"
+#import "fgDragPawnOverEdge.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
-#import "fgTabuloEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithInput.h"
 #import "fgHouseNode.h"
 #import "../View/fgTabuloDirector.h"
 #import "fgPawnFeedbackCommand.h"
 #import "fgPlankFeedbackCommand.h"
 #import "fgRemoveFeedbackCommand.h"
 
-@implementation fgDragViewOverEdge
-
-- (id)initWithNode:(f3GraphNode *)_node forView:(f3ViewAdaptee *)_view {
-    
-    self = [super initWithNode:_node forView:_view];
-    
-    if (self != nil)
-    {
-        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
-
-        isPawnView = ( [gameState getNodeFlag:_node.Key flag:TABULO_PawnOne]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnTwo]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnThree]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFour]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFive] );
-        
-        isPlankView = ( [gameState getNodeFlag:_node.Key flag:TABULO_HaveSmallPlank]
-                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveMediumPlank]
-                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveLongPlank] );
-    }
-    
-    return self;
-}
-
-- (id)initWithNode:(f3GraphNode *)_node forView:(f3ViewAdaptee *)_view nextState:(Class)_class {
-    
-    self = [super initWithNode:_node forView:_view nextState:_class];
-    
-    if (self != nil)
-    {
-        f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
-
-        isPawnView = ( [gameState getNodeFlag:_node.Key flag:TABULO_PawnOne]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnTwo]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnThree]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFour]
-                    || [gameState getNodeFlag:_node.Key flag:TABULO_PawnFive] );
-
-        isPlankView = ( [gameState getNodeFlag:_node.Key flag:TABULO_HaveSmallPlank]
-                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveMediumPlank]
-                     || [gameState getNodeFlag:_node.Key flag:TABULO_HaveLongPlank] );
-    }
-
-    return self;
-}
+@implementation fgDragPawnOverEdge
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
@@ -69,22 +25,11 @@
     
     [super begin:_previousState owner:_owner];
     
-    if (isPlankView)
-    {
-        f3ControlComponent *feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Node:node];
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:2.2f height:1.1f]];
+    f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
+    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
 
-        [builder push:feedbackCommand];
-        [builder push:scaleCommand];
-    }
-    else if (isPawnView)
-    {
-        f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
-
-        [builder push:feedbackCommand];
-        [builder push:scaleCommand];
-    }
+    [builder push:feedbackCommand];
+    [builder push:scaleCommand];
     
     f3ControlComponent *command = [builder popComponent];
     
@@ -119,18 +64,9 @@
 
     [super end:_nextState owner:_owner];
 
-    if (isPlankView)
-    {
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
-
-        [builder push:scaleCommand];
-    }
-    else if (isPawnView)
-    {
-        f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
         
-        [builder push:scaleCommand];
-    }
+    [builder push:scaleCommand];
 
     f3ControlComponent *command = [builder popComponent];
     
@@ -148,30 +84,21 @@
 
     if (feedbackDisplayed)
     {
-        if (isPlankView)
+        f3ControlComponent *feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
+        
+        for (f3GraphEdgeWithInput *edge in edges)
         {
-            f3ControlComponent *feedbackCommand = [[f3RemoveFeedbackCommand alloc] initWithView:view];
-
-            [_owner appendComponent:feedbackCommand];
-        }
-        else if (isPawnView)
-        {
-            f3ControlComponent *feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
-            
-            for (fgTabuloEdge *edge in edges)
+            f3GraphNode *houseNode = [f3GraphNode nodeForKey:edge.TargetKey];
+            if ([houseNode isKindOfClass:[fgHouseNode class]])
             {
-                f3GraphNode *houseNode = [f3GraphNode nodeForKey:edge.TargetKey];
-                if ([houseNode isKindOfClass:[fgHouseNode class]])
+                if (currentEdge == nil || currentEdge.TargetKey != edge.TargetKey)
                 {
-                    if (currentEdge == nil || currentEdge.TargetKey != edge.TargetKey)
-                    {
-                        [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)houseNode];
-                    }
+                    [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)houseNode];
                 }
             }
-            
-            [_owner appendComponent:feedbackCommand];
         }
+        
+        [_owner appendComponent:feedbackCommand];
 
         feedbackDisplayed = false;
     }
@@ -183,7 +110,7 @@
     {
         nodeListening = [NSMutableArray array];
         
-        for (fgTabuloEdge *edge in edges)
+        for (f3GraphEdgeWithInput *edge in edges)
         {
             f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
             if ([nodeListening containsObject:targetNode])
@@ -230,7 +157,7 @@
                 {
                     f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
 
-                    for (fgTabuloEdge *edge in edges)
+                    for (f3GraphEdgeWithInput *edge in edges)
                     {
                         if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
                         {

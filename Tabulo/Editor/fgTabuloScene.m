@@ -9,11 +9,12 @@
 #import "fgTabuloScene.h"
 #import "../../../Framework/Framework/Control/f3GraphResolver.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
+#import "../Control/fgDragPlankAroundNode.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
 #import "../Control/fgLevelState.h"
 #import "../fgDataAdapter.h"
-#import "../Control/fgDragViewOverEdge.h"
+#import "../Control/fgDragPawnOverEdge.h"
 
 @implementation fgTabuloScene
 
@@ -87,9 +88,25 @@
     }
 }
 
-- (void)buildDragControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildDragPawnControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
+    
+    [_state appendComponent:[[f3Controller alloc] initState:controlPawn]];
+    
+    if (_writer != nil)
+    {
+        [_writer writeMarker:0x08];
+        uint16_t node0Index = (uint16_t)[_symbols indexOfObject:_node];
+        [_writer writeBytes:&node0Index length:sizeof(uint16_t)];
+        uint16_t pawnIndex = (uint16_t)[_symbols indexOfObject:_view];
+        [_writer writeBytes:&pawnIndex length:sizeof(uint16_t)];
+    }
+}
+
+- (void)buildDragPlankControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+    
+    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
     
     [_state appendComponent:[[f3Controller alloc] initState:controlPawn]];
     
@@ -449,12 +466,6 @@
     [builder push:[_director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
     
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [builder buildDecorator:2];
-    
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [builder buildDecorator:1];
-    
     f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil];
 
     bool haveHole = (_hole != TABULO_HaveSmallPlank && _hole != TABULO_HaveMediumPlank && _hole != TABULO_HaveLongPlank && _hole < TABULO_HOLE_MAX);
@@ -483,15 +494,21 @@
         }
     }
 
+    [builder push:angleHandle];
+    [builder buildDecorator:3];
+    
+    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
+    [builder buildDecorator:2];
+    
+    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
+    [builder buildDecorator:1];
+    
     [_state setNodeFlag:_node.Key flag:TABULO_HaveSmallPlank value:true];
-
+    
     if (haveHole)
     {
         [_state setNodeFlag:_node.Key flag:_hole value:true];
     }
-
-    [builder push:angleHandle];
-    [builder buildDecorator:3];
     
     return _view;
 }
@@ -603,13 +620,13 @@
     [builder push:vertexHandle];
     [builder buildAdaptee:DRAW_TRIANGLES];
     
-    f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil];
-    
     f3ViewAdaptee *_view = (f3ViewAdaptee *)[builder top];
     
     [builder push:coordonateHandle];
     [builder push:[_director getResourceIndex:RESOURCE_SpritesheetLevel]];
     [builder buildDecorator:4];
+    
+    f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_angle), nil];
     
     [builder push:angleHandle];
     [builder buildDecorator:3];

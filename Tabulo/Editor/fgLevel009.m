@@ -29,13 +29,13 @@
     fgHouseNode *node0 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:0] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node1 = [_state buildNode:[scene getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node2 = [_state buildNode:[scene getPointAt:2] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node3 = [_state buildNode:[scene getPointAt:3] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_state buildNode:[scene getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node4 = [_state buildNode:[scene getPointAt:4] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node5 = [_state buildNode:[scene getPointAt:5] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node6 = [_state buildNode:[scene getPointAt:6] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node7 = [_state buildNode:[scene getPointAt:7] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node8 = [_state buildNode:[scene getPointAt:8] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node9 = [_state buildNode:[scene getPointAt:9] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node9 = [_state buildNode:[scene getPointAt:9] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node10 = [_state buildNode:[scene getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node11 = [_state buildNode:[scene getPointAt:11] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
     fgHouseNode *node12 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:12] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
@@ -54,19 +54,19 @@
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_state node:node0 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_state node:node12 type:TABULO_PawnTwo writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node12 view:pawnTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node12 view:pawnTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankOne = [scene buildMediumPlank:_director state:_state node:node11 angle:90.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node11 view:plankOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node11 view:plankOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankTwo = [scene buildSmallPlank:_director state:_state node:node7 angle:180.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node7 view:plankTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node7 view:plankTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_state node:node3 angle:135.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node3 view:plankThree writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node3 view:plankThree writer:dataWriter symbols:dataSymbols];
     
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay elements
     

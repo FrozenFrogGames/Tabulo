@@ -6,17 +6,14 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgTabuloEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithRotation.h"
 
-@interface fgPlankEdge : fgTabuloEdge {
+@interface fgPlankEdge : f3GraphEdgeWithRotation {
 
     float targetAngle, rotationAngle, rotationRadius;
-    NSNumber *rotationKey;
 }
 
 @property (readonly) float Angle;
-
-- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey rotation:(f3GraphNode *)_rotation;
 
 - (void)setPlankType:(unsigned char)_type;
 

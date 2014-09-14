@@ -22,7 +22,9 @@
 
 - (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GameState *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (void)buildDragControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (void)buildDragPawnControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+
+- (void)buildDragPlankControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 - (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 

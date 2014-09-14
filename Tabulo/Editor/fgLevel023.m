@@ -63,16 +63,16 @@
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_state node:node0 type:TABULO_PawnTwo writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_state node:node15 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node15 view:pawnTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node15 view:pawnTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankOne = [scene buildMediumPlank:_director state:_state node:node1 angle:70.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node1 view:plankOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node1 view:plankOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankTwo = [scene buildSmallPlank:_director state:_state node:node11 angle:180.f hole:TABULO_OneHole_One writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node11 view:plankTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node11 view:plankTwo writer:dataWriter symbols:dataSymbols];
     
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay elements
     

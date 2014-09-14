@@ -18,36 +18,14 @@
 @implementation fgPlankEdge
 
 - (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey rotation:(f3GraphNode *)_rotation {
-    
-    self = [super initFrom:_originKey targetKey:_targetKey];
-    
+
+    self = [super initFrom:_originKey targetKey:_targetKey rotation:_rotation];
+
     if (self != nil)
     {
         f3GraphNode *originNode = [f3GraphNode nodeForKey:_originKey], *targetNode = [f3GraphNode nodeForKey:_targetKey];
         CGPoint originPoint = originNode.Position, targetPoint = targetNode.Position, rotationPoint = _rotation.Position;
 
-        NSArray *pawnEdges = [fgTabuloEdge edgesFromNode:_rotation withInput:targetNode];
-        if ([pawnEdges count] > 0)
-        {
-            fgTabuloEdge *edge = (fgTabuloEdge *)[pawnEdges objectAtIndex:0];
-            inputKey = edge.TargetKey;
-
-            for (int i = 1; i < [pawnEdges count]; ++i)
-            {
-                edge = (fgTabuloEdge *)[pawnEdges objectAtIndex:i];
-
-                if (inputKey != edge.TargetKey)
-                {
-                    // TODO throw f3Exception
-                }
-            }
-        }
-        
-        if (inputKey == nil)
-        {
-            return nil; // TODO throw f3Exception
-        }
-        
         targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
         rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
         rotationRadius = 0.f;
@@ -60,8 +38,6 @@
         {
             rotationAngle += 360.f;
         }
-
-        rotationKey = _rotation.Key;
     }
 
     return self;
@@ -73,7 +49,7 @@
 }
 
 - (void)setPlankType:(unsigned char)_type {
-    
+
     switch (_type)
     {
         case TABULO_HaveSmallPlank:

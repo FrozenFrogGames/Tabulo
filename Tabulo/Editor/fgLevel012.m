@@ -58,19 +58,19 @@
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_state node:node0 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node0 view:pawnOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_state node:node14 type:TABULO_PawnFour writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node14 view:pawnTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node14 view:pawnTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankOne = [scene buildSmallPlank:_director state:_state node:node2 angle:165.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node2 view:plankOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node2 view:plankOne writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankTwo = [scene buildSmallPlank:_director state:_state node:node11 angle:165.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node11 view:plankTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node11 view:plankTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_state node:node6 angle:150.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node6 view:plankThree writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node6 view:plankThree writer:dataWriter symbols:dataSymbols];
     
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay elements
     

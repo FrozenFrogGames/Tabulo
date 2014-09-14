@@ -6,10 +6,8 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgTabuloEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithInput.h"
 
-@interface fgPawnEdge : fgTabuloEdge
-
-- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey input:(f3GraphNode *)_input;
+@interface fgPawnEdge : f3GraphEdgeWithInput
 
 @end

@@ -19,7 +19,8 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/Control/f3GraphConfig.h"
-#import "../Control/fgDragViewOverEdge.h"
+#import "../Control/fgDragPawnOverEdge.h"
+#import "../Control/fgDragPlankAroundNode.h"
 #import "../Control/fgLevelState.h"
 #import "../Control/fgHouseNode.h"
 #import "../Control/fgPawnEdge.h"
@@ -340,7 +341,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildDragControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
+- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
 
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -350,7 +351,21 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&viewIndex length:sizeof(uint16_t)];
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
 
-    f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragViewOverEdge class]];
+    f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
+    [_state appendComponent:[[f3Controller alloc] initState:controlState]];
+}
+
+- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
+    
+    uint16_t nodeIndex;
+    [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
+    f3GraphNode *_node = [_symbols objectAtIndex:nodeIndex];
+    
+    uint16_t viewIndex;
+    [_data readBytes:&viewIndex length:sizeof(uint16_t)];
+    f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
+    
+    f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
     [_state appendComponent:[[f3Controller alloc] initState:controlState]];
 }
 
@@ -593,12 +608,12 @@ const NSUInteger LEVEL_COUNT = 36;
                 [self buildPlankWithHole:_data state:_state symbols:symbols];
                 break;
             case 0x08:
-                //
+                [self buildDragPawnControl:_data symbols:symbols state:_state];
+                break;
+            case 0x09:
+                [self buildDragPlankControl:_data symbols:symbols state:_state];
                 break;
 
-            case 0x09:
-                [self buildDragControl:_data symbols:symbols state:_state];
-                break;
             case 0x0A:
                 [self buildComposite];
                 break;

@@ -34,7 +34,7 @@
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
     f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
 
-    for (fgTabuloEdge *edge in edges)
+    for (f3GraphEdge *edge in edges)
     {
         if ([gameState evaluateEdge:edge])
         {

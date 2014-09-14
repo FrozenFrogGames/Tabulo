@@ -40,13 +40,13 @@
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols];
 
     f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_state node:node2 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node2 view:pawnOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node2 view:pawnOne writer:dataWriter symbols:dataSymbols];
 
     f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_state node:node6 type:TABULO_PawnFour writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node6 view:pawnTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_state node:node6 view:pawnTwo writer:dataWriter symbols:dataSymbols];
     
     f3ViewAdaptee *plankOne = [scene buildMediumPlank:_director state:_state node:node5 angle:135.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragControl:_director state:_state node:node5 view:plankOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_state node:node5 view:plankOne writer:dataWriter symbols:dataSymbols];
 
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols];
 

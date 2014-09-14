@@ -369,7 +369,7 @@
     CGPoint inputPoint = CGPointMake(_relativePoint.x, _relativePoint.y - currentOffsetY);
 
     [super notifyInput:inputPoint type:_type];
-    
+
     insideOfArea = (_relativePoint.y < offsetPadding);
 }
 

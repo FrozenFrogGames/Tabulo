@@ -8,9 +8,9 @@
 
 #import "../../../Framework/Framework/Control/f3DragViewOverEdge.h"
 
-@interface fgDragViewOverEdge : f3DragViewOverEdge {
+@interface fgDragPawnOverEdge : f3DragViewOverEdge {
 
-    bool isPawnView, isPlankView, feedbackDisplayed, feedbackToRemove;
+    bool feedbackDisplayed, feedbackToRemove;
 }
 
 @end

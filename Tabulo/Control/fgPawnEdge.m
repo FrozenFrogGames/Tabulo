@@ -14,23 +14,6 @@
 
 @implementation fgPawnEdge
 
-- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey input:(f3GraphNode *)_input {
-
-    if (_input == nil)
-    {
-        return nil; // TODO throw f3Exception
-    }
-
-    self = [super initFrom:_originKey targetKey:_targetKey];
-    
-    if (self != nil)
-    {
-        inputKey = _input.Key;
-    }
-
-    return self;
-}
-
 - (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view {
 
     f3VectorHandle *targetPoint = [[f3GraphNode nodeForKey:targetKey] getPositionHandle];
