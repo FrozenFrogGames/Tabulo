@@ -61,30 +61,48 @@
     }
 }
 
-- (void)attachListener {
-
+- (bool)acceptTargetNode:(f3GraphNode *)_node {
+    
     f3ControllerState *state = [f3GameAdaptee Producer].State;
     
-    [super attachListener];
-
-    if (rotationNodes != nil && [state isKindOfClass:[f3GameState class]])
+    if ([super acceptTargetNode:_node])
     {
-        f3GameState *gameState = (f3GameState *)state;
+        NSNumber *nodeKey = [_node Key];
         
-        for (NSUInteger i = [rotationNodes count]; i > 0; --i)
+        if ([state isKindOfClass:[f3GameState class]])
         {
-            NSNumber *nodeKey = [(f3GraphNode *)[rotationNodes objectAtIndex:i -1] Key];
+            f3GameState *gameState = (f3GameState *)state;
 
-            if ( ![gameState getNodeFlag:nodeKey flag:TABULO_PawnOne]
-              && ![gameState getNodeFlag:nodeKey flag:TABULO_PawnTwo]
-              && ![gameState getNodeFlag:nodeKey flag:TABULO_PawnThree]
-              && ![gameState getNodeFlag:nodeKey flag:TABULO_PawnFour]
-              && ![gameState getNodeFlag:nodeKey flag:TABULO_PawnFive] )
-            {
-                [rotationNodes removeObjectAtIndex:i -1];
-            }
+            return (![gameState getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank]  &&
+                    ![gameState getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank] &&
+                    ![gameState getNodeFlag:nodeKey flag:TABULO_HaveLongPlank]   );
         }
     }
+    
+    return false;
+}
+
+- (bool)acceptRotationNode:(f3GraphNode *)_node {
+
+    f3ControllerState *state = [f3GameAdaptee Producer].State;
+
+    if ([super acceptRotationNode:_node])
+    {
+        NSNumber *nodeKey = [_node Key];
+        
+        if ([state isKindOfClass:[f3GameState class]])
+        {
+            f3GameState *gameState = (f3GameState *)state;
+
+            return ([gameState getNodeFlag:nodeKey flag:TABULO_PawnOne]   ||
+                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnTwo]   ||
+                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnThree] ||
+                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnFour]  ||
+                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnFive]  );
+        }
+    }
+
+    return false;
 }
 
 @end

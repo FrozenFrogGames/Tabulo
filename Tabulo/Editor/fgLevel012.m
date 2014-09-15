@@ -101,6 +101,8 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node3 origin:node6 target:node5 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node3 origin:node6 target:node7 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node3 origin:node7 target:node6 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node3 origin:node5 target:node7 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node3 origin:node7 target:node5 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node4 origin:node7 target:node8 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node4 origin:node8 target:node7 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node9 origin:node5 target:node12 writer:dataWriter symbols:dataSymbols];
@@ -109,6 +111,8 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node10 origin:node12 target:node6 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node10 origin:node6 target:node8 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node10 origin:node8 target:node6 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node10 origin:node12 target:node8 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node10 origin:node8 target:node12 writer:dataWriter symbols:dataSymbols];
     
     [super buildScene:_director state:_state];
 }
