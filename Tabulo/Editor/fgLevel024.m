@@ -29,7 +29,6 @@
     [scene addPointFrom:11 Radius:2.5f Angle:115.f];
     [scene addPointFrom:13 Radius:2.5f Angle:155.f]; // 16
     [scene computePoints];
-    
 
     f3GraphNode *node0 = [_state buildNode:[scene getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node1 = [_state buildNode:[scene getPointAt:1] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
@@ -49,7 +48,7 @@
     f3GraphNode *node15 = [_state buildNode:[scene getPointAt:15] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node16 = [_state buildNode:[scene getPointAt:16] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     [_state buildConfig:dataWriter];
-    
+
     [scene clearPoints];
 
     [scene buildPillar:_director node:node0 writer:dataWriter symbols:dataSymbols];
