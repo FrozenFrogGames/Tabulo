@@ -109,7 +109,7 @@
 
 @implementation fgTabuloDirector
 
-const NSUInteger LEVEL_COUNT = 30;
+const NSUInteger LEVEL_COUNT = 36;
 
 - (id)init:(Class )_adapterType {
 
@@ -123,7 +123,7 @@ const NSUInteger LEVEL_COUNT = 30;
         spritesheetLevel = nil;
         backgroundLevel = nil;
         levelFlags = [NSMutableArray array];
-        lockedLevelIndex = 13;
+        lockedLevelIndex = LEVEL_COUNT +1;
     }
 
     return self;

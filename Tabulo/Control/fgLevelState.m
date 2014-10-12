@@ -41,7 +41,7 @@
         overlayLayer = [[f3ViewComposite alloc] init];
         hintView = nil;
         hintCommand = nil;
-        hintEnable = true; //(_level < 7);
+        hintEnable = (_level < 7);
     }
     
     return self;
@@ -385,6 +385,95 @@
                 [controls appendComponent:hintCommand];
             }
         }
+/*
+         NSUInteger bestConfigCount = NSUIntegerMax;
+         f3GraphConfig *bestConfig = nil;
+         
+         if (initialConfig == _config)
+         {
+         if ([solutions count] > 0)
+         {
+         bestConfigCount = 0;
+         bestConfig = [solutions objectAtIndex:0];
+         
+         f3GraphConfig *nextConfig = [bestConfig Next];
+         while (nextConfig != nil)
+         {
+         bestConfigCount++;
+         nextConfig = [nextConfig Next];
+         }
+         }
+         }
+         else // TODO move that test into a method
+         {
+         for (f3GraphConfig *solution in solutions)
+         {
+         f3GraphConfig *testConfig = solution;
+         
+         while (testConfig != nil)
+         {
+         if ([_config isEqual:testConfig])
+         {
+         NSUInteger configCount = 0;
+         
+         f3GraphConfig *nextConfig = [testConfig Next];
+         while (nextConfig != nil)
+         {
+         configCount++;
+         nextConfig = [nextConfig Next];
+         }
+         
+         if (bestConfig == nil || bestConfigCount > configCount)
+         {
+         bestConfigCount = configCount;
+         bestConfig = testConfig;
+         }
+         
+         break;
+         }
+         
+         [testConfig Next];
+         }
+         }
+         }
+         
+         if (bestConfig == nil)
+         {
+         // TODO check the best way back to the better solution
+         }
+         else
+         {
+         f3GraphEdge *hintEdge = [self findEdgeFor:_config next:bestConfig];
+         
+         if (hintEdge != nil)
+         {
+         f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
+         CGPoint originPoint = originNode.Position;
+         f3GraphNode *targetNode = [f3GraphNode nodeForKey:hintEdge.TargetKey];
+         f3VectorHandle *targetPoint = [targetNode getPositionHandle];
+         
+         f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
+         f3FloatArray *zoomOut = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:-0.33f], [[NSNumber alloc] initWithFloat:-0.33f], nil];
+         f3FloatArray *scale = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.5f], [[NSNumber alloc] initWithFloat:1.f], nil];
+         f3FloatArray *zoomIn = [f3FloatArray buildHandleForFloat32:2, [[NSNumber alloc] initWithFloat:0.33f], [[NSNumber alloc] initWithFloat:0.33f], nil];
+         
+         f3ViewBuilder *builder = [[f3GameDirector Director] Builder];
+         f3ViewAdaptee *view = [self buildHintcursor:builder atPosition:originPoint];
+         
+         [builder buildComposite:0];
+         hintView = (f3ViewComposite *)[builder popComponent];
+         [overlayLayer appendComponent:hintView];
+         
+         hintCommand = [[f3ControlCommand alloc] init];
+         [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomOut speed:0.5f]];
+         [hintCommand appendComponent:[[f3TranslationCommand alloc] initWithView:view translation:translation speed:0.33f]];
+         [hintCommand appendComponent:[[f3SetOffsetCommand alloc] initWithView:view Offset:targetPoint]];
+         [hintCommand appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:scale]];
+         [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomIn speed:0.5f]];
+         [controls appendComponent:hintCommand];
+         }
+         }
+ */
     }
     
     [super onConfigChanged:_config];

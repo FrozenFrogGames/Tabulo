@@ -52,6 +52,9 @@
 		F6494ED91969DBB700339F70 /* fgLevel022.m in Sources */ = {isa = PBXBuildFile; fileRef = F6494ED81969DBB700339F70 /* fgLevel022.m */; };
 		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
 		F69231BB19C61F650046B322 /* fgDragPlankAroundNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F69231BA19C61F650046B322 /* fgDragPlankAroundNode.m */; };
+		F6959B5C19E707340069D07B /* fgLevel034.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5B19E707340069D07B /* fgLevel034.m */; };
+		F6959B5F19E720560069D07B /* fgLevel035.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5E19E720560069D07B /* fgLevel035.m */; };
+		F6959B6219E74C130069D07B /* fgLevel036.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B6119E74C130069D07B /* fgLevel036.m */; };
 		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6AA4C6C19283C3E00E93CAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6AA4C6B19283C3E00E93CAF /* Images.xcassets */; };
 		F6BDB2AE18C16E0700430653 /* spritesheet-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BDB2AD18C16E0700430653 /* spritesheet-gameplay.png */; };
@@ -63,9 +66,12 @@
 		F6C4D51419C9283900FB309E /* fgLevel026.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51319C9283900FB309E /* fgLevel026.m */; };
 		F6C4D51719CD037C00FB309E /* fgLevel027.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51619CD037C00FB309E /* fgLevel027.m */; };
 		F6C4D51A19CF2EB500FB309E /* fgLevel028.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51919CF2EB500FB309E /* fgLevel028.m */; };
-		F6C4D51D19CF2EC900FB309E /* fgLevel031.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51C19CF2EC900FB309E /* fgLevel031.m */; };
+		F6C4D51D19CF2EC900FB309E /* fgLevel037.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51C19CF2EC900FB309E /* fgLevel037.m */; };
 		F6C4D52019CF386A00FB309E /* fgLevel029.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51F19CF386A00FB309E /* fgLevel029.m */; };
 		F6C4D52319CFA11100FB309E /* fgLevel030.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52219CFA11100FB309E /* fgLevel030.m */; };
+		F6C4D52619D2457A00FB309E /* fgLevel031.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52519D2457A00FB309E /* fgLevel031.m */; };
+		F6C4D52919D87C1D00FB309E /* fgLevel032.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52819D87C1D00FB309E /* fgLevel032.m */; };
+		F6C4D52C19D88CE400FB309E /* fgLevel033.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52B19D88CE400FB309E /* fgLevel033.m */; };
 		F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF01F618B598CC00E7DF6C /* fgDialogState.m */; };
 		F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF021F18BBEA8300E7DF6C /* fgPawnFeedbackCommand.m */; };
 		F6DF022318BC269500E7DF6C /* fgPlankFeedbackCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = F6DF022218BC269500E7DF6C /* fgPlankFeedbackCommand.m */; };
@@ -161,6 +167,12 @@
 		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
 		F69231B919C61F650046B322 /* fgDragPlankAroundNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPlankAroundNode.h; path = Control/fgDragPlankAroundNode.h; sourceTree = "<group>"; };
 		F69231BA19C61F650046B322 /* fgDragPlankAroundNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPlankAroundNode.m; path = Control/fgDragPlankAroundNode.m; sourceTree = "<group>"; };
+		F6959B5A19E707340069D07B /* fgLevel034.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel034.h; path = Editor/fgLevel034.h; sourceTree = "<group>"; };
+		F6959B5B19E707340069D07B /* fgLevel034.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel034.m; path = Editor/fgLevel034.m; sourceTree = "<group>"; };
+		F6959B5D19E720560069D07B /* fgLevel035.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel035.h; path = Editor/fgLevel035.h; sourceTree = "<group>"; };
+		F6959B5E19E720560069D07B /* fgLevel035.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel035.m; path = Editor/fgLevel035.m; sourceTree = "<group>"; };
+		F6959B6019E74C130069D07B /* fgLevel036.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel036.h; path = Editor/fgLevel036.h; sourceTree = "<group>"; };
+		F6959B6119E74C130069D07B /* fgLevel036.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel036.m; path = Editor/fgLevel036.m; sourceTree = "<group>"; };
 		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
 		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6AA4C6B19283C3E00E93CAF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Tabulo/Images.xcassets; sourceTree = "<group>"; };
@@ -180,12 +192,18 @@
 		F6C4D51619CD037C00FB309E /* fgLevel027.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel027.m; path = Editor/fgLevel027.m; sourceTree = "<group>"; };
 		F6C4D51819CF2EB500FB309E /* fgLevel028.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel028.h; path = Editor/fgLevel028.h; sourceTree = "<group>"; };
 		F6C4D51919CF2EB500FB309E /* fgLevel028.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel028.m; path = Editor/fgLevel028.m; sourceTree = "<group>"; };
-		F6C4D51B19CF2EC900FB309E /* fgLevel031.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel031.h; path = Editor/fgLevel031.h; sourceTree = "<group>"; };
-		F6C4D51C19CF2EC900FB309E /* fgLevel031.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel031.m; path = Editor/fgLevel031.m; sourceTree = "<group>"; };
+		F6C4D51B19CF2EC900FB309E /* fgLevel037.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel037.h; path = Editor/fgLevel037.h; sourceTree = "<group>"; };
+		F6C4D51C19CF2EC900FB309E /* fgLevel037.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel037.m; path = Editor/fgLevel037.m; sourceTree = "<group>"; };
 		F6C4D51E19CF386A00FB309E /* fgLevel029.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel029.h; path = Editor/fgLevel029.h; sourceTree = "<group>"; };
 		F6C4D51F19CF386A00FB309E /* fgLevel029.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel029.m; path = Editor/fgLevel029.m; sourceTree = "<group>"; };
 		F6C4D52119CFA11100FB309E /* fgLevel030.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel030.h; path = Editor/fgLevel030.h; sourceTree = "<group>"; };
 		F6C4D52219CFA11100FB309E /* fgLevel030.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel030.m; path = Editor/fgLevel030.m; sourceTree = "<group>"; };
+		F6C4D52419D2457A00FB309E /* fgLevel031.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel031.h; path = Editor/fgLevel031.h; sourceTree = "<group>"; };
+		F6C4D52519D2457A00FB309E /* fgLevel031.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel031.m; path = Editor/fgLevel031.m; sourceTree = "<group>"; };
+		F6C4D52719D87C1D00FB309E /* fgLevel032.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel032.h; path = Editor/fgLevel032.h; sourceTree = "<group>"; };
+		F6C4D52819D87C1D00FB309E /* fgLevel032.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel032.m; path = Editor/fgLevel032.m; sourceTree = "<group>"; };
+		F6C4D52A19D88CE400FB309E /* fgLevel033.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel033.h; path = Editor/fgLevel033.h; sourceTree = "<group>"; };
+		F6C4D52B19D88CE400FB309E /* fgLevel033.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel033.m; path = Editor/fgLevel033.m; sourceTree = "<group>"; };
 		F6DF01F518B598CC00E7DF6C /* fgDialogState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDialogState.h; path = Control/fgDialogState.h; sourceTree = "<group>"; };
 		F6DF01F618B598CC00E7DF6C /* fgDialogState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDialogState.m; path = Control/fgDialogState.m; sourceTree = "<group>"; };
 		F6DF021E18BBEA8300E7DF6C /* fgPawnFeedbackCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnFeedbackCommand.h; path = Control/fgPawnFeedbackCommand.h; sourceTree = "<group>"; };
@@ -391,8 +409,20 @@
 				F6C4D51F19CF386A00FB309E /* fgLevel029.m */,
 				F6C4D52119CFA11100FB309E /* fgLevel030.h */,
 				F6C4D52219CFA11100FB309E /* fgLevel030.m */,
-				F6C4D51B19CF2EC900FB309E /* fgLevel031.h */,
-				F6C4D51C19CF2EC900FB309E /* fgLevel031.m */,
+				F6C4D52419D2457A00FB309E /* fgLevel031.h */,
+				F6C4D52519D2457A00FB309E /* fgLevel031.m */,
+				F6C4D52719D87C1D00FB309E /* fgLevel032.h */,
+				F6C4D52819D87C1D00FB309E /* fgLevel032.m */,
+				F6C4D52A19D88CE400FB309E /* fgLevel033.h */,
+				F6C4D52B19D88CE400FB309E /* fgLevel033.m */,
+				F6959B5A19E707340069D07B /* fgLevel034.h */,
+				F6959B5B19E707340069D07B /* fgLevel034.m */,
+				F6959B5D19E720560069D07B /* fgLevel035.h */,
+				F6959B5E19E720560069D07B /* fgLevel035.m */,
+				F6959B6019E74C130069D07B /* fgLevel036.h */,
+				F6959B6119E74C130069D07B /* fgLevel036.m */,
+				F6C4D51B19CF2EC900FB309E /* fgLevel037.h */,
+				F6C4D51C19CF2EC900FB309E /* fgLevel037.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -551,18 +581,21 @@
 				F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgLevelState.m in Sources */,
 				F6C4D52319CFA11100FB309E /* fgLevel030.m in Sources */,
+				F6C4D52919D87C1D00FB309E /* fgLevel032.m in Sources */,
 				F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */,
 				F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */,
 				F6EC62EB196F4E5B00B661B3 /* fgLevel023.m in Sources */,
 				F6C4D51119C91DD900FB309E /* fgLevel025.m in Sources */,
 				F61CD7851958D6EC006F3C04 /* fgLevel003.m in Sources */,
 				F6EC62EE196F4E7E00B661B3 /* fgLevel024.m in Sources */,
-				F6C4D51D19CF2EC900FB309E /* fgLevel031.m in Sources */,
+				F6C4D51D19CF2EC900FB309E /* fgLevel037.m in Sources */,
 				F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */,
+				F6C4D52619D2457A00FB309E /* fgLevel031.m in Sources */,
 				F61CD79A195E1609006F3C04 /* fgLevel008.m in Sources */,
 				F61CD7A6195E1675006F3C04 /* fgLevel012.m in Sources */,
 				F6C4D51419C9283900FB309E /* fgLevel026.m in Sources */,
 				F61CD7AC195E16BB006F3C04 /* fgLevel014.m in Sources */,
+				F6C4D52C19D88CE400FB309E /* fgLevel033.m in Sources */,
 				F61CD7A9195E168E006F3C04 /* fgLevel013.m in Sources */,
 				F6025105187DDEFB0029915C /* fgDataAdapter.m in Sources */,
 				F6C4D51A19CF2EB500FB309E /* fgLevel028.m in Sources */,
@@ -573,12 +606,15 @@
 				F61CD7AF195E16D8006F3C04 /* fgLevel015.m in Sources */,
 				F61CD78E195CA7BA006F3C04 /* fgLevel004.m in Sources */,
 				F61CD77619589C49006F3C04 /* fgLevel001.m in Sources */,
+				F6959B6219E74C130069D07B /* fgLevel036.m in Sources */,
 				F61CD7B8195E172A006F3C04 /* fgLevel018.m in Sources */,
 				F6C4D51719CD037C00FB309E /* fgLevel027.m in Sources */,
 				F61CD7B2195E16F1006F3C04 /* fgLevel016.m in Sources */,
 				F61CD77E1958A291006F3C04 /* fgTabuloGame.m in Sources */,
+				F6959B5C19E707340069D07B /* fgLevel034.m in Sources */,
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
+				F6959B5F19E720560069D07B /* fgLevel035.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F61CD7BB19687DCC006F3C04 /* fgLevel021.m in Sources */,
 				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
@@ -672,7 +708,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Serj Meynar (8SB9BHKVMR)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tabulo/Tabulo-Prefix.pch";
 				INFOPLIST_FILE = "Tabulo/Tabulo-Info.plist";
@@ -682,7 +719,7 @@
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/TabuloGame-dvquwkaaxqsgewbeorclhpcfvyxb/Build/Products/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A620FDA7-5B90-4384-A768-17D15C25FCD2";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -693,7 +730,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Serj Meynar (8SB9BHKVMR)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tabulo/Tabulo-Prefix.pch";
 				INFOPLIST_FILE = "Tabulo/Tabulo-Info.plist";
@@ -703,7 +741,7 @@
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/TabuloGame-dvquwkaaxqsgewbeorclhpcfvyxb/Build/Products/Debug-iphoneos",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "A620FDA7-5B90-4384-A768-17D15C25FCD2";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
