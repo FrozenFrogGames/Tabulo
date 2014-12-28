@@ -7,7 +7,7 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
-#import "../../../Framework/Framework/Control/f3GraphCondition.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeCondition.h"
 #import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
@@ -17,12 +17,13 @@
 #import "fgTabuloEvent.h"
 
 @class fgHouseNode;
+@class f3GraphPath;
 
 @interface fgLevelState : f3GameState {
 
-    NSUInteger levelIndex, minimumPathLength;
+    NSUInteger levelIndex;
     enum fgTabuloGrade levelGrade;
-    NSMutableArray *solutions;
+    f3GraphPath *rootState, *currentState;
     f3ViewComposite *overlayLayer, *hintView;
     f3ControlCommand *hintCommand;
     bool hintEnable;
@@ -31,8 +32,6 @@
 @property (readonly) int Level;
 
 - (id)init:(NSUInteger)_level;
-
-- (void)bindSolution:(f3GraphConfig *)_config;
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols;
 - (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;

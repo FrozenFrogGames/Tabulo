@@ -66,7 +66,6 @@
 		F6C4D51419C9283900FB309E /* fgLevel026.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51319C9283900FB309E /* fgLevel026.m */; };
 		F6C4D51719CD037C00FB309E /* fgLevel027.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51619CD037C00FB309E /* fgLevel027.m */; };
 		F6C4D51A19CF2EB500FB309E /* fgLevel028.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51919CF2EB500FB309E /* fgLevel028.m */; };
-		F6C4D51D19CF2EC900FB309E /* fgLevel037.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51C19CF2EC900FB309E /* fgLevel037.m */; };
 		F6C4D52019CF386A00FB309E /* fgLevel029.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D51F19CF386A00FB309E /* fgLevel029.m */; };
 		F6C4D52319CFA11100FB309E /* fgLevel030.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52219CFA11100FB309E /* fgLevel030.m */; };
 		F6C4D52619D2457A00FB309E /* fgLevel031.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C4D52519D2457A00FB309E /* fgLevel031.m */; };
@@ -192,8 +191,6 @@
 		F6C4D51619CD037C00FB309E /* fgLevel027.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel027.m; path = Editor/fgLevel027.m; sourceTree = "<group>"; };
 		F6C4D51819CF2EB500FB309E /* fgLevel028.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel028.h; path = Editor/fgLevel028.h; sourceTree = "<group>"; };
 		F6C4D51919CF2EB500FB309E /* fgLevel028.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel028.m; path = Editor/fgLevel028.m; sourceTree = "<group>"; };
-		F6C4D51B19CF2EC900FB309E /* fgLevel037.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel037.h; path = Editor/fgLevel037.h; sourceTree = "<group>"; };
-		F6C4D51C19CF2EC900FB309E /* fgLevel037.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel037.m; path = Editor/fgLevel037.m; sourceTree = "<group>"; };
 		F6C4D51E19CF386A00FB309E /* fgLevel029.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel029.h; path = Editor/fgLevel029.h; sourceTree = "<group>"; };
 		F6C4D51F19CF386A00FB309E /* fgLevel029.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevel029.m; path = Editor/fgLevel029.m; sourceTree = "<group>"; };
 		F6C4D52119CFA11100FB309E /* fgLevel030.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel030.h; path = Editor/fgLevel030.h; sourceTree = "<group>"; };
@@ -421,8 +418,6 @@
 				F6959B5E19E720560069D07B /* fgLevel035.m */,
 				F6959B6019E74C130069D07B /* fgLevel036.h */,
 				F6959B6119E74C130069D07B /* fgLevel036.m */,
-				F6C4D51B19CF2EC900FB309E /* fgLevel037.h */,
-				F6C4D51C19CF2EC900FB309E /* fgLevel037.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -588,7 +583,6 @@
 				F6C4D51119C91DD900FB309E /* fgLevel025.m in Sources */,
 				F61CD7851958D6EC006F3C04 /* fgLevel003.m in Sources */,
 				F6EC62EE196F4E7E00B661B3 /* fgLevel024.m in Sources */,
-				F6C4D51D19CF2EC900FB309E /* fgLevel037.m in Sources */,
 				F6BDB2B118C2733000430653 /* fgRemoveFeedbackCommand.m in Sources */,
 				F6C4D52619D2457A00FB309E /* fgLevel031.m in Sources */,
 				F61CD79A195E1609006F3C04 /* fgLevel008.m in Sources */,

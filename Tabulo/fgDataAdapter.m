@@ -52,7 +52,7 @@
             }
             @catch (NSException* exception)
             {
-//              NSLog(@"Read failed with exception: %@", exception);
+                NSLog(@"Read failed with exception: %@", exception);
             }
         }
 

@@ -106,9 +106,9 @@ enum TabuloDialogItem {
                 [controls appendComponent:[[f3Controller alloc] initState:itemState]];
                 
                 break;
-                
+
             case GAME_Pause:
-                
+/*
                 if ([previousState HaveConfig])
                 {
                     [self buildDialogItem:_builder atPosition:CGPointMake(-1.8f, -2.f) option:DIALOGITEM_Reset];
@@ -117,7 +117,7 @@ enum TabuloDialogItem {
                     itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                     [controls appendComponent:[[f3Controller alloc] initState:itemState]];
                 }
-                
+ */
                 [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
                 itemNode = [self buildNode:CGPointMake(0.f, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
@@ -426,7 +426,7 @@ enum TabuloDialogItem {
                     }
                     else
                     {
-                        [game buildScene:(fgTabuloDirector *)director state:nextState];
+                        [game loadScene:(fgTabuloDirector *)director state:nextState];
                         
                         dataWriter = [game closeWriter:filename];
                     }

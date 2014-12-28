@@ -9,7 +9,7 @@
 #import "fgPlankEdge.h"
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
-#import "../../../Framework/Framework/Control/f3GraphConfig.h"
+#import "../../../Framework/Framework/Control/f3GraphState.h"
 #import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/Control/f3TransformCommand.h"
 #import "../../../Framework/Framework/Control/f3SetAngleCommand.h"

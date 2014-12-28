@@ -155,18 +155,23 @@
             {
                 if (currentEdge == nil)
                 {
-                    f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
-
-                    for (f3GraphEdgeWithInput *edge in edges)
+                    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+                    
+                    if ([producer.State isKindOfClass:[f3GameState class]])
                     {
-                        if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
+                        f3GameState *gameState =(f3GameState *)producer.State;
+
+                        for (f3GraphEdgeWithInput *edge in edges)
                         {
-                            if ([gameState evaluateEdge:edge])
+                            if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
                             {
-                                feedbackToRemove = feedbackDisplayed;
-                                currentEdge = edge;
-//                              NSLog(@"State: %@, target: %@", self, edge.Target);
-                                break;
+                                if ([gameState evaluateEdge:edge])
+                                {
+                                    feedbackToRemove = feedbackDisplayed;
+                                    currentEdge = edge;
+//                                  NSLog(@"State: %@, target: %@", self, edge.Target);
+                                    break;
+                                }
                             }
                         }
                     }

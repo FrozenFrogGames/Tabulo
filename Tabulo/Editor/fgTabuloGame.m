@@ -8,7 +8,7 @@
 
 #import "fgTabuloGame.h"
 #import "../Editor/fgTabuloScene.h"
-#import "../../../Framework/Framework/Control/f3GraphResolver.h"
+#import "../../../Framework/Framework/Control/f3GraphPath.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 
 @implementation fgTabuloGame
@@ -27,11 +27,14 @@
     return self;
 }
 
-- (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
-    
+- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
+
     [_director loadScene:scene state:_state];
 
-    f3GraphResolver *resolver = [_state buildGraphResolver];
+    [_state resolveGraphPath:dataWriter];
+
+/*
+    f3GraphPath *resolver = [_state buildGraphResolver];
     
     while ([resolver computeAllConfig:_state])
     {
@@ -45,7 +48,7 @@
     
     for (NSUInteger i = 0; i < solutionCount; ++i)
     {
-        f3GraphConfig *solution = [resolver resolve:solutionIndexes[i] initial:0];
+        f3GraphState *solution = [resolver resolve:solutionIndexes[i] initial:0];
         
         if (solution != nil)
         {
@@ -74,13 +77,14 @@
         free(solutionIndexes);
     }
     
-    for (f3GraphConfig *solution in bestSolutions)
+    for (f3GraphState *solution in bestSolutions)
     {
         [dataWriter writeMarker:0x0B];
         [solution serialize:dataWriter];
         
         [(fgLevelState *)_state bindSolution:solution];
     }
+ */
 }
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename {

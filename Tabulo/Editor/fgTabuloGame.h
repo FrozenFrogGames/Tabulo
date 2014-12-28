@@ -18,7 +18,7 @@
     fgTabuloScene *scene;
 }
 
-- (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state;
+- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state;
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename;
 

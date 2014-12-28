@@ -10,7 +10,7 @@
 
 @implementation fgLevel034
 
-- (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
+- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
 
     [scene addPointFrom:0 Radius:2.5f Angle:95.f];
     [scene addPointFrom:0 Radius:2.5f Angle:135.f]; // 2
@@ -41,7 +41,7 @@
     f3GraphNode *node11 = [_state buildNode:[scene getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     fgHouseNode *node12 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:12] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node13 = [_state buildNode:[scene getPointAt:13] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
-    [_state buildConfig:dataWriter];
+    [_state buildGraphState];
 
     [scene clearPoints];
 
@@ -108,7 +108,7 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node12 origin:node10 target:node13 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node12 origin:node13 target:node10 writer:dataWriter symbols:dataSymbols];
 
-    [super buildScene:_director state:_state];
+    [super loadScene:_director state:_state];
 }
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "fgTabuloScene.h"
-#import "../../../Framework/Framework/Control/f3GraphResolver.h"
+#import "../../../Framework/Framework/Control/f3GraphPath.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 #import "../Control/fgDragPlankAroundNode.h"
 #import "../Control/fgPawnEdge.h"
@@ -248,7 +248,7 @@
     [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
     [builder buildDecorator:1];
     
-    f3GraphCondition *condition = [[f3GraphCondition alloc] init:_node.Key flag:_type result:true];
+    f3GraphEdgeCondition *condition = [[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true];
     [_state bindCondition:condition]; // each house add its game condition
     [_node bindView:_view type:_type]; // only used for visual feedback on the house
     
@@ -699,97 +699,97 @@
     {
         fgPawnEdge *edge = [[fgPawnEdge alloc] initFrom:_origin.Key targetKey:_target.Key input:_node];
         
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.OriginKey flag:pawn result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:_type result:true]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:pawn result:true]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true]];
         
         switch (pawn) // restrict edge if a hole is present
         {
             case TABULO_PawnOne:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_One result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_One result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
                 break;
                 
             case TABULO_PawnTwo:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Two result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Two result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
     
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
                 break;
                 
             case TABULO_PawnThree:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Three result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Three result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
                 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
                 
             case TABULO_PawnFour:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Four result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Four result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
                 
             case TABULO_PawnFive:
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_OneHole_Five result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Five result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
 
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
-                [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
+                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
         }
         
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
     }
 }
 
@@ -820,9 +820,9 @@
         fgPlankEdge *edge = [[fgPlankEdge alloc] initFrom:_origin.Key targetKey:_target.Key rotation:_node];
         [edge setPlankType:_type];
 
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node.Key flag:pawn result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.OriginKey flag:_type result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:edge.TargetKey flag:_type result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:pawn result:true]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:_type result:true]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:_type result:false]];
     }
 }
 

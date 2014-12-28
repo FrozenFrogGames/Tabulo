@@ -10,7 +10,7 @@
 
 @implementation fgLevel026
 
-- (void)buildScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
+- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
 
     [scene addPointFrom:0 Radius:1.75f Angle:90.f];
     [scene addPointFrom:1 Radius:1.75f Angle:90.f]; // 2
@@ -39,7 +39,7 @@
     f3GraphNode *node10 = [_state buildNode:[scene getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node11 = [_state buildNode:[scene getPointAt:11] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node12 = [_state buildNode:[scene getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    [_state buildConfig:dataWriter];
+    [_state buildGraphState];
 
     [scene clearPoints];
 
@@ -79,8 +79,8 @@
     [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node3 origin:node2 target:node5 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node4 origin:node6 target:node2 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node4 origin:node2 target:node6 writer:dataWriter symbols:dataSymbols];
-    [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node7 origin:node6 target:node9 writer:dataWriter symbols:dataSymbols];
-    [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node7 origin:node9 target:node6 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node7 origin:node6 target:node9 writer:dataWriter symbols:dataSymbols];
+    [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node7 origin:node9 target:node6 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node8 origin:node6 target:node10 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveMediumPlank node:node8 origin:node10 target:node6 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node11 origin:node0 target:node10 writer:dataWriter symbols:dataSymbols];
@@ -99,7 +99,7 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveSmallPlank node:node0 origin:node1 target:node11 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveSmallPlank node:node0 origin:node11 target:node1 writer:dataWriter symbols:dataSymbols];
 
-    [super buildScene:_director state:_state];
+    [super loadScene:_director state:_state];
 }
 
 @end
