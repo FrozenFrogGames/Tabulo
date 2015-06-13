@@ -21,7 +21,7 @@
 		F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */; };
 		F6145D5018B04D5C00924636 /* background-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6145D4E18B04D5C00924636 /* background-gameplay.png */; };
 		F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5518B1B24200924636 /* fgTabuloEvent.m */; };
-		F6145D5918B2F3ED00924636 /* fgLevelState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5818B2F3ED00924636 /* fgLevelState.m */; };
+		F6145D5918B2F3ED00924636 /* fgLevelStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */; };
 		F61CD764193EBDEC006F3C04 /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD763193EBDEC006F3C04 /* libFramework.a */; };
 		F61CD766193EBEED006F3C04 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD765193EBEED006F3C04 /* GameKit.framework */; };
 		F61CD768193EBEF3006F3C04 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD767193EBEF3006F3C04 /* StoreKit.framework */; };
@@ -107,8 +107,8 @@
 		F6145D4E18B04D5C00924636 /* background-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-gameplay.png"; sourceTree = "<group>"; };
 		F6145D5418B1B24200924636 /* fgTabuloEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEvent.h; path = Control/fgTabuloEvent.h; sourceTree = "<group>"; };
 		F6145D5518B1B24200924636 /* fgTabuloEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEvent.m; path = Control/fgTabuloEvent.m; sourceTree = "<group>"; };
-		F6145D5718B2F3ED00924636 /* fgLevelState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevelState.h; path = Control/fgLevelState.h; sourceTree = "<group>"; };
-		F6145D5818B2F3ED00924636 /* fgLevelState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevelState.m; path = Control/fgLevelState.m; sourceTree = "<group>"; };
+		F6145D5718B2F3ED00924636 /* fgLevelStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevelStrategy.h; path = Control/fgLevelStrategy.h; sourceTree = "<group>"; };
+		F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgLevelStrategy.m; path = Control/fgLevelStrategy.m; sourceTree = "<group>"; };
 		F61CD763193EBDEC006F3C04 /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../../Library/Developer/Xcode/DerivedData/TabuloGame-dvquwkaaxqsgewbeorclhpcfvyxb/Build/Products/Debug-iphoneos/libFramework.a"; sourceTree = "<group>"; };
 		F61CD765193EBEED006F3C04 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		F61CD767193EBEF3006F3C04 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -314,8 +314,8 @@
 		F611860C188C4F46004497C2 /* State */ = {
 			isa = PBXGroup;
 			children = (
-				F6145D5718B2F3ED00924636 /* fgLevelState.h */,
-				F6145D5818B2F3ED00924636 /* fgLevelState.m */,
+				F6145D5718B2F3ED00924636 /* fgLevelStrategy.h */,
+				F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */,
 				F6EB416818E8EFDA0017487E /* fgMenuState.h */,
 				F6EB416918E8EFDA0017487E /* fgMenuState.m */,
 				F6DF01F518B598CC00E7DF6C /* fgDialogState.h */,
@@ -574,7 +574,7 @@
 				F61CD7A0195E1640006F3C04 /* fgLevel010.m in Sources */,
 				F61CD79D195E1624006F3C04 /* fgLevel009.m in Sources */,
 				F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */,
-				F6145D5918B2F3ED00924636 /* fgLevelState.m in Sources */,
+				F6145D5918B2F3ED00924636 /* fgLevelStrategy.m in Sources */,
 				F6C4D52319CFA11100FB309E /* fgLevel030.m in Sources */,
 				F6C4D52919D87C1D00FB309E /* fgLevel032.m in Sources */,
 				F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */,

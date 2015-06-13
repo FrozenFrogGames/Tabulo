@@ -10,7 +10,7 @@
 
 @implementation fgLevel030
 
-- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
+- (void)loadScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy {
     
     [scene addPointFrom:0 Radius:1.75f Angle:25.f];
     [scene addPointFrom:0 Radius:2.5f Angle:95.f]; // 2
@@ -29,57 +29,57 @@
     [scene addPointFrom:14 Radius:1.75f Angle:150.f];
     [scene computePoints];
 
-    f3GraphNode *node0 = [_state buildNode:[scene getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node1 = [_state buildNode:[scene getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node2 = [_state buildNode:[scene getPointAt:2] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node3 = [_state buildNode:[scene getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    fgHouseNode *node4 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node5 = [_state buildNode:[scene getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node6 = [_state buildNode:[scene getPointAt:6] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node7 = [_state buildNode:[scene getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node8 = [_state buildNode:[scene getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
-    fgHouseNode *node9 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:9] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node10 = [_state buildNode:[scene getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node11 = [_state buildNode:[scene getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node12 = [_state buildNode:[scene getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node13 = [_state buildNode:[scene getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    fgHouseNode *node14 = [(fgLevelState *)_state buildHouseNode:[scene getPointAt:14] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    f3GraphNode *node15 = [_state buildNode:[scene getPointAt:15] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    [_state buildGraphState];
+    f3GraphNode *node0 = [_strategy buildNode:[scene getPointAt:0] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node1 = [_strategy buildNode:[scene getPointAt:1] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node2 = [_strategy buildNode:[scene getPointAt:2] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node3 = [_strategy buildNode:[scene getPointAt:3] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node4 = [(fgLevelStrategy *)_strategy buildHouseNode:[scene getPointAt:4] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node5 = [_strategy buildNode:[scene getPointAt:5] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node6 = [_strategy buildNode:[scene getPointAt:6] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node7 = [_strategy buildNode:[scene getPointAt:7] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node8 = [_strategy buildNode:[scene getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node9 = [(fgLevelStrategy *)_strategy buildHouseNode:[scene getPointAt:9] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node10 = [_strategy buildNode:[scene getPointAt:10] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node11 = [_strategy buildNode:[scene getPointAt:11] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node12 = [_strategy buildNode:[scene getPointAt:12] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node13 = [_strategy buildNode:[scene getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    fgHouseNode *node14 = [(fgLevelStrategy *)_strategy buildHouseNode:[scene getPointAt:14] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
+    f3GraphNode *node15 = [_strategy buildNode:[scene getPointAt:15] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
+    [_strategy buildGraphState];
 
     [scene clearPoints];
 
     [scene buildPillar:_director node:node0 writer:dataWriter symbols:dataSymbols];
     [scene buildPillar:_director node:node3 writer:dataWriter symbols:dataSymbols];
-    [scene buildHouse:_director node:node4 type:TABULO_PawnFour state:_state writer:dataWriter symbols:dataSymbols];
-    [scene buildHouse:_director node:node9 type:TABULO_PawnTwo state:_state writer:dataWriter symbols:dataSymbols];
+    [scene buildHouse:_director node:node4 type:TABULO_PawnFour state:_strategy writer:dataWriter symbols:dataSymbols];
+    [scene buildHouse:_director node:node9 type:TABULO_PawnTwo state:_strategy writer:dataWriter symbols:dataSymbols];
     [scene buildPillar:_director node:node10 writer:dataWriter symbols:dataSymbols];
     [scene buildPillar:_director node:node11 writer:dataWriter symbols:dataSymbols];
-    [scene buildHouse:_director node:node14 type:TABULO_PawnOne state:_state writer:dataWriter symbols:dataSymbols];
+    [scene buildHouse:_director node:node14 type:TABULO_PawnOne state:_strategy writer:dataWriter symbols:dataSymbols];
     [scene buildBackground:_director writer:dataWriter symbols:dataSymbols];
 
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay background
 
-    f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_state node:node4 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPawnControl:_director state:_state node:node4 view:pawnOne writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_strategy node:node4 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_strategy node:node4 view:pawnOne writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_state node:node9 type:TABULO_PawnFour writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPawnControl:_director state:_state node:node9 view:pawnTwo writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *pawnTwo = [scene buildPawn:_director state:_strategy node:node9 type:TABULO_PawnFour writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_strategy node:node9 view:pawnTwo writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *pawnThree = [scene buildPawn:_director state:_state node:node14 type:TABULO_PawnTwo writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPawnControl:_director state:_state node:node14 view:pawnThree writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *pawnThree = [scene buildPawn:_director state:_strategy node:node14 type:TABULO_PawnTwo writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPawnControl:_director state:_strategy node:node14 view:pawnThree writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *plankOne = [scene buildMediumPlank:_director state:_state node:node2 angle:95.f hole:TABULO_OneHole_Four writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPlankControl:_director state:_state node:node2 view:plankOne writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *plankOne = [scene buildMediumPlank:_director state:_strategy node:node2 angle:95.f hole:TABULO_OneHole_Four writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_strategy node:node2 view:plankOne writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *plankTwo = [scene buildSmallPlank:_director state:_state node:node12 angle:90.f hole:TABULO_OneHole_Two writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPlankControl:_director state:_state node:node12 view:plankTwo writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *plankTwo = [scene buildSmallPlank:_director state:_strategy node:node12 angle:90.f hole:TABULO_OneHole_Two writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_strategy node:node12 view:plankTwo writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_state node:node7 angle:45.f hole:TABULO_OneHole_One writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPlankControl:_director state:_state node:node7 view:plankThree writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_strategy node:node7 angle:45.f hole:TABULO_OneHole_One writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_strategy node:node7 view:plankThree writer:dataWriter symbols:dataSymbols];
 
-    f3ViewAdaptee *plankFour = [scene buildSmallPlank:_director state:_state node:node13 angle:150.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
-    [scene buildDragPlankControl:_director state:_state node:node13 view:plankFour writer:dataWriter symbols:dataSymbols];
+    f3ViewAdaptee *plankFour = [scene buildSmallPlank:_director state:_strategy node:node13 angle:150.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
+    [scene buildDragPlankControl:_director state:_strategy node:node13 view:plankFour writer:dataWriter symbols:dataSymbols];
 
     [scene buildComposite:_director writer:dataWriter symbols:dataSymbols]; // gameplay elements
 
@@ -123,7 +123,7 @@
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node4 origin:node7 target:node8 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPlank:_director type:TABULO_HaveMediumPlank node:node4 origin:node8 target:node7 writer:dataWriter symbols:dataSymbols];
 
-    [super loadScene:_director state:_state];
+    [super loadScene:_director strategy:_strategy];
 }
 
 @end

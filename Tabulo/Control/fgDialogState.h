@@ -8,16 +8,16 @@
 
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
+#import "../Control/fgTabuloEvent.h"
 #import "../View/fgTabuloDirector.h"
 
 @interface fgDialogState : f3GameState {
     
     f3ViewComposite *dialogLayer;
-    f3GameState *previousState;
     fgTabuloEvent *dialogEvent;
     float dialogScale;
 }
 
-- (id)init:(f3GameState *)_previousState event:(fgTabuloEvent *)_event;
+- (id)initWithEvent:(fgTabuloEvent *)_event;
 
 @end

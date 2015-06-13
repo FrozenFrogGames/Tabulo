@@ -113,11 +113,12 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
+/*
     if (UIDeviceOrientationIsLandscape(interfaceOrientation))
     {
         return YES;
     }
-    
+ */
     return NO;
 }
 
@@ -139,7 +140,7 @@
 {
     [adaptee update:self.timeSinceLastUpdate];
     
-    if (adaptee.StateHasChanged || orientationHasChanged)
+    if (orientationHasChanged || adaptee.ShouldUpdateCanvas)
     {
         [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
         

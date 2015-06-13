@@ -7,10 +7,11 @@
 //
 
 #import "../fgDataAdapter.h"
-#import "../Control/fgLevelState.h"
+#import "../Control/fgLevelStrategy.h"
 #import "../View/fgTabuloDirector.h"
 #import "../Editor/fgTabuloScene.h"
 
+// TODO implement as an operation using visitor on scene root node
 @interface fgTabuloGame : NSObject {
     
     fgDataAdapter *dataWriter;
@@ -18,7 +19,9 @@
     fgTabuloScene *scene;
 }
 
-- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state;
+- (void)loadScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy;
+
+- (void)buildScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy;
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename;
 

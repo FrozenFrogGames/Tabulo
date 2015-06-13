@@ -7,6 +7,7 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
+#import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Model/f3IntegerArray.h"
 #import "../../../Framework/Framework/Model/f3FloatArray.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
@@ -82,7 +83,6 @@ enum fgTabuloGrade {
 };
 
 @class fgViewCanvas;
-@class fgLevelState;
 
 @interface fgTabuloDirector : f3GameDirector {
 
@@ -99,6 +99,6 @@ enum fgTabuloGrade {
 - (bool)isLevelLocked:(NSUInteger)_level;
 - (NSUInteger)getLevelCount;
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state;
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state;
 
 @end

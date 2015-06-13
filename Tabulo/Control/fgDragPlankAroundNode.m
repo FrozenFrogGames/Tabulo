@@ -10,6 +10,7 @@
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 
 @implementation fgDragPlankAroundNode
 
@@ -45,16 +46,17 @@
     if ([state isKindOfClass:[f3GameState class]])
     {
         f3GameState *gameState = (f3GameState *)state;
+        f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
 
-        if ([gameState getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank])
+        if ([gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank])
         {
             rotationRadius = 1.75f; // small plank is 3.5 (3.42) units
         }
-        else if ([gameState getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank])
+        else if ([gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank])
         {
             rotationRadius = 2.5f; // medium plank is 5 (4.95) units
         }
-        else if ([gameState getNodeFlag:nodeKey flag:TABULO_HaveLongPlank])
+        else if ([gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveLongPlank])
         {
             rotationRadius = 3.5f; // long plank is 7 (7.07) units length
         }
@@ -72,10 +74,11 @@
         if ([state isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)state;
+            f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
 
-            return (![gameState getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank]  &&
-                    ![gameState getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank] &&
-                    ![gameState getNodeFlag:nodeKey flag:TABULO_HaveLongPlank]   );
+            return (![gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank]  &&
+                    ![gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank] &&
+                    ![gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveLongPlank]   );
         }
     }
     
@@ -93,12 +96,13 @@
         if ([state isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)state;
+            f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
 
-            return ([gameState getNodeFlag:nodeKey flag:TABULO_PawnOne]   ||
-                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnTwo]   ||
-                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnThree] ||
-                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnFour]  ||
-                    [gameState getNodeFlag:nodeKey flag:TABULO_PawnFive]  );
+            return ([gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnOne]   ||
+                    [gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnTwo]   ||
+                    [gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnThree] ||
+                    [gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnFour]  ||
+                    [gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnFive]  );
         }
     }
 

@@ -8,6 +8,7 @@
 
 #import "fgMenuState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3TranslationCommand.h"
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
@@ -33,6 +34,12 @@
     }
 
     return self;
+}
+
+
+- (void)setPrevious:(f3ControllerState *)_previous {
+    
+    previousState = nil;
 }
 
 - (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
@@ -84,10 +91,10 @@
     [_builder push:offsetDecorator];
     [self buildBackground:_builder height:offsetPadding width:paddingWidth];
     [_builder buildComposite:0];
-    
-    f3ViewScene *currentScene = [[f3ViewScene alloc] init];
-    [currentScene appendComposite:(f3ViewComposite *)[_builder popComponent]];
-    [director loadScene:currentScene state:self];
+
+    menuLayer = (f3ViewComposite *)[_builder pop];
+
+//  [super buildScene:_builder screen:_screen unit:_unit];
 }
 
 - (void)buildBackground:(f3ViewBuilder *)_builder height:(float)_height width:(float)_width {
@@ -205,10 +212,11 @@
     
     if (!isLevelLocked)
     {
-        f3GraphNode *node = [_state buildNode:_position withExtend:CGSizeMake(_scale *.45, _scale *.45) writer:nil symbols:nil];
+        f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
+        f3GraphNode *node = [strategy buildNode:_position withExtend:CGSizeMake(_scale *.45, _scale *.45) writer:nil symbols:nil];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
-        [_state appendComponent:[[f3Controller alloc] initState:controlView]];
+        [strategy appendGameController:[[f3Controller alloc] initWithState:controlView]];
     }
 }
 
@@ -252,6 +260,19 @@
     if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
     {
         offsetDecorator = decorator;
+    }
+}
+
+- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
+    
+    f3ViewScene *scene = [f3GameDirector Director].Scene;
+    
+    [super begin:_previousState owner:_owner];
+
+    if (menuLayer != nil)
+    {
+        [scene removeAllComposites];
+        [scene appendComposite:menuLayer];
     }
 }
 
@@ -378,9 +399,9 @@
 
     if ([_event isKindOfClass:[fgTabuloEvent class]] && insideOfArea && notInMotion)
     {
-        fgDialogState *dialogState = [[fgDialogState alloc] init:self event:(fgTabuloEvent *)_event];
+        fgDialogState *dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
 
-        [[f3GameAdaptee Producer] buildDialog:[f3GameDirector Director].Builder state:dialogState];
+        [[f3GameAdaptee Producer] buildScene:[f3GameDirector Director].Builder state:dialogState];
     }
 }
 

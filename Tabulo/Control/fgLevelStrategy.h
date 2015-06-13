@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeCondition.h"
 #import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
@@ -19,12 +19,12 @@
 @class fgHouseNode;
 @class f3GraphPath;
 
-@interface fgLevelState : f3GameState {
+@interface fgLevelStrategy : f3GraphNodeStrategy {
 
     NSUInteger levelIndex;
     enum fgTabuloGrade levelGrade;
     f3GraphPath *rootState, *currentState;
-    f3ViewComposite *overlayLayer, *hintView;
+    f3ViewComposite *hintView;
     f3ControlCommand *hintCommand;
     bool hintEnable;
 }

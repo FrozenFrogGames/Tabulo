@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgLevelState.h"
+#import "fgLevelStrategy.h"
 #import "fgMenuState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3TranslationCommand.h"
@@ -22,7 +22,7 @@
 #import "fgDialogState.h"
 #import "fgHouseNode.h"
 
-@implementation fgLevelState
+@implementation fgLevelStrategy
 
 - (id)init {
     
@@ -37,7 +37,6 @@
     {
         levelIndex = _level;
         levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
-        overlayLayer = [[f3ViewComposite alloc] init];
         hintView = nil;
         hintCommand = nil;
         hintEnable = true; // (_level < 7);
@@ -58,7 +57,9 @@
     return resultScale;
 }
 
-- (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)buildLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+    
+    [super buildLayer:_builder screen:_screen unit:_unit];
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
@@ -83,24 +84,25 @@
     [_builder push:[f3VectorHandle buildHandleForWidth:x height:y]];
     [_builder buildDecorator:1];
     
-    [overlayLayer appendComponent:[_builder popComponent]];
+    [interfaceLayer appendComponent:[_builder popComponent]];
     
     f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
     fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
     fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
-    [self appendComponent:[[f3Controller alloc] initState:controlView]];
+    [self appendGameController:[[f3Controller alloc] initWithState:controlView]];
+}
+/*
+- (void)begin:(f3ControllerState *)_previousState {
+    
+    if (overlayLayer != nil)
+    {
+        f3ViewScene *scene = [f3GameDirector Director].Scene;
+        
+        [scene appendComposite:overlayLayer];
+    }
 }
 
-- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
-    
-    f3ViewScene *scene = [f3GameDirector Director].Scene;
-    
-    [scene appendComposite:overlayLayer];
-}
-
-- (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
-    
-    [super update:_elapsed owner:_owner];
+- (void)update:(NSTimeInterval)_elapsed {
     
     if (hintView != nil && hintCommand != nil && hintCommand.finished)
     {
@@ -110,13 +112,16 @@
     }
 }
 
-- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+- (void)end:(f3ControllerState *)_nextState {
     
-    f3ViewScene *scene = [f3GameDirector Director].Scene;
-    
-    [scene removeComposite:overlayLayer];
+    if (overlayLayer != nil)
+    {
+        f3ViewScene *scene = [f3GameDirector Director].Scene;
+        
+        [scene removeComposite:overlayLayer];
+    }
 }
-
+ */
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
     
     uint16_t dataLength = sizeof(float) *4;
@@ -130,7 +135,7 @@
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:position extend:extend];
     
     [keys addObject:node.Key];
-    [inputGrid appendNode:node];
+    [self appendTouchListener:node];
     
     free(dataArray);
     
@@ -162,7 +167,7 @@
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
     
     [keys addObject:node.Key];
-    [inputGrid appendNode:node];
+    [self appendTouchListener:node];
     
     if (_symbols != nil)
     {
@@ -172,43 +177,75 @@
     return node;
 }
 
-- (void)notifyEvent:(f3GameEvent *)_event {
+- (bool)notifyGameEvent:(f3GameEvent *)_event {
 
     if (_event.Event < GAME_EVENT_MAX)
     {
         fgDialogState *dialogState;
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
-        if ([_event isKindOfClass:[fgTabuloEvent class]])
+        if (_event.Event == GAME_Over) // convert GAME_Over into Tabulo's event
         {
-            dialogState = [[fgDialogState alloc] init:self event:(fgTabuloEvent *)_event];
+            fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
+            enum fgTabuloGrade grade = GRADE_gold;
+            
+            if (graphPathCount > greaterDistanceToGoal)
+            {
+                grade = GRADE_bronze;
+            }
+            else if (graphPathCount > minimumDistanceToGoal)
+            {
+                grade = GRADE_silver;
+            }
+            
+            if (grade > levelGrade)
+            {
+                [director setGrade:grade level:levelIndex];
+                
+                levelGrade = grade;
+            }
+            
+            if ([director isLevelLocked:levelIndex+1])
+            {
+                dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:GAME_Over level:levelIndex]];
+            }
+            else
+            {
+                dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:GAME_Next level:levelIndex]];
+            }
+        }
+        else if ([_event isKindOfClass:[fgTabuloEvent class]])
+        {
+            dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
         }
         else
         {
-            dialogState = [[fgDialogState alloc] init:self event:[[fgTabuloEvent alloc] init:_event.Event level:levelIndex]];
+            dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:_event.Event level:levelIndex]];
         }
-
-        if (hintView != nil && hintCommand != nil && _event.Event == GAME_Over)
+        
+        if (hintView != nil && hintCommand != nil)
         {
-            [overlayLayer removeComponent:hintView];
-            [hintCommand instantKill];
+            [interfaceLayer removeComponent:hintView];
+            [hintCommand interrupt];
             hintView = nil;
             hintCommand = nil;
         }
+        
+        [producer buildScene:[f3GameDirector Director].Builder state:dialogState];
 
-        [[f3GameAdaptee Producer] buildDialog:[f3GameDirector Director].Builder state:dialogState];
+        return TRUE;
     }
-    else
-    {
-        [super notifyEvent:_event];
-    }
+
+    return FALSE;
 }
 
 - (void)computeHelpForEdge:(f3GraphEdge *)_edge {
-    
+/*
     if (hintView != nil && hintCommand != nil)
     {
         [overlayLayer removeComponent:hintView];
-        [hintCommand instantKill];
+        [hintCommand interrupt];
 
         hintView = nil;
         hintCommand = nil;
@@ -239,8 +276,9 @@
         [hintCommand appendComponent:[[f3SetOffsetCommand alloc] initWithView:view Offset:targetPoint]];
         [hintCommand appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:scale]];
         [hintCommand appendComponent:[[f3ZoomCommand alloc] initWithView:view zoom:zoomIn speed:0.5f]];
-        [controls appendComponent:hintCommand];
+        [self appendGameController:hintCommand];
     }
+ */
 }
 
 - (f3ViewAdaptee *)buildHintcursor:(f3ViewBuilder *)_builder atPosition:(CGPoint)_position {
@@ -267,43 +305,6 @@
     [_builder buildDecorator:1];
     
     return view;
-}
-
-- (void)onGameOver:(f3Controller *)_owner {
-    
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-    f3GameAdaptee *producer = [f3GameAdaptee Producer];
-
-    enum fgTabuloGrade grade = GRADE_gold;
-
-    if (graphPathCount > greaterDistanceToGoal)
-    {
-        grade = GRADE_bronze;
-    }
-    else if (graphPathCount > minimumDistanceToGoal)
-    {
-        grade = GRADE_silver;
-    }
-
-    if (grade > levelGrade)
-    {
-        [director setGrade:grade level:levelIndex];
-        
-        levelGrade = grade;
-    }
-
-    fgDialogState *dialogState;
-    
-    if ([director isLevelLocked:levelIndex+1])
-    {
-        dialogState = [[fgDialogState alloc] init:self event:[[fgTabuloEvent alloc] init:GAME_Over level:levelIndex]];
-    }
-    else
-    {
-        dialogState = [[fgDialogState alloc] init:self event:[[fgTabuloEvent alloc] init:GAME_Next level:levelIndex]];
-    }
-    
-    [producer buildDialog:director.Builder state:dialogState];
 }
 
 @end

@@ -10,6 +10,7 @@
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "fgPlankEdge.h"
 
@@ -33,25 +34,26 @@
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
     f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+    f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
 
     for (f3GraphEdge *edge in edges)
     {
-        if ([gameState evaluateEdge:edge])
+        if ([gameStrategy evaluateEdge:edge])
         {
             if ([edge isKindOfClass:[fgPlankEdge class]])
             {
                 f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
                 float targetAngle = [(fgPlankEdge *)edge Angle];
                 
-                if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveSmallPlank])
+                if ([gameStrategy getNodeFlag:plankNode.Key flag:TABULO_HaveSmallPlank])
                 {
                     [self buildSmallPlank:builder Position:targetNode.Position Angle:targetAngle];
                 }
-                else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveMediumPlank])
+                else if ([gameStrategy getNodeFlag:plankNode.Key flag:TABULO_HaveMediumPlank])
                 {
                     [self buildMediumPlank:builder Position:targetNode.Position Angle:targetAngle];
                 }
-                else if ([gameState getNodeFlag:plankNode.Key flag:TABULO_HaveLongPlank])
+                else if ([gameStrategy getNodeFlag:plankNode.Key flag:TABULO_HaveLongPlank])
                 {
                     // TODO support long plank
                 }

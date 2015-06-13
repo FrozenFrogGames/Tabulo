@@ -27,64 +27,20 @@
     return self;
 }
 
-- (void)loadScene:(fgTabuloDirector *)_director state:(fgLevelState *)_state {
+- (void)loadScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy {
 
-    [_director loadScene:scene state:_state];
+    f3GameState *gameState = [[f3GameState alloc] initWithStrategy:_strategy];
+    
+    [self buildScene:_director strategy:_strategy];
 
-    [_state resolveGraphPath:dataWriter];
+    [gameState loadScene:scene];
 
-/*
-    f3GraphPath *resolver = [_state buildGraphResolver];
-    
-    while ([resolver computeAllConfig:_state])
-    {
-        NSLog(@"%@", resolver);
-    }
-    
-    unsigned int *solutionIndexes;
-    NSUInteger solutionCount = [resolver getSolutionIndexes:&solutionIndexes];
-    NSMutableArray *bestSolutions = [NSMutableArray array];
-    NSUInteger pathLength, shortestPathLength = 0;
-    
-    for (NSUInteger i = 0; i < solutionCount; ++i)
-    {
-        f3GraphState *solution = [resolver resolve:solutionIndexes[i] initial:0];
-        
-        if (solution != nil)
-        {
-            pathLength = solution.PathLength;
-            
-            if (shortestPathLength == 0 || pathLength < shortestPathLength)
-            {
-                shortestPathLength = pathLength;
-                
-                [bestSolutions removeAllObjects];
-            }
-            
-            if (pathLength == shortestPathLength)
-            {
-                [bestSolutions addObject:solution];
-            }
-        }
-        else
-        {
-            // TODO throw f3Exception
-        }
-    }
-    
-    if (solutionIndexes != nil)
-    {
-        free(solutionIndexes);
-    }
-    
-    for (f3GraphState *solution in bestSolutions)
-    {
-        [dataWriter writeMarker:0x0B];
-        [solution serialize:dataWriter];
-        
-        [(fgLevelState *)_state bindSolution:solution];
-    }
- */
+    [_strategy resolveGraphPath:dataWriter];
+}
+
+- (void)buildScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy {
+
+    // visitor abstract class - subclass implement level init
 }
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename {

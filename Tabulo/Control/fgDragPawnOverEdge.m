@@ -9,6 +9,7 @@
 #import "fgDragPawnOverEdge.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeWithInput.h"
 #import "fgHouseNode.h"
@@ -143,7 +144,7 @@
     }
 }
 
-- (void)notifyInput:(enum f3InputType)_type forKey:(f3GraphNode *)_node {
+- (void)notifyInput:(enum f3InputType)_type fromNode:(f3GraphNode *)_node {
 
     if ([nodeListening containsObject:_node])
     {
@@ -160,12 +161,13 @@
                     if ([producer.State isKindOfClass:[f3GameState class]])
                     {
                         f3GameState *gameState =(f3GameState *)producer.State;
+                        f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
 
                         for (f3GraphEdgeWithInput *edge in edges)
                         {
                             if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
                             {
-                                if ([gameState evaluateEdge:edge])
+                                if ([gameStrategy evaluateEdge:edge])
                                 {
                                     feedbackToRemove = feedbackDisplayed;
                                     currentEdge = edge;

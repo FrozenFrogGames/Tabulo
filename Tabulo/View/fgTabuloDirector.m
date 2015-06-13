@@ -21,7 +21,7 @@
 #import "../../../Framework/Framework/Control/f3GraphState.h"
 #import "../Control/fgDragPawnOverEdge.h"
 #import "../Control/fgDragPlankAroundNode.h"
-#import "../Control/fgLevelState.h"
+#import "../Control/fgLevelStrategy.h"
 #import "../Control/fgHouseNode.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
@@ -285,7 +285,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
 }
 
-- (void)buildPawn:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
+- (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     uint16_t dataIndex;
     [_data readBytes:&dataIndex length:sizeof(uint16_t)];
@@ -295,10 +295,10 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&dataPawn length:sizeof(uint8_t)];
     enum f3TabuloPawnType pawnType = dataPawn;
 
-    [_state setNodeFlag:node.Key flag:pawnType value:true];
+    [_strategy setNodeFlag:node.Key flag:pawnType value:true];
 }
 
-- (void)buildPlank:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
+- (void)buildPlank:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
@@ -311,13 +311,13 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&dataPlank length:sizeof(uint8_t)];
     enum f3TabuloPlankType plankType = dataPlank;
 
-    [_state setNodeFlag:node.Key flag:plankType value:true];
+    [_strategy setNodeFlag:node.Key flag:plankType value:true];
 
     [viewBuilder push:angleHandle];
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state symbols:(NSMutableArray *)_symbols {
+- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
@@ -334,14 +334,14 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&dataHole length:sizeof(uint8_t)];
     enum f3TabuloHoleType plankHole = dataHole;
 
-    [_state setNodeFlag:node.Key flag:plankType value:true];
-    [_state setNodeFlag:node.Key flag:plankHole value:true];
+    [_strategy setNodeFlag:node.Key flag:plankType value:true];
+    [_strategy setNodeFlag:node.Key flag:plankHole value:true];
 
     [viewBuilder push:angleHandle];
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
+- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
 
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -352,10 +352,10 @@ const NSUInteger LEVEL_COUNT = 36;
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
 
     f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
-    [_state appendComponent:[[f3Controller alloc] initState:controlState]];
+    [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
-- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
+- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
     
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -366,7 +366,7 @@ const NSUInteger LEVEL_COUNT = 36;
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
     
     f3DragViewFromNode *controlState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
-    [_state appendComponent:[[f3Controller alloc] initState:controlState]];
+    [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
 - (void)buildSprite:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
@@ -412,7 +412,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildDecorator:1];
 }
 
-- (void)buildHouseCondition:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols state:(fgLevelState *)_state {
+- (void)buildHouseCondition:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
 
     uint16_t dataLength = sizeof(uint16_t) *2;
     uint16_t *dataArray = malloc(dataLength);
@@ -425,7 +425,7 @@ const NSUInteger LEVEL_COUNT = 36;
     enum f3TabuloPawnType _type = dataFlag;
 
     f3GraphEdgeCondition *condition = [[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true];
-    [_state bindCondition:condition];
+    [_strategy bindCondition:condition];
     [_node bindView:_view type:_type];
     
     free(dataArray);
@@ -566,13 +566,18 @@ const NSUInteger LEVEL_COUNT = 36;
     }
 }
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(fgLevelState *)_state {
+- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
+
+    fgLevelStrategy *strategy = (fgLevelStrategy *)[_state Strategy];
 
     scene = [[f3ViewScene alloc] init];
     
-    NSMutableArray *symbols = [NSMutableArray array];
     uint8_t marker = [_data readMarker];
 
+    NSMutableArray *symbols = [NSMutableArray array];
+    
+    // TODO add model for device screen as first symbol so background can link to it directly
+    
     while (marker != 0xFF)
     {
         switch (marker)
@@ -585,28 +590,28 @@ const NSUInteger LEVEL_COUNT = 36;
                 break;
 
             case 0x02:
-                [_state buildNodeWithExtend:_data symbols:symbols];
+                [strategy buildNodeWithExtend:_data symbols:symbols];
                 break;
             case 0x03:
-                [_state buildNodeWithRadius:_data symbols:symbols];
+                [strategy buildNodeWithRadius:_data symbols:symbols];
                 break;
             case 0x04:
-                [_state buildHouseNode:_data symbols:symbols];
+                [strategy buildHouseNode:_data symbols:symbols];
                 break;
             case 0x05:
-                [self buildPawn:_data state:_state symbols:symbols];
+                [self buildPawn:_data strategy:strategy symbols:symbols];
                 break;
             case 0x06:
-                [self buildPlank:_data state:_state symbols:symbols];
+                [self buildPlank:_data strategy:strategy symbols:symbols];
                 break;
             case 0x07:
-                [self buildPlankWithHole:_data state:_state symbols:symbols];
+                [self buildPlankWithHole:_data strategy:strategy symbols:symbols];
                 break;
             case 0x08:
-                [self buildDragPawnControl:_data symbols:symbols state:_state];
+                [self buildDragPawnControl:_data symbols:symbols strategy:strategy];
                 break;
             case 0x09:
-                [self buildDragPlankControl:_data symbols:symbols state:_state];
+                [self buildDragPlankControl:_data symbols:symbols strategy:strategy];
                 break;
 
             case 0x0A:
@@ -614,20 +619,20 @@ const NSUInteger LEVEL_COUNT = 36;
                 break;
 
             case 0x0B:
-                [_state extractFirstGraphPath:_data]; // ready to render the scene once that initial graph path has been red
+                [strategy extractFirstGraphPath:_data]; // ready to render the scene once that initial graph path has been red
                 break;
             case 0x0C:
-                [_state extractNextGraphPath:_data]; // keep create graph path in background for help
+                [strategy extractNextGraphPath:_data]; // keep create graph path in background for help
                 break;
             case 0x0D:
-                [_state buildGraphPath]; // end of file - find best edge and compute help
+                [strategy buildGraphPath]; // end of file - bind neighbors and compute help
                 break;
 
             case 0x0E:
                 [self buildSprite:_data symbols:symbols];
                 break;
             case 0x0F:
-                [self buildHouseCondition:_data symbols:symbols state:_state];
+                [self buildHouseCondition:_data symbols:symbols strategy:strategy];
                 break;
             case 0x10:
                 [self buildEdgesForPawn:_data symbols:symbols];
@@ -639,8 +644,6 @@ const NSUInteger LEVEL_COUNT = 36;
 
         marker = [_data readMarker];
     }
-    
-    [_state sceneDidLoad:scene];
 
     [symbols removeAllObjects];
 }

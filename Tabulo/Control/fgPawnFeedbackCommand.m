@@ -9,6 +9,7 @@
 #import "fgPawnFeedbackCommand.h"
 #import "fgHouseNode.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
@@ -34,24 +35,25 @@
     f3ViewComposite *result = [[f3ViewComposite alloc] init];
     f3ViewBuilder *builder = [f3GameDirector Director].Builder;
     f3GameState *gameState = (f3GameState *)[f3GameAdaptee Producer].State;
+    f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
 
-    if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnOne])
+    if ([gameStrategy getNodeFlag:pawnNode.Key flag:TABULO_PawnOne])
     {
         pawnType = TABULO_PawnOne;
     }
-    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnTwo])
+    else if ([gameStrategy getNodeFlag:pawnNode.Key flag:TABULO_PawnTwo])
     {
         pawnType = TABULO_PawnTwo;
     }
-    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnThree])
+    else if ([gameStrategy getNodeFlag:pawnNode.Key flag:TABULO_PawnThree])
     {
         pawnType = TABULO_PawnThree;
     }
-    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnFour])
+    else if ([gameStrategy getNodeFlag:pawnNode.Key flag:TABULO_PawnFour])
     {
         pawnType = TABULO_PawnFour;
     }
-    else if ([gameState getNodeFlag:pawnNode.Key flag:TABULO_PawnFive])
+    else if ([gameStrategy getNodeFlag:pawnNode.Key flag:TABULO_PawnFive])
     {
         pawnType = TABULO_PawnFive;
     }
@@ -60,7 +62,7 @@
     {
         for (f3GraphEdge *edge in edges)
         {
-            if ([gameState evaluateEdge:edge])
+            if ([gameStrategy evaluateEdge:edge])
             {
                 f3GraphNode *node = [f3GraphNode nodeForKey:edge.TargetKey];
 

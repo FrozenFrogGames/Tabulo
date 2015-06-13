@@ -12,7 +12,7 @@
 #import "../Control/fgDragPlankAroundNode.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
-#import "../Control/fgLevelState.h"
+#import "../Control/fgLevelStrategy.h"
 #import "../fgDataAdapter.h"
 #import "../Control/fgDragPawnOverEdge.h"
 
@@ -92,7 +92,8 @@
     
     f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
     
-    [_state appendComponent:[[f3Controller alloc] initState:controlPawn]];
+    f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
+    [strategy appendGameController:[[f3Controller alloc] initWithState:controlPawn]];
     
     if (_writer != nil)
     {
@@ -108,7 +109,8 @@
     
     f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
     
-    [_state appendComponent:[[f3Controller alloc] initState:controlPawn]];
+    f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
+    [strategy appendGameController:[[f3Controller alloc] initWithState:controlPawn]];
     
     if (_writer != nil)
     {
@@ -179,7 +181,7 @@
     }
 }
 
-- (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GameState *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GraphNodeStrategy *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float houseX1 = (128.f +(_type *384.f)) /2048.f;
     float houseX2 = (512.f +(_type *384.f)) /2048.f;
@@ -274,7 +276,7 @@
     }
 }
 
-- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     CGPoint textureCoordonate;
     switch (_type) {
@@ -373,7 +375,7 @@
     return _view;
 }
 
-- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float holeOffset;
     
@@ -513,7 +515,7 @@
     return _view;
 }
 
-- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float holeOffset;
 
