@@ -35,12 +35,13 @@ enum TabuloDialogItem {
     if (self != nil)
     {
         dialogEvent = _event;
+        gameLayerIndex = UserInterface;
     }
     
     return self;
 }
 
-- (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)loadGameLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
     
     f3GraphNode *itemNode;
     f3GameEvent *itemEvent;
@@ -133,7 +134,7 @@ enum TabuloDialogItem {
                 break;
                 
             case GAME_EVENT_MAX:
-                dialogLayer = nil;
+                gameLayer = nil;
                 return;
         }
         
@@ -145,10 +146,8 @@ enum TabuloDialogItem {
         [self buildDialogGrade:_builder grade:grade];
         [self buildDialogBox:_builder];
         [_builder buildComposite:0];
-        
-        dialogLayer = (f3ViewComposite *)[_builder pop];
 
-//      [self loadScene:director.Scene];
+        [super loadGameLayer:_builder screen:_screen unit:_unit];
     }
 }
 
@@ -363,28 +362,6 @@ enum TabuloDialogItem {
 }
  */
 
-- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
-
-    [super begin:_previousState owner:_owner];
-
-    if (dialogLayer != nil)
-    {
-        [[f3GameDirector Director].Scene appendComposite:dialogLayer];
-    }
-}
-
-- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
-    
-    if (dialogLayer != nil)
-    {
-        [[f3GameDirector Director].Scene removeComposite:dialogLayer];
-    }
-    
-    [super end:_nextState owner:_owner];
-    
-    dialogLayer = nil;
-}
-
 - (void)notifyEvent:(f3GameEvent *)_event {
 
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
@@ -427,7 +404,7 @@ enum TabuloDialogItem {
                 
                 if (dataWriter != nil)
                 {
-                    [director buildScene:dataWriter state:nextGameState];
+                    [director loadSceneFromFile:dataWriter state:nextGameState];
                 }
                 else
                 {
@@ -439,21 +416,19 @@ enum TabuloDialogItem {
                     {
                         NSLog(@"Level failed: %@", classname);
                         
-                        [producer buildMenu:director.Builder];
+                        [producer buildMenuState:director.Builder];
 
                         return;
                     }
                     else
                     {
-                        [game loadScene:(fgTabuloDirector *)director strategy:nextLevelStrategy];
+                        [game buildSceneForLevel:(fgTabuloDirector *)director withStrategy:nextLevelStrategy];
                         
                         dataWriter = [game closeWriter:filename];
                     }
                 }
                 
-                [producer buildLayer:director.Builder state:nextGameState];
-                
-                [nextGameState loadScene:director.Scene];
+                [producer loadUserLayer:director.Builder withState:nextGameState];
             }
         }
     }

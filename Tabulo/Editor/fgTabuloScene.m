@@ -77,10 +77,11 @@
     }
 }
 
-- (void)buildComposite:(fgTabuloDirector *)_director writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildComposite:(fgTabuloDirector *)_director atLayer:(enum f3SceneLayer)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     [_director.Builder buildComposite:0];
-    [self appendComposite:(f3ViewComposite *)[_director.Builder popComponent]];
+    
+    [self appendLayer:(f3ViewComposite *)[_director.Builder popComponent] atIndex:_layer];
     
     if (_writer != nil)
     {
@@ -88,12 +89,11 @@
     }
 }
 
-- (void)buildDragPawnControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildDragPawnControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
-    
-    f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
-    [strategy appendGameController:[[f3Controller alloc] initWithState:controlPawn]];
+    f3DragViewFromNode *pawnState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
+    f3Controller *pawnControl = [[f3Controller alloc] initWithState:pawnState];
+    [_strategy appendGameController:pawnControl];
     
     if (_writer != nil)
     {
@@ -105,12 +105,11 @@
     }
 }
 
-- (void)buildDragPlankControl:(fgTabuloDirector *)_director state:(f3GameState *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildDragPlankControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    f3DragViewFromNode *controlPawn = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
-    
-    f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
-    [strategy appendGameController:[[f3Controller alloc] initWithState:controlPawn]];
+    f3DragViewFromNode *pawnState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
+    f3Controller *pawnControl = [[f3Controller alloc] initWithState:pawnState];
+    [_strategy appendGameController:pawnControl];
     
     if (_writer != nil)
     {

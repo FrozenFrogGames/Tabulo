@@ -14,7 +14,6 @@
 
 @interface fgMenuState : f3GameState {
 
-    f3ViewComposite *menuLayer;
     f3OffsetDecorator *offsetDecorator;
     f3ViewComposite *levelContainer;
     float offsetPadding, inputBeginY, inputCurrentY, inputEndY;

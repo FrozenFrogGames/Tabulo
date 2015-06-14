@@ -13,9 +13,9 @@
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/View/f3GameScene.h"
 
-@interface fgTabuloScene : f3GameScene
+@interface fgTabuloScene : f3GameScene // // TODO rename as fgTabuloSceneHelper
 
-- (void)buildComposite:(fgTabuloDirector *)_director writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (void)buildComposite:(fgTabuloDirector *)_director atLayer:(enum f3SceneLayer)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 - (void)buildBackground:(fgTabuloDirector *)_director writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
@@ -23,9 +23,9 @@
 
 - (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GraphNodeStrategy *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (void)buildDragPawnControl:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (void)buildDragPawnControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
-- (void)buildDragPlankControl:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (void)buildDragPlankControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 - (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 

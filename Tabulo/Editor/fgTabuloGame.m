@@ -27,20 +27,11 @@
     return self;
 }
 
-- (void)loadScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy {
+- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgLevelStrategy *)_strategy {
 
-    f3GameState *gameState = [[f3GameState alloc] initWithStrategy:_strategy];
-    
-    [self buildScene:_director strategy:_strategy];
-
-    [gameState loadScene:scene];
+    [scene copyLayersTo:_director.Scene];
 
     [_strategy resolveGraphPath:dataWriter];
-}
-
-- (void)buildScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy {
-
-    // visitor abstract class - subclass implement level init
 }
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename {

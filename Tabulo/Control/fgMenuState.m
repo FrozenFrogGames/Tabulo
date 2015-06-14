@@ -42,7 +42,7 @@
     previousState = nil;
 }
 
-- (void)buildScene:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)loadGameLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
@@ -91,10 +91,8 @@
     [_builder push:offsetDecorator];
     [self buildBackground:_builder height:offsetPadding width:paddingWidth];
     [_builder buildComposite:0];
-
-    menuLayer = (f3ViewComposite *)[_builder pop];
-
-//  [super buildScene:_builder screen:_screen unit:_unit];
+    
+    [super loadGameLayer:_builder screen:_screen unit:_unit];
 }
 
 - (void)buildBackground:(f3ViewBuilder *)_builder height:(float)_height width:(float)_width {
@@ -263,19 +261,6 @@
     }
 }
 
-- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
-    
-    f3ViewScene *scene = [f3GameDirector Director].Scene;
-    
-    [super begin:_previousState owner:_owner];
-
-    if (menuLayer != nil)
-    {
-        [scene removeAllComposites];
-        [scene appendComposite:menuLayer];
-    }
-}
-
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
 
     [super update:_elapsed owner:_owner];
@@ -401,7 +386,7 @@
     {
         fgDialogState *dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
 
-        [[f3GameAdaptee Producer] buildScene:[f3GameDirector Director].Builder state:dialogState];
+        [[f3GameAdaptee Producer] loadGameLayer:[f3GameDirector Director].Builder withState:dialogState];
     }
 }
 

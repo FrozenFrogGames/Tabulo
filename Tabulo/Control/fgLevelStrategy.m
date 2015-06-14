@@ -232,7 +232,7 @@
             hintCommand = nil;
         }
         
-        [producer buildScene:[f3GameDirector Director].Builder state:dialogState];
+        [producer loadGameLayer:[f3GameDirector Director].Builder withState:dialogState];
 
         return TRUE;
     }

@@ -13,7 +13,6 @@
 
 @interface fgDialogState : f3GameState {
     
-    f3ViewComposite *dialogLayer;
     fgTabuloEvent *dialogEvent;
     float dialogScale;
 }

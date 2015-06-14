@@ -281,8 +281,15 @@ const NSUInteger LEVEL_COUNT = 36;
 - (void)buildComposite {
 
     [viewBuilder buildComposite:0];
-
-    [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent]];
+    
+    if (sceneLayerCount < SCENE_LAYER_COUNT)
+    {
+        [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent] atLayer:(enum f3SceneLayer)sceneLayerCount++];
+    }
+    else
+    {
+        // TODO throw f3Exception
+    }
 }
 
 - (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
@@ -451,12 +458,6 @@ const NSUInteger LEVEL_COUNT = 36;
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true]];
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:pawnType result:true]];
 
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
-
         switch (pawnType) // restrict edge if a hole is present
         {
             case TABULO_PawnOne:
@@ -539,6 +540,12 @@ const NSUInteger LEVEL_COUNT = 36;
                 [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
                 break;
         }
+        
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
+        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
     }
 }
 
@@ -566,11 +573,16 @@ const NSUInteger LEVEL_COUNT = 36;
     }
 }
 
-- (void)buildScene:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
+- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
 
     fgLevelStrategy *strategy = (fgLevelStrategy *)[_state Strategy];
 
-    scene = [[f3ViewScene alloc] init];
+    sceneLayerCount = 0;
+    
+    if (scene == nil)
+    {
+        scene = [[f3ViewScene alloc] init];
+    }
     
     uint8_t marker = [_data readMarker];
 

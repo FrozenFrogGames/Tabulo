@@ -19,9 +19,7 @@
     fgTabuloScene *scene;
 }
 
-- (void)loadScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy;
-
-- (void)buildScene:(fgTabuloDirector *)_director strategy:(fgLevelStrategy *)_strategy;
+- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgLevelStrategy *)_strategy;
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename;
 

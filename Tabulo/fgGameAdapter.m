@@ -76,7 +76,7 @@
     
     [director loadSavegame];
     
-    [adaptee buildMenu:director.Builder];
+    [adaptee buildMenuState:director.Builder];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

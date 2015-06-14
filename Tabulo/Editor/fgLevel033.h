@@ -8,6 +8,6 @@
 
 #import "../Editor/fgTabuloGame.h"
 
-@interface fgLevel033 : fgTabuloGame
+@interface fgLevel033 : fgTabuloGame // TODO rename as fgLevel036
 
 @end
