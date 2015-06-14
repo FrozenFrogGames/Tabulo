@@ -111,14 +111,23 @@
     // TODO dispose of any resources that can be recreated.
 }
 
+- (BOOL)shouldAutorotate {
+
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations {
+ 
+    return UIInterfaceOrientationMaskLandscape;
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-/*
-    if (UIDeviceOrientationIsLandscape(interfaceOrientation))
+    if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft || interfaceOrientation == UIInterfaceOrientationLandscapeRight)
     {
         return YES;
     }
- */
+
     return NO;
 }
 
