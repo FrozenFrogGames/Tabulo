@@ -33,9 +33,8 @@
     f3GraphNode *node7 = [_strategy buildNode:[scene getPointAt:7] withExtend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node8 = [_strategy buildNode:[scene getPointAt:8] withRadius:1.5f writer:dataWriter symbols:dataSymbols];
     fgHouseNode *node9 = [(fgLevelStrategy *)_strategy buildHouseNode:[scene getPointAt:9] extend:CGSizeMake(0.8f, 0.8f) writer:dataWriter symbols:dataSymbols];
-    [_strategy buildGraphState];
-    
-    [scene clearPoints];
+
+    [_strategy initGraphStrategy:dataWriter symbols:dataSymbols];
 
     [scene buildHouse:_director node:node0 type:TABULO_PawnOne state:_strategy writer:dataWriter symbols:dataSymbols];
     [scene buildPillar:_director node:node3 writer:dataWriter symbols:dataSymbols];

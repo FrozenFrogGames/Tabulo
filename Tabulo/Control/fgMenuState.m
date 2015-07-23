@@ -229,9 +229,9 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    CGPoint coordonatePoint = CGPointMake((_digit *128.f) +768.f, 320.f);
+    CGPoint coordonatePoint = CGPointMake((_digit *128.f) +768.f, 322.f);
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 256.f)]];
+    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 252.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -240,11 +240,6 @@
     
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
-}
-
-- (float)computeScale:(CGSize)_screen unit:(CGSize)_unit {
-    
-    return 1.f;
 }
 
 - (void)computePadding:(NSUInteger)_level {

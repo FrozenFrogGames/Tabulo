@@ -352,15 +352,6 @@ enum TabuloDialogItem {
     [_builder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
     [_builder buildDecorator:1];
 }
-/*
-- (float)computeScale:(CGSize)_screen unit:(CGSize)_unit {
-    
-    // TODO pop previous state on the producer stack in order to obtain the strategy on which relay the call
-    f3GraphNodeStrategy *graphStrategy = (f3GraphNodeStrategy *)[previousState Strategy];
-
-    return [graphStrategy computeScale:_screen unit:_unit];
-}
- */
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 

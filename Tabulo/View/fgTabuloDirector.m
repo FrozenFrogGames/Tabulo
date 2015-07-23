@@ -292,6 +292,44 @@ const NSUInteger LEVEL_COUNT = 36;
     }
 }
 
+- (void)buildBackground:(NSObject<IDataAdapter> *)_data screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale symbols:(NSMutableArray *)_symbols {
+
+    f3ModelData *indicesModel = [[f3ModelData alloc] init:_data];
+    f3ModelData *vertexModel = [[f3ModelData alloc] init:_data];
+    f3ModelData *coordonateModel = [[f3ModelData alloc] init:_data];
+    
+    uint8_t dataResource;
+    [_data readBytes:&dataResource length:sizeof(uint8_t)];
+    
+    f3IntegerArray *indicesHandle = [[f3IntegerArray alloc] initWithModel:indicesModel size:sizeof(unsigned short)];
+    f3FloatArray *vertexHandle = [[f3FloatArray alloc] initWithModel:vertexModel size:sizeof(float)];
+    f3FloatArray *coordonateHandle = [[f3FloatArray alloc] initWithModel:coordonateModel size:sizeof(float)];
+    
+    enum f3TabuloResource resourceIndex = dataResource;
+    float backgroundWith = _screen.width / _unit.width;
+    float backgroundHeight = _screen.height / _unit.height;
+    
+    [viewBuilder push:indicesHandle];
+    [viewBuilder push:vertexHandle];
+    [viewBuilder buildAdaptee:DRAW_TRIANGLES];
+    
+    f3ViewAdaptee *_view = (f3ViewAdaptee *)[viewBuilder top];
+    if (_symbols != nil)
+    {
+        [_symbols addObject:_view];
+    }
+
+    [viewBuilder push:coordonateHandle];
+    [viewBuilder push:[self getResourceIndex:resourceIndex]];
+    [viewBuilder buildDecorator:4];
+
+    [viewBuilder push:[f3VectorHandle buildHandleForWidth:backgroundWith /_scale height:backgroundHeight /_scale]];
+    [viewBuilder buildDecorator:2];
+    
+    [viewBuilder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
+    [viewBuilder buildDecorator:1];
+}
+
 - (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     uint16_t dataIndex;
@@ -575,30 +613,29 @@ const NSUInteger LEVEL_COUNT = 36;
 
 - (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
 
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
     fgLevelStrategy *strategy = (fgLevelStrategy *)[_state Strategy];
 
-    sceneLayerCount = 0;
-    
     if (scene == nil)
     {
         scene = [[f3ViewScene alloc] init];
     }
     
-    uint8_t marker = [_data readMarker];
-
-    NSMutableArray *symbols = [NSMutableArray array];
+    sceneLayerCount = 0;
     
-    // TODO add model for device screen as first symbol so background can link to it directly
+    NSMutableArray *symbols = [NSMutableArray array];
+    uint8_t marker = [_data readMarker];
     
     while (marker != 0xFF)
     {
         switch (marker)
         {
             case 0x00:
-                //
+                producer.UnitScale = [strategy computeScale:producer.ScreenSize unit:producer.UnitSize];
                 break;
+
             case 0x01:
-                //
+                [self buildBackground:_data screen:producer.ScreenSize unit:producer.UnitSize scale:producer.UnitScale symbols:symbols];
                 break;
 
             case 0x02:

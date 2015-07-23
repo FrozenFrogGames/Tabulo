@@ -39,7 +39,7 @@
         levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
         hintView = nil;
         hintCommand = nil;
-        hintEnable = true; // (_level < 7);
+        hintEnable = false; // (_level < 7);
     }
     
     return self;
@@ -57,9 +57,9 @@
     return resultScale;
 }
 
-- (void)buildLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)buildLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
     
-    [super buildLayer:_builder screen:_screen unit:_unit];
+    [super buildLayer:_builder screen:_screen unit:_unit scale:_scale];
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
@@ -74,14 +74,14 @@
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
-    float iconScale = (_screen.width /10.f /_unit.width);
-    float x = (iconScale /2.f) -(_screen.width /2.f /_unit.width);
-    float y = (iconScale /2.f) -(_screen.height /2.f /_unit.height);
+    float iconScale = (_screen.width /_unit.width /10.f);
+    float x = (iconScale /2.f) -(_screen.width /_unit.width /2.f);
+    float y = (iconScale /2.f) -(_screen.height /_unit.height /2.f);
     
-    [_builder push:[f3VectorHandle buildHandleForWidth:iconScale height:iconScale]];
+    [_builder push:[f3VectorHandle buildHandleForWidth:(iconScale /_scale) height:(iconScale /_scale)]];
     [_builder buildDecorator:2];
     
-    [_builder push:[f3VectorHandle buildHandleForWidth:x height:y]];
+    [_builder push:[f3VectorHandle buildHandleForWidth:(x /_scale) height:(y /_scale)]];
     [_builder buildDecorator:1];
     
     [interfaceLayer appendComponent:[_builder popComponent]];
@@ -91,37 +91,7 @@
     fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
     [self appendGameController:[[f3Controller alloc] initWithState:controlView]];
 }
-/*
-- (void)begin:(f3ControllerState *)_previousState {
-    
-    if (overlayLayer != nil)
-    {
-        f3ViewScene *scene = [f3GameDirector Director].Scene;
-        
-        [scene appendComposite:overlayLayer];
-    }
-}
 
-- (void)update:(NSTimeInterval)_elapsed {
-    
-    if (hintView != nil && hintCommand != nil && hintCommand.finished)
-    {
-        [overlayLayer removeComponent:hintView];
-        hintView = nil;
-        hintCommand = nil;
-    }
-}
-
-- (void)end:(f3ControllerState *)_nextState {
-    
-    if (overlayLayer != nil)
-    {
-        f3ViewScene *scene = [f3GameDirector Director].Scene;
-        
-        [scene removeComposite:overlayLayer];
-    }
-}
- */
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
     
     uint16_t dataLength = sizeof(float) *4;

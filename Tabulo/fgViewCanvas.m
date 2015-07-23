@@ -34,7 +34,7 @@
 
     [super drawRect:rect];
 
-    glClearColor(1.f, 1.f, 1.f, 1.f);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT);
     
     if (!CGSizeEqualToSize(screenSize, CGSizeZero) && !CGSizeEqualToSize(unitSize, CGSizeZero))
@@ -82,6 +82,11 @@
     }
     
     [textureLoaded removeAllObjects];
+}
+
+- (CGSize)UnitSize {
+    
+    return unitSize;
 }
 
 - (void)setScreen:(CGSize)_screen unit:(CGSize)_unit {

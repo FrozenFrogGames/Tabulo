@@ -32,6 +32,8 @@
     [scene copyLayersTo:_director.Scene];
 
     [_strategy resolveGraphPath:dataWriter];
+    
+    [scene clearPoints];
 }
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename {

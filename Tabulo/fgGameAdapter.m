@@ -34,7 +34,7 @@
         
         adaptee = [[f3GameAdaptee alloc] initAdaptee:[fgMenuState class]];
         
-        orientationHasChanged = false;
+        orientationHasChanged = true;
     }
     
     return self;
@@ -81,7 +81,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     
-    [director loadResource:(fgViewCanvas *)self.view];
+    NSObject<IViewCanvas> *canvas = (fgViewCanvas *)self.view;
+    
+    [director loadResource:canvas];
+
+    [canvas setScreen:adaptee.ScreenSize unit:adaptee.UnitSize];
     
     [director.Scene refresh];
     
@@ -147,11 +151,20 @@
 
 - (void)update
 {
+    NSObject<IViewCanvas> *canvas = (NSObject<IViewCanvas> *)self.view;
+
     [adaptee update:self.timeSinceLastUpdate];
-    
-    if (orientationHasChanged || adaptee.ShouldUpdateCanvas)
+
+    if (orientationHasChanged)
     {
-        [adaptee updateCanvas:(NSObject<IViewCanvas> *)self.view orientation:[[UIDevice currentDevice] orientation]];
+        [adaptee updateCanvas:canvas orientation:[[UIDevice currentDevice] orientation]];
+    }
+    
+    CGSize unitSizeScaled = CGSizeMake(adaptee.UnitSize.width * adaptee.UnitScale, adaptee.UnitSize.height * adaptee.UnitScale);
+
+    if (orientationHasChanged || canvas.UnitSize.width != unitSizeScaled.width || canvas.UnitSize.height != unitSizeScaled.height)
+    {
+        [canvas setScreen:adaptee.ScreenSize unit:unitSizeScaled];
         
         orientationHasChanged = false;
     }

@@ -45,9 +45,8 @@
     f3GraphNode *node13 = [_strategy buildNode:[scene getPointAt:13] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node14 = [_strategy buildNode:[scene getPointAt:14] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
     f3GraphNode *node15 = [_strategy buildNode:[scene getPointAt:15] withRadius:0.8f writer:dataWriter symbols:dataSymbols];
-    [_strategy buildGraphState];
 
-    [scene clearPoints];
+    [_strategy initGraphStrategy:dataWriter symbols:dataSymbols];
 
     [scene buildHouse:_director node:node0 type:TABULO_PawnFour state:_strategy writer:dataWriter symbols:dataSymbols];
     [scene buildHouse:_director node:node3 type:TABULO_PawnOne state:_strategy writer:dataWriter symbols:dataSymbols];

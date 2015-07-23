@@ -30,27 +30,16 @@
                                       FLOAT_BOX(0.f), FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(0.f),
                                       FLOAT_BOX(0.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), FLOAT_BOX(1.f), nil];
     
-    CGSize scale = CGSizeMake(16.f, 12.f);
-    CGPoint position = CGPointZero;
-    
     if (_writer != nil)
     {
-        uint8_t dataResource = RESOURCE_BackgroundLevel;
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)scale.width;
-        dataArray[1] = (float)scale.height;
-        dataArray[2] = (float)position.x;
-        dataArray[3] = (float)position.y;
+        [_writer writeMarker:0x01];
 
-        [_writer writeMarker:0x0E];
         [indicesHandle.Data serialize:_writer];
         [vertexHandle.Data serialize:_writer];
         [coordonateHandle.Data serialize:_writer];
+
+        uint8_t dataResource = RESOURCE_BackgroundLevel;
         [_writer writeBytes:&dataResource length:sizeof(uint8_t)];
-        [_writer writeBytes:dataArray length:dataLength];
-        
-        free(dataArray);
     }
     
     f3ViewBuilder *builder = _director.Builder;
@@ -65,10 +54,10 @@
     [builder push:[_director getResourceIndex:RESOURCE_BackgroundLevel]];
     [builder buildDecorator:4];
     
-    [builder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
+    [builder push:[f3VectorHandle buildHandleForWidth:16.f height:12.f]];
     [builder buildDecorator:2];
     
-    [builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
+    [builder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
     [builder buildDecorator:1];
     
     if (_symbols != nil)
