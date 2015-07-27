@@ -7,7 +7,7 @@
 //
 
 #import "fgHouseNode.h"
-#import "../../../Framework/Framework/View/f3GameScene.h"
+#import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
 #import "../../../Framework/Framework/View/f3ViewSearch.h"
 
@@ -50,6 +50,10 @@
     if (_type == houseType)
     {
         [self replaceHouseTexture:true];
+    }
+    else
+    {
+        [self replaceHouseTexture:false];
     }
 }
 

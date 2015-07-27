@@ -89,7 +89,7 @@ enum fgTabuloGrade {
     fgViewCanvas *gameCanvas;
     f3IntegerArray  *spritesheetLevel, *spritesheetMenu, *backgroundLevel, *backgroundMenu;
     NSMutableArray *levelFlags;
-    NSUInteger lockedLevelIndex, sceneLayerCount;
+    NSUInteger lockedLevelIndex;
 }
 
 - (f3IntegerArray *)getResourceIndex:(enum f3TabuloResource)_resource;

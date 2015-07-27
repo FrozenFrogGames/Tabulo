@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgTabuloScene.h"
+#import "fgTabuloSceneBuilder.h"
 #import "../../../Framework/Framework/Control/f3GraphPath.h"
 #import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
 #import "../Control/fgDragPlankAroundNode.h"
@@ -16,7 +16,7 @@
 #import "../fgDataAdapter.h"
 #import "../Control/fgDragPawnOverEdge.h"
 
-@implementation fgTabuloScene
+@implementation fgTabuloSceneBuilder
 
 - (void)buildBackground:(fgTabuloDirector *)_director writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
@@ -59,23 +59,28 @@
     
     [builder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
     [builder buildDecorator:1];
-    
+
+    [builder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(BackgroundLayer), nil]];
+    [builder buildComposite:1];
+
     if (_symbols != nil)
     {
         [_symbols addObject:_view];
     }
 }
 
-- (void)buildComposite:(fgTabuloDirector *)_director atLayer:(enum f3SceneLayer)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
-    
-    [_director.Builder buildComposite:0];
-    
-    [self appendLayer:(f3ViewComposite *)[_director.Builder popComponent] atIndex:_layer];
-    
+- (void)buildLayer:(fgTabuloDirector *)_director atIndex:(enum f3ViewLayerIndex)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+
     if (_writer != nil)
     {
         [_writer writeMarker:0x0A];
+        uint8_t layerIndex = _layer;
+        [_writer writeBytes:&layerIndex length:sizeof(uint8_t)];
     }
+
+    f3ViewBuilder *builder = _director.Builder;
+    [builder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(_layer), nil]];
+    [builder buildComposite:1];
 }
 
 - (void)buildDragPawnControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
@@ -119,7 +124,7 @@
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
-    f3FloatArray *coordonateHandle = [f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:CGPointMake(1664.f, 512.f)
+    f3FloatArray *coordonateHandle = [f3GraphSceneBuilder computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:CGPointMake(1664.f, 512.f)
                                                          withExtend:CGSizeMake(384.f, 384.f)];
     
     CGSize scale = CGSizeMake(3.f, 3.f);
@@ -299,7 +304,7 @@
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
-    f3FloatArray *coordonateHandle = [f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
+    f3FloatArray *coordonateHandle = [f3GraphSceneBuilder computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
     
     CGSize scale = CGSizeMake(1.f, 1.f);
     CGPoint position = _node.Position;

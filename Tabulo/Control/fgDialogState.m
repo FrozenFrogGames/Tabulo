@@ -35,13 +35,12 @@ enum TabuloDialogItem {
     if (self != nil)
     {
         dialogEvent = _event;
-        gameLayerIndex = UserInterface;
     }
     
     return self;
 }
 
-- (void)loadGameLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
     
     f3GraphNode *itemNode;
     f3GameEvent *itemEvent;
@@ -49,7 +48,17 @@ enum TabuloDialogItem {
     
     if (dialogEvent.Event < GAME_EVENT_MAX)
     {
-        dialogScale = _screen.height /(ShouldScaleScene ? 9.f : 12.f) /_unit.height;
+        dialogScale = _screen.height /_unit.height /_scale;
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        {
+            dialogScale /= 9.f;
+        }
+        else
+        {
+            dialogScale /= 12.f;
+        }
+        
         f3GraphNodeStrategy *graphStrategy = (f3GraphNodeStrategy *)gameStrategy;
         
         switch (dialogEvent.Event) {
@@ -57,13 +66,13 @@ enum TabuloDialogItem {
             case GAME_Over:
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(-1.8f, -2.f) option:DIALOGITEM_Reset];
-                itemNode = [graphStrategy buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:dialogEvent.Level];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.25f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
@@ -73,7 +82,7 @@ enum TabuloDialogItem {
             case GAME_Next:
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(-1.8f, -2.f) option:DIALOGITEM_Reset];
-                itemNode = [graphStrategy buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:dialogEvent.Level];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
@@ -85,7 +94,7 @@ enum TabuloDialogItem {
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
@@ -101,7 +110,7 @@ enum TabuloDialogItem {
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
@@ -109,16 +118,16 @@ enum TabuloDialogItem {
                 break;
 
             case GAME_Pause:
-/*
-                if ([previousState HaveConfig])
+
+                if (TRUE) // TODO hide reset option if no action has been performed
                 {
                     [self buildDialogItem:_builder atPosition:CGPointMake(-1.8f, -2.f) option:DIALOGITEM_Reset];
-                    itemNode = [self buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                    itemNode = [graphStrategy buildNode:CGPointMake(-1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                     itemEvent = [[fgTabuloEvent alloc] init:GAME_Play level:dialogEvent.Level];
                     itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
-                    [graphStrategy appendGameController:[[f3Controller alloc] initState:itemState]];
+                    [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
                 }
- */
+
                 [self buildDialogItem:_builder atPosition:CGPointMake(0.f, -2.f) option:DIALOGITEM_Play];
                 itemNode = [graphStrategy buildNode:CGPointMake(0.f, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:0];
@@ -126,7 +135,7 @@ enum TabuloDialogItem {
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(1.8f, -2.f) option:DIALOGITEM_Menu];
-                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale, dialogScale) writer:nil symbols:nil];
+                itemNode = [graphStrategy buildNode:CGPointMake(1.8f *dialogScale, -2.f *dialogScale) withExtend:CGSizeMake(dialogScale * 0.75f, dialogScale * 0.75f) writer:nil symbols:nil];
                 itemEvent = [[fgTabuloEvent alloc] init:GAME_Over level:dialogEvent.Level];
                 itemState = [[fgEventOnClick alloc] initWithNode:itemNode event:itemEvent];
                 [graphStrategy appendGameController:[[f3Controller alloc] initWithState:itemState]];
@@ -134,7 +143,7 @@ enum TabuloDialogItem {
                 break;
                 
             case GAME_EVENT_MAX:
-                gameLayer = nil;
+                // TODO throw f3Exception
                 return;
         }
         
@@ -145,9 +154,11 @@ enum TabuloDialogItem {
         [self buildTitle:_builder level:dialogEvent.Level];
         [self buildDialogGrade:_builder grade:grade];
         [self buildDialogBox:_builder];
-        [_builder buildComposite:0];
+        
+        [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(UserInterface), nil]];
+        [_builder buildComposite:1];
 
-        [super loadGameLayer:_builder screen:_screen unit:_unit];
+        [super buildSceneLayer:_builder screen:_screen unit:_unit scale:_scale];
     }
 }
 
@@ -407,7 +418,7 @@ enum TabuloDialogItem {
                     {
                         NSLog(@"Level failed: %@", classname);
                         
-                        [producer buildMenuState:director.Builder];
+                        [producer popMenu];
 
                         return;
                     }
@@ -419,7 +430,7 @@ enum TabuloDialogItem {
                     }
                 }
                 
-                [producer loadUserLayer:director.Builder withState:nextGameState];
+                [producer buildScene:director.Builder state:nextGameState];
             }
         }
     }

@@ -41,9 +41,7 @@
     [scene buildPillar:_director node:node6 writer:dataWriter symbols:dataSymbols];
     [scene buildHouse:_director node:node7 type:TABULO_PawnTwo state:_strategy writer:dataWriter symbols:dataSymbols];
     [scene buildPillar:_director node:node8 writer:dataWriter symbols:dataSymbols];
-    [scene buildBackground:_director writer:dataWriter symbols:dataSymbols];
-    
-    [scene buildComposite:_director atLayer:BackgroundLayer writer:dataWriter symbols:dataSymbols]; // gameplay background
+    [scene buildBackground:_director writer:dataWriter symbols:dataSymbols]; // gameplay background
     
     f3ViewAdaptee *pawnOne = [scene buildPawn:_director state:_strategy node:node8 type:TABULO_PawnOne writer:dataWriter symbols:dataSymbols];
     [scene buildDragPawnControl:_director strategy:_strategy node:node8 view:pawnOne writer:dataWriter symbols:dataSymbols];
@@ -60,7 +58,7 @@
     f3ViewAdaptee *plankThree = [scene buildMediumPlank:_director state:_strategy node:node5 angle:180.f hole:TABULO_HOLE_MAX writer:dataWriter symbols:dataSymbols];
     [scene buildDragPlankControl:_director strategy:_strategy node:node5 view:plankThree writer:dataWriter symbols:dataSymbols];
     
-    [scene buildComposite:_director atLayer:GameplayLayer writer:dataWriter symbols:dataSymbols]; // gameplay elements
+    [scene buildLayer:_director atIndex:GameplayLayer writer:dataWriter symbols:dataSymbols]; // gameplay elements
     
     [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node4 origin:node7 target:node2 writer:dataWriter symbols:dataSymbols];
     [scene buildEdgesForPawn:_director type:TABULO_HaveSmallPlank node:node4 origin:node2 target:node7 writer:dataWriter symbols:dataSymbols];

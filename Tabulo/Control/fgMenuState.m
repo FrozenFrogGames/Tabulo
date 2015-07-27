@@ -42,7 +42,7 @@
     previousState = nil;
 }
 
-- (void)loadGameLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit {
+- (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
@@ -85,14 +85,18 @@
 
     [_builder push:[f3VectorHandle buildHandleForX:0.f y:-offsetPadding]];
     [_builder buildDecorator:1];
+
     offsetDecorator = (f3OffsetDecorator *)[_builder pop];
     
     [self buildHeader:_builder height:offsetPadding width:paddingWidth];
     [_builder push:offsetDecorator];
-    [self buildBackground:_builder height:offsetPadding width:paddingWidth];
-    [_builder buildComposite:0];
     
-    [super loadGameLayer:_builder screen:_screen unit:_unit];
+    [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(GameplayLayer), nil]];
+    [_builder buildComposite:1];
+
+    [self buildBackground:_builder height:offsetPadding width:paddingWidth];
+    
+    [super buildSceneLayer:_builder screen:_screen unit:_unit scale:_scale];
 }
 
 - (void)buildBackground:(f3ViewBuilder *)_builder height:(float)_height width:(float)_width {
@@ -123,6 +127,9 @@
         
         [_builder push:[f3VectorHandle buildHandleForX:0.f y:(_height /-2.f)]];
         [_builder buildDecorator:1];
+        
+        [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(BackgroundLayer), nil]];
+        [_builder buildComposite:1];
     }
 }
 
@@ -379,9 +386,12 @@
 
     if ([_event isKindOfClass:[fgTabuloEvent class]] && insideOfArea && notInMotion)
     {
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        f3GameDirector *director = [f3GameDirector Director];
+
         fgDialogState *dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
 
-        [[f3GameAdaptee Producer] loadGameLayer:[f3GameDirector Director].Builder withState:dialogState];
+        [producer buildScene:director.Builder state:dialogState];
     }
 }
 

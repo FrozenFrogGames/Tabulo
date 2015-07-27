@@ -278,20 +278,6 @@ const NSUInteger LEVEL_COUNT = 36;
     [dataFlags closeWithName:@"DATASAVE"];
 }
 
-- (void)buildComposite {
-
-    [viewBuilder buildComposite:0];
-    
-    if (sceneLayerCount < SCENE_LAYER_COUNT)
-    {
-        [scene appendComposite:(f3ViewComposite *)[viewBuilder popComponent] atLayer:(enum f3SceneLayer)sceneLayerCount++];
-    }
-    else
-    {
-        // TODO throw f3Exception
-    }
-}
-
 - (void)buildBackground:(NSObject<IDataAdapter> *)_data screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *indicesModel = [[f3ModelData alloc] init:_data];
@@ -328,6 +314,18 @@ const NSUInteger LEVEL_COUNT = 36;
     
     [viewBuilder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
     [viewBuilder buildDecorator:1];
+
+    [viewBuilder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(BackgroundLayer), nil]];
+    [viewBuilder buildComposite:1];
+}
+
+- (void)buildLayer:(NSObject<IDataAdapter> *)_data {
+
+    uint8_t dataIndex;
+    [_data readBytes:&dataIndex length:sizeof(uint8_t)];
+
+    [viewBuilder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(dataIndex), nil]];
+    [viewBuilder buildComposite:1];
 }
 
 - (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
@@ -621,8 +619,6 @@ const NSUInteger LEVEL_COUNT = 36;
         scene = [[f3ViewScene alloc] init];
     }
     
-    sceneLayerCount = 0;
-    
     NSMutableArray *symbols = [NSMutableArray array];
     uint8_t marker = [_data readMarker];
     
@@ -664,7 +660,7 @@ const NSUInteger LEVEL_COUNT = 36;
                 break;
 
             case 0x0A:
-                [self buildComposite];
+                [self buildLayer:_data];
                 break;
 
             case 0x0B:

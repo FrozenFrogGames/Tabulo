@@ -11,11 +11,11 @@
 #import "fgHouseNode.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
-#import "../../../Framework/Framework/View/f3GameScene.h"
+#import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 
-@interface fgTabuloScene : f3GameScene // // TODO rename as fgTabuloSceneHelper
+@interface fgTabuloSceneBuilder : f3GraphSceneBuilder
 
-- (void)buildComposite:(fgTabuloDirector *)_director atLayer:(enum f3SceneLayer)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+- (void)buildLayer:(fgTabuloDirector *)_director atIndex:(enum f3ViewLayerIndex)_layer writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 
 - (void)buildBackground:(fgTabuloDirector *)_director writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
 

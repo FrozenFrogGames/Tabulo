@@ -9,14 +9,14 @@
 #import "../fgDataAdapter.h"
 #import "../Control/fgLevelStrategy.h"
 #import "../View/fgTabuloDirector.h"
-#import "../Editor/fgTabuloScene.h"
+#import "../Editor/fgTabuloSceneBuilder.h"
 
 // TODO implement as an operation using visitor on scene root node
 @interface fgTabuloGame : NSObject {
     
     fgDataAdapter *dataWriter;
     NSMutableArray *dataSymbols;
-    fgTabuloScene *scene;
+    fgTabuloSceneBuilder *scene;
 }
 
 - (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgLevelStrategy *)_strategy;

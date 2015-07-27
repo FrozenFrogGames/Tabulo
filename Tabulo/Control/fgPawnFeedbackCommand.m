@@ -12,7 +12,7 @@
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
-#import "../../../Framework/Framework/View/f3GameScene.h"
+#import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 
 @implementation fgPawnFeedbackCommand
 
@@ -66,11 +66,11 @@
             {
                 f3GraphNode *node = [f3GraphNode nodeForKey:edge.TargetKey];
 
-                if ([node isKindOfClass:[fgHouseNode class]])
+                if ([node isKindOfClass:[fgHouseNode class]]) // TODO give feedback on house sooner
                 {
                     [(fgHouseNode *)node buildHouseFeedback:pawnType];
                 }
-                
+
                 [self buildPawn:builder Position:node.Position Type:pawnType];
 
                 [result appendComponent:[builder popComponent]];
@@ -124,7 +124,7 @@
     [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(0.4f),nil]];
     [_builder buildProperty:0]; // reduce opacity
     
-    [_builder push:[f3GameScene computeCoordonate:CGSizeMake(2048.f, 1152.f)
+    [_builder push:[f3GraphSceneBuilder computeCoordonate:CGSizeMake(2048.f, 1152.f)
                                          atPoint:CGPointMake(textureCoordonate.x, textureCoordonate.y)
                                       withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];

@@ -27,7 +27,7 @@
 		F61CD768193EBEF3006F3C04 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD767193EBEF3006F3C04 /* StoreKit.framework */; };
 		F61CD76A193EC146006F3C04 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD769193EC146006F3C04 /* UIKit.framework */; };
 		F61CD77619589C49006F3C04 /* fgLevel001.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77519589C49006F3C04 /* fgLevel001.m */; };
-		F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77A1958A030006F3C04 /* fgTabuloScene.m */; };
+		F61CD77B1958A030006F3C04 /* fgTabuloSceneBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77A1958A030006F3C04 /* fgTabuloSceneBuilder.m */; };
 		F61CD77E1958A291006F3C04 /* fgTabuloGame.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD77D1958A291006F3C04 /* fgTabuloGame.m */; };
 		F61CD7821958D385006F3C04 /* fgLevel019.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7811958D385006F3C04 /* fgLevel019.m */; };
 		F61CD7851958D6EC006F3C04 /* fgLevel003.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7841958D6EC006F3C04 /* fgLevel003.m */; };
@@ -116,8 +116,8 @@
 		F61CD77419589C49006F3C04 /* fgLevel001.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel001.h; path = Editor/fgLevel001.h; sourceTree = "<group>"; };
 		F61CD77519589C49006F3C04 /* fgLevel001.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel001.m; path = Editor/fgLevel001.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F61CD77719589CF7006F3C04 /* fgTabuloHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fgTabuloHeader.h; path = Editor/fgTabuloHeader.h; sourceTree = "<group>"; };
-		F61CD7791958A030006F3C04 /* fgTabuloScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloScene.h; path = Editor/fgTabuloScene.h; sourceTree = "<group>"; };
-		F61CD77A1958A030006F3C04 /* fgTabuloScene.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloScene.m; path = Editor/fgTabuloScene.m; sourceTree = "<group>"; };
+		F61CD7791958A030006F3C04 /* fgTabuloSceneBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloSceneBuilder.h; path = Editor/fgTabuloSceneBuilder.h; sourceTree = "<group>"; };
+		F61CD77A1958A030006F3C04 /* fgTabuloSceneBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloSceneBuilder.m; path = Editor/fgTabuloSceneBuilder.m; sourceTree = "<group>"; };
 		F61CD77C1958A291006F3C04 /* fgTabuloGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloGame.h; path = Editor/fgTabuloGame.h; sourceTree = "<group>"; };
 		F61CD77D1958A291006F3C04 /* fgTabuloGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloGame.m; path = Editor/fgTabuloGame.m; sourceTree = "<group>"; };
 		F61CD7801958D385006F3C04 /* fgLevel019.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel019.h; path = Editor/fgLevel019.h; sourceTree = "<group>"; };
@@ -334,8 +334,8 @@
 			isa = PBXGroup;
 			children = (
 				F61CD77719589CF7006F3C04 /* fgTabuloHeader.h */,
-				F61CD7791958A030006F3C04 /* fgTabuloScene.h */,
-				F61CD77A1958A030006F3C04 /* fgTabuloScene.m */,
+				F61CD7791958A030006F3C04 /* fgTabuloSceneBuilder.h */,
+				F61CD77A1958A030006F3C04 /* fgTabuloSceneBuilder.m */,
 				F61CD77C1958A291006F3C04 /* fgTabuloGame.h */,
 				F61CD77D1958A291006F3C04 /* fgTabuloGame.m */,
 				F61CD77F1958D172006F3C04 /* Data */,
@@ -573,7 +573,7 @@
 				F61CD7BE19688C16006F3C04 /* fgLevel020.m in Sources */,
 				F61CD7A0195E1640006F3C04 /* fgLevel010.m in Sources */,
 				F61CD79D195E1624006F3C04 /* fgLevel009.m in Sources */,
-				F61CD77B1958A030006F3C04 /* fgTabuloScene.m in Sources */,
+				F61CD77B1958A030006F3C04 /* fgTabuloSceneBuilder.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgLevelStrategy.m in Sources */,
 				F6C4D52319CFA11100FB309E /* fgLevel035.m in Sources */,
 				F6C4D52919D87C1D00FB309E /* fgLevel031.m in Sources */,

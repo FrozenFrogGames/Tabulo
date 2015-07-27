@@ -49,17 +49,15 @@
     
     float resultScale = [super computeScale:_screen unit:_unit];
 
-    if (resultScale > 1.2f)
+    if (resultScale > 1.25f)
     {
-        resultScale = 1.2f;
+        resultScale = 1.25f;
     }
     
     return resultScale;
 }
 
-- (void)buildLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
-    
-    [super buildLayer:_builder screen:_screen unit:_unit scale:_scale];
+- (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
@@ -74,22 +72,23 @@
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
-    float iconScale = (_screen.width /_unit.width /10.f);
-    float x = (iconScale /2.f) -(_screen.width /_unit.width /2.f);
-    float y = (iconScale /2.f) -(_screen.height /_unit.height /2.f);
-    
-    [_builder push:[f3VectorHandle buildHandleForWidth:(iconScale /_scale) height:(iconScale /_scale)]];
+    float x = (0.75f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale));
+    float y = (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale));
+
+    [_builder push:[f3VectorHandle buildHandleForWidth:(1.25f /_scale) height:(1.25f /_scale)]];
     [_builder buildDecorator:2];
     
-    [_builder push:[f3VectorHandle buildHandleForWidth:(x /_scale) height:(y /_scale)]];
+    [_builder push:[f3VectorHandle buildHandleForWidth:x height:y]];
     [_builder buildDecorator:1];
     
-    [interfaceLayer appendComponent:[_builder popComponent]];
-    
-    f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(1.1f, 1.1f) writer:nil symbols:nil];
+    f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
     fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
     fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
+
     [self appendGameController:[[f3Controller alloc] initWithState:controlView]];
+    
+    [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(UserInterface), nil]];
+    [_builder buildComposite:1];
 }
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
@@ -196,13 +195,12 @@
         
         if (hintView != nil && hintCommand != nil)
         {
-            [interfaceLayer removeComponent:hintView];
             [hintCommand interrupt];
             hintView = nil;
             hintCommand = nil;
         }
         
-        [producer loadGameLayer:[f3GameDirector Director].Builder withState:dialogState];
+        [producer buildScene:[f3GameDirector Director].Builder state:dialogState];
 
         return TRUE;
     }
