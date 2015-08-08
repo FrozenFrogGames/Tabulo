@@ -61,11 +61,9 @@
 
     if (houseView != nil)
     {
-        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-        
         f3ViewSearch *searchDecorator = [[f3ViewSearch alloc] initSearch:houseView forType:[f3TextureDecorator class]];
         
-        [director.Scene accept:searchDecorator];
+        [houseView.ViewLayer accept:searchDecorator];
         
         if (searchDecorator.Result != nil)
         {
@@ -77,13 +75,13 @@
             {
                 f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result result:_result];
                 
-                [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+                [houseView.ViewLayer replaceComponent:searchDecorator.Result byComponent:decorator];
             }
             else
             {
                 f3TextureDecorator *decorator = [self buildTextureDecorator:houseView result:_result];
                 
-                [director.Scene replaceComponent:searchDecorator.Result byComponent:decorator];
+                [houseView.ViewLayer replaceComponent:searchDecorator.Result byComponent:decorator];
             }
         }
     }

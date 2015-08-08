@@ -250,17 +250,19 @@
 }
 
 - (void)computePadding:(NSUInteger)_level {
-
+/*
     NSUInteger maxLevelIndex = [(fgTabuloDirector *)[f3GameDirector Director] getLevelCount] -12;
     NSUInteger levelIndex = (_level > maxLevelIndex) ? maxLevelIndex : _level;
     float targetPadding = (floorf((levelIndex -1) /6.f) -1) *offsetPadding;
 
     f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:targetPadding];
     f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
+    
     if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
     {
         offsetDecorator = decorator;
     }
+ */
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
@@ -282,7 +284,7 @@
                 f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:currentOffsetY];
                 f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
 
-                if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
+                if ([offsetDecorator.ViewLayer replaceComponent:offsetDecorator byComponent:decorator])
                 {
                     offsetDecorator = decorator;
                 }
@@ -309,7 +311,7 @@
             f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:currentOffsetY];
             f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
 
-            if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
+            if ([offsetDecorator.ViewLayer replaceComponent:offsetDecorator byComponent:decorator])
             {
                 offsetDecorator = decorator;
             }

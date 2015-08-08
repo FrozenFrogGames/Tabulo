@@ -627,7 +627,7 @@ const NSUInteger LEVEL_COUNT = 36;
         switch (marker)
         {
             case 0x00:
-                producer.UnitScale = [strategy computeScale:producer.ScreenSize unit:producer.UnitSize];
+                producer.UnitScale = [strategy computeUnitScale:producer.ScreenSize unit:producer.UnitSize];
                 break;
 
             case 0x01:

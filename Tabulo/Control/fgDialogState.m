@@ -155,7 +155,7 @@ enum TabuloDialogItem {
         [self buildDialogGrade:_builder grade:grade];
         [self buildDialogBox:_builder];
         
-        [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(UserInterface), nil]];
+        [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(InterfaceLayer), nil]];
         [_builder buildComposite:1];
 
         [super buildSceneLayer:_builder screen:_screen unit:_unit scale:_scale];
@@ -377,7 +377,7 @@ enum TabuloDialogItem {
         {
             [producer popMenu];
 
-            [(fgMenuState *)producer.State computePadding:event.Level];
+//          [(fgMenuState *)producer.State computePadding:event.Level]; TODO provide layer to that method
         }
         else
         {

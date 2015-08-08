@@ -24,7 +24,6 @@
     NSUInteger levelIndex;
     enum fgTabuloGrade levelGrade;
     f3GraphPath *rootState, *currentState;
-    f3ViewComposite *hintView;
     f3ControlCommand *hintCommand;
     bool hintEnable;
 }
