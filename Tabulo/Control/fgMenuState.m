@@ -14,7 +14,7 @@
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
-#import "../Control/fgEventOnClick.h"
+#import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../View/fgTabuloDirector.h"
 #import "fgTabuloEvent.h"
 #import "fgDialogState.h"
@@ -220,7 +220,7 @@
         f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
         f3GraphNode *node = [strategy buildNode:_position withExtend:CGSizeMake(_scale *.45, _scale *.45) writer:nil symbols:nil];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
-        fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
+        f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];
         [strategy appendGameController:[[f3Controller alloc] initWithState:controlView]];
     }
 }
@@ -247,22 +247,6 @@
     
     [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
-}
-
-- (void)computePadding:(NSUInteger)_level {
-/*
-    NSUInteger maxLevelIndex = [(fgTabuloDirector *)[f3GameDirector Director] getLevelCount] -12;
-    NSUInteger levelIndex = (_level > maxLevelIndex) ? maxLevelIndex : _level;
-    float targetPadding = (floorf((levelIndex -1) /6.f) -1) *offsetPadding;
-
-    f3ModelHandle *model = [f3VectorHandle buildHandleForX:0.f y:targetPadding];
-    f3OffsetDecorator *decorator = [[f3OffsetDecorator alloc] initWithComponent:levelContainer Offset:model];
-    
-    if ([[f3GameDirector Director].Scene replaceComponent:offsetDecorator byComponent:decorator])
-    {
-        offsetDecorator = decorator;
-    }
- */
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {

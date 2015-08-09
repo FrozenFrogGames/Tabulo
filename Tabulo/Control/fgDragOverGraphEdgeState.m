@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgDragPawnOverEdge.h"
+#import "fgDragOverGraphEdgeState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
@@ -18,7 +18,7 @@
 #import "fgPlankFeedbackCommand.h"
 #import "fgRemoveFeedbackCommand.h"
 
-@implementation fgDragPawnOverEdge
+@implementation fgDragOverGraphEdgeState
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
@@ -144,50 +144,61 @@
     }
 }
 
-- (void)notifyInput:(enum f3InputType)_type fromNode:(f3GraphNode *)_node {
-
-    if ([nodeListening containsObject:_node])
+- (void)notifyEvent:(f3GameEvent *)_event {
+    
+    if ([_event isKindOfClass:[f3GraphNodeEvent class]])
     {
-        shouldKeepFocus = false;
-
-        if (_type == INPUT_MOVED || _type == INPUT_ENDED)
+        f3GraphNodeEvent *graphNodeEvent = (f3GraphNodeEvent *)_event;
+        
+        if ([nodeListening containsObject:graphNodeEvent.Node])
         {
-            if (haveFocus && !releaseFocus)
+            shouldKeepFocus = false;
+            
+            if (graphNodeEvent.Event == INPUT_MOVED || graphNodeEvent.Event == INPUT_ENDED)
             {
-                if (currentEdge == nil)
+                if (haveFocus && !releaseFocus)
                 {
-                    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+                    NSNumber *nodeKey = graphNodeEvent.Node.Key;
                     
-                    if ([producer.State isKindOfClass:[f3GameState class]])
+                    if (currentEdge == nil)
                     {
-                        f3GameState *gameState =(f3GameState *)producer.State;
-                        f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
-
-                        for (f3GraphEdgeWithInput *edge in edges)
+                        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+                        
+                        if ([producer.State isKindOfClass:[f3GameState class]])
                         {
-                            if (edge.TargetKey == _node.Key || edge.InputKey == _node.Key)
+                            f3GameState *gameState =(f3GameState *)producer.State;
+                            f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
+                            
+                            for (f3GraphEdgeWithInput *edge in edges)
                             {
-                                if ([gameStrategy evaluateEdge:edge])
+                                if (edge.TargetKey == nodeKey || edge.InputKey == nodeKey)
                                 {
-                                    feedbackToRemove = feedbackDisplayed;
-                                    currentEdge = edge;
-//                                  NSLog(@"State: %@, target: %@", self, edge.Target);
-                                    break;
+                                    if ([gameStrategy evaluateEdge:edge])
+                                    {
+                                        feedbackToRemove = feedbackDisplayed;
+                                        currentEdge = edge;
+//                                      NSLog(@"State: %@, target: %@", self, edge.Target);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                else if (_type == INPUT_MOVED && currentEdge.TargetKey == _node.Key)
-                {
-                    shouldKeepFocus = true;
+                    else if (graphNodeEvent.Event == INPUT_MOVED && currentEdge.TargetKey == nodeKey)
+                    {
+                        shouldKeepFocus = true;
+                    }
                 }
             }
+        }
+        else
+        {
+            NSLog(@"Error! Listenning unrelated input: %@", graphNodeEvent.Node);
         }
     }
     else
     {
-        NSLog(@"Error! Listenning unrelated node: %@", _node);
+        [super notifyEvent:_event];
     }
 }
 

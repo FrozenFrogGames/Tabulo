@@ -21,6 +21,4 @@
     bool notInMotion, insideOfArea;
 }
 
-- (void)computePadding:(NSUInteger)_level;
-
 @end

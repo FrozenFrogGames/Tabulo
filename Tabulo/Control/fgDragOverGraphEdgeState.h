@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3DragViewOverEdge.h"
+#import "../../../Framework/Framework/Control/f3DragOverGraphEdgeState.h"
 
-@interface fgDragPawnOverEdge : f3DragViewOverEdge {
+@interface fgDragOverGraphEdgeState : f3DragOverGraphEdgeState {
 
     bool feedbackDisplayed, feedbackToRemove;
 }

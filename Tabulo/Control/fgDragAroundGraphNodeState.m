@@ -6,13 +6,13 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "fgDragPlankAroundNode.h"
+#import "fgDragAroundGraphNodeState.h"
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 
-@implementation fgDragPlankAroundNode
+@implementation fgDragAroundGraphNodeState
 
 - (id)initWithNode:(f3GraphNode *)_node forView:(f3ViewAdaptee *)_view  {
     

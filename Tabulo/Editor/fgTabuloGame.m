@@ -9,7 +9,7 @@
 #import "fgTabuloGame.h"
 #import "../Editor/fgTabuloSceneBuilder.h"
 #import "../../../Framework/Framework/Control/f3GraphPath.h"
-#import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
+#import "../../../Framework/Framework/Control/f3DragGraphNodeState.h"
 
 @implementation fgTabuloGame
 

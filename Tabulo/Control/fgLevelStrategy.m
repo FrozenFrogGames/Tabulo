@@ -13,11 +13,11 @@
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
+#import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/Control/f3ActionEvent.h"
 #import "../../../Framework/Framework/Control/f3GraphPath.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
-#import "../Control/fgEventOnClick.h"
 #import "fgTabuloDirector.h"
 #import "fgTabuloEvent.h"
 #import "fgDialogState.h"
@@ -83,7 +83,7 @@
     
     f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
     fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
-    fgEventOnClick *controlView = [[fgEventOnClick alloc] initWithNode:node event:event];
+    f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];
 
     [self appendGameController:[[f3Controller alloc] initWithState:controlView]];
     
@@ -148,12 +148,27 @@
     return node;
 }
 
-- (bool)notifyGameEvent:(f3GameEvent *)_event {
+- (bool)notifyEvent:(f3GameEvent *)_event {
 
+    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
+    if ([_event isKindOfClass:[f3ActionEvent class]])
+    {
+        f3ActionEvent *actionEvent = (f3ActionEvent *)_event;
+        
+        if (hintCommand == actionEvent.Action)
+        {
+            [director.Scene removeLayerAtIndex:HelperOverlay];
+
+            hintCommand = nil;
+            
+            return TRUE;
+        }
+    }
+    
     if (_event.Event < GAME_EVENT_MAX)
     {
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
-        fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
 
         fgDialogState *dialogState;
 
@@ -203,19 +218,6 @@
         [producer buildScene:director.Builder state:dialogState];
 
         return TRUE;
-    }
-    else if ([_event isKindOfClass:[f3ActionEvent class]])
-    {
-        f3ActionEvent *actionEvent = (f3ActionEvent *)_event;
-
-        if (hintCommand == actionEvent.Action)
-        {
-            f3ViewScene *scene = [f3GameDirector Director].Scene;
-            
-            [scene removeLayerAtIndex:HelperOverlay];
-
-            hintCommand = nil;
-        }
     }
 
     return FALSE;

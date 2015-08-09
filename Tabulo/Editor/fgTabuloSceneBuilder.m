@@ -8,13 +8,13 @@
 
 #import "fgTabuloSceneBuilder.h"
 #import "../../../Framework/Framework/Control/f3GraphPath.h"
-#import "../../../Framework/Framework/Control/f3DragViewFromNode.h"
-#import "../Control/fgDragPlankAroundNode.h"
+#import "../../../Framework/Framework/Control/f3DragGraphNodeState.h"
+#import "../Control/fgDragAroundGraphNodeState.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
 #import "../Control/fgLevelStrategy.h"
 #import "../fgDataAdapter.h"
-#import "../Control/fgDragPawnOverEdge.h"
+#import "../Control/fgDragOverGraphEdgeState.h"
 
 @implementation fgTabuloSceneBuilder
 
@@ -85,7 +85,7 @@
 
 - (void)buildDragPawnControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    f3DragViewFromNode *pawnState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPawnOverEdge class]];
+    f3DragGraphNodeState *pawnState = [[f3DragGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragOverGraphEdgeState class]];
     f3Controller *pawnControl = [[f3Controller alloc] initWithState:pawnState];
     [_strategy appendGameController:pawnControl];
     
@@ -101,7 +101,7 @@
 
 - (void)buildDragPlankControl:(fgTabuloDirector *)_director strategy:(f3GameStrategy *)_strategy node:(f3GraphNode *)_node view:(f3ViewAdaptee *)_view writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
-    f3DragViewFromNode *pawnState = [[f3DragViewFromNode alloc] initWithNode:_node forView:_view nextState:[fgDragPlankAroundNode class]];
+    f3DragGraphNodeState *pawnState = [[f3DragGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragAroundGraphNodeState class]];
     f3Controller *pawnControl = [[f3Controller alloc] initWithState:pawnState];
     [_strategy appendGameController:pawnControl];
     

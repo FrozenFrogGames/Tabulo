@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3DragViewAroundNode.h"
+#import "../../../Framework/Framework/Control/f3DragAroundGraphNodeState.h"
 
-@interface fgDragPlankAroundNode : f3DragViewAroundNode
+@interface fgDragAroundGraphNodeState : f3DragAroundGraphNodeState
 
 @end

@@ -18,7 +18,7 @@
 		F6025106187DDEFB0029915C /* fgGameAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F60250FF187DDEFB0029915C /* fgGameAdapter.m */; };
 		F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025101187DDEFB0029915C /* fgViewAdapter.m */; };
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
-		F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */; };
+		F6118612188C545A004497C2 /* fgDragOverGraphEdgeState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragOverGraphEdgeState.m */; };
 		F6145D5018B04D5C00924636 /* background-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6145D4E18B04D5C00924636 /* background-gameplay.png */; };
 		F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5518B1B24200924636 /* fgTabuloEvent.m */; };
 		F6145D5918B2F3ED00924636 /* fgLevelStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */; };
@@ -50,8 +50,7 @@
 		F61CD7BB19687DCC006F3C04 /* fgLevel021.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BA19687DCC006F3C04 /* fgLevel021.m */; };
 		F61CD7BE19688C16006F3C04 /* fgLevel020.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BD19688C16006F3C04 /* fgLevel020.m */; };
 		F6494ED91969DBB700339F70 /* fgLevel022.m in Sources */ = {isa = PBXBuildFile; fileRef = F6494ED81969DBB700339F70 /* fgLevel022.m */; };
-		F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */ = {isa = PBXBuildFile; fileRef = F682186D189F444D0041DA80 /* fgEventOnClick.m */; };
-		F69231BB19C61F650046B322 /* fgDragPlankAroundNode.m in Sources */ = {isa = PBXBuildFile; fileRef = F69231BA19C61F650046B322 /* fgDragPlankAroundNode.m */; };
+		F69231BB19C61F650046B322 /* fgDragAroundGraphNodeState.m in Sources */ = {isa = PBXBuildFile; fileRef = F69231BA19C61F650046B322 /* fgDragAroundGraphNodeState.m */; };
 		F6959B5C19E707340069D07B /* fgLevel032.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5B19E707340069D07B /* fgLevel032.m */; };
 		F6959B5F19E720560069D07B /* fgLevel033.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5E19E720560069D07B /* fgLevel033.m */; };
 		F6959B6219E74C130069D07B /* fgLevel034.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B6119E74C130069D07B /* fgLevel034.m */; };
@@ -102,8 +101,8 @@
 		F6025101187DDEFB0029915C /* fgViewAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewAdapter.m; sourceTree = "<group>"; };
 		F6025102187DDEFB0029915C /* fgViewCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgViewCanvas.h; sourceTree = "<group>"; };
 		F6025103187DDEFB0029915C /* fgViewCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgViewCanvas.m; sourceTree = "<group>"; };
-		F6118610188C545A004497C2 /* fgDragPawnOverEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPawnOverEdge.h; path = Control/fgDragPawnOverEdge.h; sourceTree = "<group>"; };
-		F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPawnOverEdge.m; path = Control/fgDragPawnOverEdge.m; sourceTree = "<group>"; };
+		F6118610188C545A004497C2 /* fgDragOverGraphEdgeState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragOverGraphEdgeState.h; path = Control/fgDragOverGraphEdgeState.h; sourceTree = "<group>"; };
+		F6118611188C545A004497C2 /* fgDragOverGraphEdgeState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragOverGraphEdgeState.m; path = Control/fgDragOverGraphEdgeState.m; sourceTree = "<group>"; };
 		F6145D4E18B04D5C00924636 /* background-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-gameplay.png"; sourceTree = "<group>"; };
 		F6145D5418B1B24200924636 /* fgTabuloEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEvent.h; path = Control/fgTabuloEvent.h; sourceTree = "<group>"; };
 		F6145D5518B1B24200924636 /* fgTabuloEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEvent.m; path = Control/fgTabuloEvent.m; sourceTree = "<group>"; };
@@ -162,10 +161,8 @@
 		F61CD7BD19688C16006F3C04 /* fgLevel020.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel020.m; path = Editor/fgLevel020.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6494ED71969DBB700339F70 /* fgLevel022.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel022.h; path = Editor/fgLevel022.h; sourceTree = "<group>"; };
 		F6494ED81969DBB700339F70 /* fgLevel022.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel022.m; path = Editor/fgLevel022.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		F682186C189F444D0041DA80 /* fgEventOnClick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgEventOnClick.h; path = Control/fgEventOnClick.h; sourceTree = "<group>"; };
-		F682186D189F444D0041DA80 /* fgEventOnClick.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgEventOnClick.m; path = Control/fgEventOnClick.m; sourceTree = "<group>"; };
-		F69231B919C61F650046B322 /* fgDragPlankAroundNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragPlankAroundNode.h; path = Control/fgDragPlankAroundNode.h; sourceTree = "<group>"; };
-		F69231BA19C61F650046B322 /* fgDragPlankAroundNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragPlankAroundNode.m; path = Control/fgDragPlankAroundNode.m; sourceTree = "<group>"; };
+		F69231B919C61F650046B322 /* fgDragAroundGraphNodeState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragAroundGraphNodeState.h; path = Control/fgDragAroundGraphNodeState.h; sourceTree = "<group>"; };
+		F69231BA19C61F650046B322 /* fgDragAroundGraphNodeState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragAroundGraphNodeState.m; path = Control/fgDragAroundGraphNodeState.m; sourceTree = "<group>"; };
 		F6959B5A19E707340069D07B /* fgLevel032.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel032.h; path = Editor/fgLevel032.h; sourceTree = "<group>"; };
 		F6959B5B19E707340069D07B /* fgLevel032.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel032.m; path = Editor/fgLevel032.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6959B5D19E720560069D07B /* fgLevel033.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel033.h; path = Editor/fgLevel033.h; sourceTree = "<group>"; };
@@ -277,6 +274,8 @@
 			children = (
 				F682185E189736720041DA80 /* Adapter */,
 				F6A6CA80188096F8006AAE57 /* Control */,
+				F6145D5718B2F3ED00924636 /* fgLevelStrategy.h */,
+				F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */,
 				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
@@ -314,18 +313,14 @@
 		F611860C188C4F46004497C2 /* State */ = {
 			isa = PBXGroup;
 			children = (
-				F6145D5718B2F3ED00924636 /* fgLevelStrategy.h */,
-				F6145D5818B2F3ED00924636 /* fgLevelStrategy.m */,
 				F6EB416818E8EFDA0017487E /* fgMenuState.h */,
 				F6EB416918E8EFDA0017487E /* fgMenuState.m */,
 				F6DF01F518B598CC00E7DF6C /* fgDialogState.h */,
 				F6DF01F618B598CC00E7DF6C /* fgDialogState.m */,
-				F682186C189F444D0041DA80 /* fgEventOnClick.h */,
-				F682186D189F444D0041DA80 /* fgEventOnClick.m */,
-				F6118610188C545A004497C2 /* fgDragPawnOverEdge.h */,
-				F6118611188C545A004497C2 /* fgDragPawnOverEdge.m */,
-				F69231B919C61F650046B322 /* fgDragPlankAroundNode.h */,
-				F69231BA19C61F650046B322 /* fgDragPlankAroundNode.m */,
+				F6118610188C545A004497C2 /* fgDragOverGraphEdgeState.h */,
+				F6118611188C545A004497C2 /* fgDragOverGraphEdgeState.m */,
+				F69231B919C61F650046B322 /* fgDragAroundGraphNodeState.h */,
+				F69231BA19C61F650046B322 /* fgDragAroundGraphNodeState.m */,
 			);
 			name = State;
 			sourceTree = "<group>";
@@ -611,15 +606,14 @@
 				F6959B5F19E720560069D07B /* fgLevel033.m in Sources */,
 				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F61CD7BB19687DCC006F3C04 /* fgLevel021.m in Sources */,
-				F682186E189F444D0041DA80 /* fgEventOnClick.m in Sources */,
 				F61CD78B195CA4D0006F3C04 /* fgLevel002.m in Sources */,
 				F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */,
-				F6118612188C545A004497C2 /* fgDragPawnOverEdge.m in Sources */,
+				F6118612188C545A004497C2 /* fgDragOverGraphEdgeState.m in Sources */,
 				F6DF022018BBEA8300E7DF6C /* fgPawnFeedbackCommand.m in Sources */,
 				F61CD794195CA83A006F3C04 /* fgLevel006.m in Sources */,
 				F6EB416A18E8EFDA0017487E /* fgMenuState.m in Sources */,
 				F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */,
-				F69231BB19C61F650046B322 /* fgDragPlankAroundNode.m in Sources */,
+				F69231BB19C61F650046B322 /* fgDragAroundGraphNodeState.m in Sources */,
 				F61CD797195E15D4006F3C04 /* fgLevel007.m in Sources */,
 				F6C4D52019CF386A00FB309E /* fgLevel029.m in Sources */,
 			);
