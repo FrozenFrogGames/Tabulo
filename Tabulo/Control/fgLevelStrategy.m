@@ -89,8 +89,6 @@
     
     [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(InterfaceLayer), nil]];
     [_builder buildComposite:1];
-    
-    [self buildHelperLayer:_builder];
 }
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {

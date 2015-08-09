@@ -192,7 +192,7 @@
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
     CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
 
-    [adaptee notifyInput:relativePoint type:INPUT_BEGAN];
+    [adaptee notifyInput:relativePoint type:GRAPH_InputBegan];
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -200,7 +200,7 @@
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
     CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
 
-    [adaptee notifyInput:relativePoint type:INPUT_MOVED];
+    [adaptee notifyInput:relativePoint type:GRAPH_InputMoved];
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
@@ -208,7 +208,7 @@
     NSArray *touchArray = [[event touchesForView:self.view] allObjects];
     CGPoint relativePoint = [adaptee relativePointInScreen:[self absolutePointInTouch:[touchArray objectAtIndex:0]]];
     
-    [adaptee notifyInput:relativePoint type:INPUT_ENDED];
+    [adaptee notifyInput:relativePoint type:GRAPH_InputEnded];
 }
 
 @end

@@ -340,22 +340,27 @@
     }
 }
 
-- (void)notifyInput:(CGPoint)_relativePoint type:(enum f3InputType)_type {
+- (void)notifyInput:(CGPoint)_relativePoint type:(enum f3GraphNodeEvent)_type {
 
     switch (_type) {
 
-        case INPUT_BEGAN:
+        case GRAPH_InputBegan:
             inputBeginY = _relativePoint.y;
             notInMotion = true;
 //          break;
 
-        case INPUT_ENDED:
-        case INPUT_CANCELED:
+        case GRAPH_InputEnded:
+        case GRAPH_InputCanceled:
             inputEndY = _relativePoint.y;
 //          break;
 
-        case INPUT_MOVED:
+        case GRAPH_InputMoved:
             inputCurrentY = _relativePoint.y;
+            break;
+            
+        case GRAPH_EVENT_MAX:
+        default:
+            // TODO throw f3Exception
             break;
     }
 

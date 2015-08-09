@@ -154,7 +154,7 @@
         {
             shouldKeepFocus = false;
             
-            if (graphNodeEvent.Event == INPUT_MOVED || graphNodeEvent.Event == INPUT_ENDED)
+            if (graphNodeEvent.Event == GRAPH_InputMoved || graphNodeEvent.Event == GRAPH_InputEnded)
             {
                 if (haveFocus && !releaseFocus)
                 {
@@ -184,7 +184,7 @@
                             }
                         }
                     }
-                    else if (graphNodeEvent.Event == INPUT_MOVED && currentEdge.TargetKey == nodeKey)
+                    else if (graphNodeEvent.Event == GRAPH_InputMoved && currentEdge.TargetKey == nodeKey)
                     {
                         shouldKeepFocus = true;
                     }
