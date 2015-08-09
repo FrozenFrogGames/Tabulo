@@ -26,10 +26,10 @@
     
     [super begin:_previousState owner:_owner];
     
-    f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
-    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
+//  f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
+//  [builder push:feedbackCommand];
 
-    [builder push:feedbackCommand];
+    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
     [builder push:scaleCommand];
     
     f3ControlComponent *command = [builder popComponent];

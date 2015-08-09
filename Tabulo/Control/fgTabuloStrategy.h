@@ -18,8 +18,9 @@
 
 @class fgHouseNode;
 @class f3GraphPath;
+@class f3GraphEdgeWithRotation;
 
-@interface fgLevelStrategy : f3GraphNodeStrategy {
+@interface fgTabuloStrategy : f3GraphNodeStrategy {
 
     NSUInteger levelIndex;
     enum fgTabuloGrade levelGrade;
@@ -34,5 +35,8 @@
 
 - (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols;
 - (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
+
++ (f3ViewAdaptee *)buildPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity;
++ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotation *)_edge strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity;
 
 @end

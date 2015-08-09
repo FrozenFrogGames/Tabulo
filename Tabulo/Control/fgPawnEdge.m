@@ -14,15 +14,18 @@
 
 @implementation fgPawnEdge
 
-- (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view {
+- (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view slowMotion:(float)_slowmo {
 
-    f3VectorHandle *targetPoint = [[f3GraphNode nodeForKey:targetKey] getPositionHandle];
+    f3GraphNode *targetNode = [f3GraphNode nodeForKey:targetKey];
+    f3VectorHandle *targetPoint = [targetNode getPositionHandle];
 
     CGPoint originPoint = [f3GraphNode nodeForKey:originKey].Position;
     f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
+    
+    float speed = [self distanceBetween:originPoint to:targetNode.Position] /40.f *_slowmo;
 
     f3ControlCommand *command = [[f3ControlCommand alloc] init];
-    [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view translation:translation speed:0.05f]];
+    [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view translation:translation speed:speed]];
     [command appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:targetPoint]];
     [_builder push:command];
 }

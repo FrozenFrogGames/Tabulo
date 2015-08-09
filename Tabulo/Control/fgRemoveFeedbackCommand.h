@@ -9,7 +9,7 @@
 #import "../../../Framework/Framework/Control/f3RemoveFeedbackCommand.h"
 #import "fgHouseNode.h"
 
-@interface fgRemoveFeedbackCommand : f3RemoveFeedbackCommand {
+@interface fgRemoveFeedbackCommand : f3RemoveFeedbackCommand { // TODO deprecate
     
     NSMutableArray *feedbackOnNodes;
 }

@@ -12,7 +12,7 @@
 #import "../Control/fgDragAroundGraphNodeState.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
-#import "../Control/fgLevelStrategy.h"
+#import "../Control/fgTabuloStrategy.h"
 #import "../fgDataAdapter.h"
 #import "../Control/fgDragOverGraphEdgeState.h"
 

@@ -21,7 +21,7 @@
 #import "../../../Framework/Framework/Control/f3GraphState.h"
 #import "../Control/fgDragOverGraphEdgeState.h"
 #import "../Control/fgDragAroundGraphNodeState.h"
-#import "../Control/fgLevelStrategy.h"
+#import "../Control/fgTabuloStrategy.h"
 #import "../Control/fgHouseNode.h"
 #import "../Control/fgPawnEdge.h"
 #import "../Control/fgPlankEdge.h"
@@ -328,7 +328,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildComposite:1];
 }
 
-- (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
+- (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     uint16_t dataIndex;
     [_data readBytes:&dataIndex length:sizeof(uint16_t)];
@@ -341,7 +341,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [_strategy setNodeFlag:node.Key flag:pawnType value:true];
 }
 
-- (void)buildPlank:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
+- (void)buildPlank:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
@@ -360,7 +360,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data strategy:(fgLevelStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
+- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
 
     f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
     f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
@@ -384,7 +384,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildDecorator:3];
 }
 
-- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
+- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
 
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -398,7 +398,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
-- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
+- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
     
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -455,7 +455,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [viewBuilder buildDecorator:1];
 }
 
-- (void)buildHouseCondition:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgLevelStrategy *)_strategy {
+- (void)buildHouseCondition:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
 
     uint16_t dataLength = sizeof(uint16_t) *2;
     uint16_t *dataArray = malloc(dataLength);
@@ -612,7 +612,7 @@ const NSUInteger LEVEL_COUNT = 36;
 - (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
 
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
-    fgLevelStrategy *strategy = (fgLevelStrategy *)[_state Strategy];
+    fgTabuloStrategy *strategy = (fgTabuloStrategy *)[_state Strategy];
 
     if (scene == nil)
     {

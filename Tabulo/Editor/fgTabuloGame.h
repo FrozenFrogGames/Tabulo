@@ -7,7 +7,7 @@
 //
 
 #import "../fgDataAdapter.h"
-#import "../Control/fgLevelStrategy.h"
+#import "../Control/fgTabuloStrategy.h"
 #import "../View/fgTabuloDirector.h"
 #import "../Editor/fgTabuloSceneBuilder.h"
 
@@ -19,7 +19,7 @@
     fgTabuloSceneBuilder *scene;
 }
 
-- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgLevelStrategy *)_strategy;
+- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgTabuloStrategy *)_strategy;
 
 - (NSObject<IDataAdapter> *)closeWriter:(NSString *)_filename;
 

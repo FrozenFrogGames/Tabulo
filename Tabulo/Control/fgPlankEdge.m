@@ -66,15 +66,17 @@
     }
 }
 
-- (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view {
+- (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view slowMotion:(float)_slowmo {
 
     f3GraphNode *rotationNode = [f3GraphNode nodeForKey:rotationKey];
     f3GraphNode *targetNode = [f3GraphNode nodeForKey:targetKey];
     f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(targetAngle), nil];
 
+    float speed = [self distanceBetween:[f3GraphNode nodeForKey:originKey].Position to:targetNode.Position] /2.f *_slowmo;
+
     f3ControlCommand *command = [[f3ControlCommand alloc] init];
     f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle]
-                                                                    Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:0.7f];
+                                                                    Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:speed];
     [command appendComponent:transform];
     f3ControlComposite *composite = [[f3ControlComposite alloc] init];
     [composite appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:[targetNode getPositionHandle]]];

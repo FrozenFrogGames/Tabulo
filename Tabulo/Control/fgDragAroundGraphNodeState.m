@@ -8,9 +8,11 @@
 
 #import "fgDragAroundGraphNodeState.h"
 #import "../View/fgTabuloDirector.h"
+#import "fgPlankFeedbackCommand.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 
 @implementation fgDragAroundGraphNodeState
 
@@ -60,6 +62,30 @@
         {
             rotationRadius = 3.5f; // long plank is 7 (7.07) units length
         }
+    }
+}
+
+- (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
+    
+    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
+    
+    [super begin:_previousState owner:_owner];
+    
+//  f3ControlComponent *feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Node:node];
+//  [builder push:feedbackCommand];
+    
+    f3ControlComponent *command = [builder popComponent];
+    
+    while (command != nil)
+    {
+        [_owner appendComponent:command];
+/*
+        if ([command isKindOfClass:[f3AppendFeedbackCommand class]])
+        {
+            feedbackDisplayed = true;
+        }
+ */        
+        command = [builder popComponent];
     }
 }
 

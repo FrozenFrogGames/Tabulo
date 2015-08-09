@@ -12,7 +12,7 @@
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
-#import "fgLevelStrategy.h"
+#import "fgTabuloStrategy.h"
 #import "fgMenuState.h"
 #import "../View/fgTabuloDirector.h"
 #import "../fgDataAdapter.h"
@@ -394,7 +394,7 @@ enum TabuloDialogItem {
 
                 // TODO use either fgLoadTabuloSceneOperator or fgBuildTabuloSceneOperator to generate the scene
 
-                fgLevelStrategy *nextLevelStrategy = [[fgLevelStrategy alloc] init:nextLevel];
+                fgTabuloStrategy *nextLevelStrategy = [[fgTabuloStrategy alloc] init:nextLevel];
 
                 NSString *filename = [@"LEVEL" stringByAppendingString:[NSString stringWithFormat:@"%03lu",(unsigned long)nextLevel]];
 

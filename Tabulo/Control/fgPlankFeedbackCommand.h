@@ -15,6 +15,9 @@
     f3GraphNode *plankNode;
 }
 
++ (f3ViewAdaptee *)buildSmallPlank:(f3ViewBuilder *)_builder Position:(CGPoint)_position Angle:(float)_angle;
++ (f3ViewAdaptee *)buildMediumPlank:(f3ViewBuilder *)_builder Position:(CGPoint)_position Angle:(float)_angle;
+
 - (id)initWithView:(f3ViewComponent *)_view Node:(f3GraphNode *)_node;
 
 @end

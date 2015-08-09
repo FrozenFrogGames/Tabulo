@@ -10,7 +10,7 @@
 
 @implementation fgLevel001
 
-- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgLevelStrategy *)_strategy {
+- (void)buildSceneForLevel:(fgTabuloDirector *)_director withStrategy:(fgTabuloStrategy *)_strategy {
     
     [scene addPointFrom:0 Radius:2.5f Angle:90.f];
     [scene addPointFrom:1 Radius:2.5f Angle:90.f]; // 2
