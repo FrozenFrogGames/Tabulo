@@ -15,6 +15,7 @@
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/Control/f3ActionEvent.h"
+#import "../../../Framework/Framework/Control/f3CustomEvent.h"
 #import "../../../Framework/Framework/Control/f3GraphPath.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
@@ -61,7 +62,7 @@
     return resultScale;
 }
 
-- (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
+- (void)buildButton:(f3ViewBuilder *)_builder position:(CGPoint)_position sprite:(CGPoint)_sprite scale:(float)_scale  {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     
@@ -72,25 +73,35 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(1408.f, 832.f) withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:_sprite withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
-    float x = (0.75f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale));
-    float y = (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale));
-
     [_builder push:[f3VectorHandle buildHandleForWidth:(1.25f /_scale) height:(1.25f /_scale)]];
     [_builder buildDecorator:2];
     
-    [_builder push:[f3VectorHandle buildHandleForWidth:x height:y]];
+    [_builder push:[f3VectorHandle buildHandleForWidth:_position.x height:_position.y]];
     [_builder buildDecorator:1];
-    
-    f3GraphNode *node = [self buildNode:CGPointMake(x, y) withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
-    fgTabuloEvent *event = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
-    f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];
+}
 
-    [self appendGameController:[[f3Controller alloc] initWithState:controlView]];
-    
+- (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
+
+    CGPoint position = CGPointMake((0.75f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale)), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
+    [self buildButton:_builder position:position sprite:CGPointMake(1408.f, 832.f) scale:_scale];
+
+    f3GraphNode *node = [self buildNode:position withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
+    fgTabuloEvent *pauseEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
+    f3EventButtonState *pauseControl = [[f3EventButtonState alloc] initWithNode:node event:pauseEvent];
+    [self appendGameController:[[f3Controller alloc] initWithState:pauseControl]];
+
+    position = CGPointMake((2.125f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale)), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
+    [self buildButton:_builder position:position sprite:CGPointMake(1408.f, 960.f) scale:_scale];
+
+    node = [self buildNode:position withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
+    f3CustomEvent *helperEvent = [[f3CustomEvent alloc] init:CUSTOM_Helper];
+    f3EventButtonState *helperControl = [[f3EventButtonState alloc] initWithNode:node event:helperEvent];
+    [self appendGameController:[[f3Controller alloc] initWithState:helperControl]];
+
     [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(InterfaceLayer), nil]];
     [_builder buildComposite:1];
 }
@@ -154,21 +165,41 @@
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
 
-    if ([_event isKindOfClass:[f3ActionEvent class]])
+    if ([_event isKindOfClass:[f3CustomEvent class]])
+    {
+        if (_event.Event == CUSTOM_Helper)
+        {
+            if (hintCommand == nil)
+            {
+                [self buildHelperLayer:director.Builder];
+                
+                id helperLayer = [director.Builder popComponent];
+                
+                if ([helperLayer isKindOfClass:[f3ViewLayer class]])
+                {
+                    [director.Scene appendLayer:(f3ViewLayer *)helperLayer];
+                }
+            }
+        }
+        
+        return TRUE;
+    }
+    
+    else if ([_event isKindOfClass:[f3ActionEvent class]])
     {
         f3ActionEvent *actionEvent = (f3ActionEvent *)_event;
-        
+
         if (hintCommand == actionEvent.Action)
         {
             [director.Scene removeLayerAtIndex:HelperOverlay];
 
             hintCommand = nil;
-            
-            return TRUE;
         }
+        
+        return TRUE;
     }
     
-    if (_event.Event < GAME_EVENT_MAX)
+    else if (_event.Event < GAME_EVENT_MAX)
     {
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
 
