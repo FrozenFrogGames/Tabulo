@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3GraphEdgeWithRotation.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithRotationNode.h"
 
-@interface fgPlankEdge : f3GraphEdgeWithRotation {
+@interface fgPlankEdge : f3GraphEdgeWithRotationNode {
 
     float targetAngle, rotationAngle, rotationRadius;
 }

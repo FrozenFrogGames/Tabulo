@@ -9,7 +9,7 @@
 #import "fgPlankEdge.h"
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
-#import "../../../Framework/Framework/Control/f3GraphState.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3ControlCommand.h"
 #import "../../../Framework/Framework/Control/f3TransformCommand.h"
 #import "../../../Framework/Framework/Control/f3SetAngleCommand.h"
@@ -17,14 +17,15 @@
 
 @implementation fgPlankEdge
 
-- (id)initFrom:(NSNumber *)_originKey targetKey:(NSNumber *)_targetKey rotation:(f3GraphNode *)_rotation {
+- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey {
 
-    self = [super initFrom:_originKey targetKey:_targetKey rotation:_rotation];
+    self = [super init:_originKey target:_targetKey rotation:_rotationKey];
 
     if (self != nil)
     {
-        f3GraphNode *originNode = [f3GraphNode nodeForKey:_originKey], *targetNode = [f3GraphNode nodeForKey:_targetKey];
-        CGPoint originPoint = originNode.Position, targetPoint = targetNode.Position, rotationPoint = _rotation.Position;
+        CGPoint originPoint = [[f3GraphNode nodeForKey:_originKey] Position];
+        CGPoint targetPoint = [[f3GraphNode nodeForKey:_targetKey] Position];
+        CGPoint rotationPoint = [[f3GraphNode nodeForKey:_rotationKey] Position];
 
         targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
         rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];

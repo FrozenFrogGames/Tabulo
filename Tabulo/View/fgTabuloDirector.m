@@ -18,7 +18,7 @@
 #import "../../../Framework/Framework/Control/f3Controller.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
-#import "../../../Framework/Framework/Control/f3GraphState.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../Control/fgDragOverGraphEdgeState.h"
 #import "../Control/fgDragAroundGraphNodeState.h"
 #import "../Control/fgTabuloStrategy.h"
@@ -489,7 +489,7 @@ const NSUInteger LEVEL_COUNT = 36;
     
     for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
     {
-        fgPawnEdge *edge = [[fgPawnEdge alloc] initFrom:_origin.Key targetKey:_target.Key input:_node];
+        fgPawnEdge *edge = [[fgPawnEdge alloc] init:_origin.Key target:_target.Key input:_node.Key];
 
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true]];
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:pawnType result:true]];
@@ -600,7 +600,7 @@ const NSUInteger LEVEL_COUNT = 36;
     
     for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
     {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] initFrom:_origin.Key targetKey:_target.Key rotation:_node];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_origin.Key target:_target.Key rotation:_node.Key];
         [edge setPlankType:_type];
     
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:_type result:true]];
@@ -627,7 +627,7 @@ const NSUInteger LEVEL_COUNT = 36;
         switch (marker)
         {
             case 0x00:
-                producer.UnitScale = [strategy computeUnitScale:producer.ScreenSize unit:producer.UnitSize];
+                [strategy initGraphStrategy:nil symbols:symbols];
                 break;
 
             case 0x01:

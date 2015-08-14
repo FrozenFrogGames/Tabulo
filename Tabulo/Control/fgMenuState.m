@@ -8,7 +8,7 @@
 
 #import "fgMenuState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3GameStrategy.h"
 #import "../../../Framework/Framework/Control/f3TranslationCommand.h"
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
@@ -217,7 +217,7 @@
     
     if (!isLevelLocked)
     {
-        f3GraphNodeStrategy *strategy =(f3GraphNodeStrategy *)[_state Strategy];
+        f3GameStrategy *strategy = [_state Strategy];
         f3GraphNode *node = [strategy buildNode:_position withExtend:CGSizeMake(_scale *.45, _scale *.45) writer:nil symbols:nil];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];

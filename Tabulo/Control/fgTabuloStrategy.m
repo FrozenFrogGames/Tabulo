@@ -16,7 +16,7 @@
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/Control/f3ActionEvent.h"
 #import "../../../Framework/Framework/Control/f3CustomEvent.h"
-#import "../../../Framework/Framework/Control/f3GraphPath.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 #import "fgTabuloDirector.h"
@@ -118,7 +118,11 @@
     
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:position extend:extend];
     
-    [keys addObject:node.Key];
+    if (minimumDistanceToGoal == UINT8_MAX)
+    {
+        [keys addObject:node.Key];
+    }
+
     [self appendTouchListener:node];
     
     free(dataArray);
@@ -150,7 +154,11 @@
     
     fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
     
-    [keys addObject:node.Key];
+    if (minimumDistanceToGoal == UINT8_MAX)
+    {
+        [keys addObject:node.Key];
+    }
+
     [self appendTouchListener:node];
     
     if (_symbols != nil)
@@ -258,7 +266,7 @@
 
 - (void)buildHelperLayer:(f3ViewBuilder *)_builder {
 
-    f3GraphEdge *hintEdge = [currentPath findBestEdge:self keys:keys];
+    f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
     if (hintEdge != nil)
     {
         f3ViewAdaptee *view = nil;
@@ -271,7 +279,7 @@
         }
         else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
         {
-            f3GraphEdgeWithRotation *edgeWithRotation = (f3GraphEdgeWithRotation *)hintEdge;
+            f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
 
             view = [fgTabuloStrategy buildPlank:_builder edge:edgeWithRotation strategy:self opacity:0.6f];
         }
@@ -368,7 +376,7 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotation *)_edge strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity {
 
     NSNumber *nodeKey = _edge.OriginKey;
 

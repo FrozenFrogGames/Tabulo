@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3GraphEdgeWithInput.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
 
-@interface fgPawnEdge : f3GraphEdgeWithInput
+@interface fgPawnEdge : f3GraphEdgeWithInputNode
 
 @end

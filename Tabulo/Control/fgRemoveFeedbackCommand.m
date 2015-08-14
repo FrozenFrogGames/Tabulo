@@ -8,7 +8,7 @@
 
 #import "fgRemoveFeedbackCommand.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../../Framework/Framework/Control/f3GraphState.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 
 @implementation fgRemoveFeedbackCommand

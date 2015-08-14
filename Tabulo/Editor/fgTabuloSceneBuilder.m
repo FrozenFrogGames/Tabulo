@@ -7,7 +7,7 @@
 //
 
 #import "fgTabuloSceneBuilder.h"
-#import "../../../Framework/Framework/Control/f3GraphPath.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3DragGraphNodeState.h"
 #import "../Control/fgDragAroundGraphNodeState.h"
 #import "../Control/fgPawnEdge.h"
@@ -692,7 +692,7 @@
     
     for (int pawn = TABULO_PawnOne; pawn <= TABULO_PawnFive; ++pawn)
     {
-        fgPawnEdge *edge = [[fgPawnEdge alloc] initFrom:_origin.Key targetKey:_target.Key input:_node];
+        fgPawnEdge *edge = [[fgPawnEdge alloc] init:_origin.Key target:_target.Key input:_node.Key];
         
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:pawn result:true]];
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true]];
@@ -812,7 +812,7 @@
 
     for (int pawn = TABULO_PawnOne; pawn < TABULO_PAWN_MAX; ++pawn)
     {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] initFrom:_origin.Key targetKey:_target.Key rotation:_node];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_origin.Key target:_target.Key rotation:_node.Key];
         [edge setPlankType:_type];
 
         [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:pawn result:true]];

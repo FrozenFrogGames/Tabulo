@@ -11,7 +11,7 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
-#import "../../../Framework/Framework/Control/f3GraphEdgeWithInput.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
 #import "fgHouseNode.h"
 #import "../View/fgTabuloDirector.h"
 #import "fgPawnFeedbackCommand.h"
@@ -87,7 +87,7 @@
     {
         f3ControlComponent *feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
         
-        for (f3GraphEdgeWithInput *edge in edges)
+        for (f3GraphEdgeWithInputNode *edge in edges)
         {
             f3GraphNode *houseNode = [f3GraphNode nodeForKey:edge.TargetKey];
             if ([houseNode isKindOfClass:[fgHouseNode class]])
@@ -111,7 +111,7 @@
     {
         nodeListening = [NSMutableArray array];
         
-        for (f3GraphEdgeWithInput *edge in edges)
+        for (f3GraphEdgeWithInputNode *edge in edges)
         {
             f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
             if ([nodeListening containsObject:targetNode])
@@ -169,7 +169,7 @@
                             f3GameState *gameState =(f3GameState *)producer.State;
                             f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
                             
-                            for (f3GraphEdgeWithInput *edge in edges)
+                            for (f3GraphEdgeWithInputNode *edge in edges)
                             {
                                 if (edge.TargetKey == nodeKey || edge.InputKey == nodeKey)
                                 {
