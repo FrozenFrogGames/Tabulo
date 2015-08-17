@@ -11,7 +11,7 @@
 #import "fgPlankFeedbackCommand.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
-#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 
 @implementation fgDragAroundGraphNodeState
@@ -48,7 +48,7 @@
     if ([state isKindOfClass:[f3GameState class]])
     {
         f3GameState *gameState = (f3GameState *)state;
-        f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
+        f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[gameState Strategy];
 
         if ([gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank])
         {
@@ -100,7 +100,7 @@
         if ([state isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)state;
-            f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
+            f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[gameState Strategy];
 
             return (![gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank]  &&
                     ![gameStrategy getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank] &&
@@ -122,7 +122,7 @@
         if ([state isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)state;
-            f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[gameState Strategy];
+            f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[gameState Strategy];
 
             return ([gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnOne]   ||
                     [gameStrategy getNodeFlag:nodeKey flag:TABULO_PawnTwo]   ||

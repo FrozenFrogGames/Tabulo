@@ -9,7 +9,7 @@
 #import "fgRemoveFeedbackCommand.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
-#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 
 @implementation fgRemoveFeedbackCommand
 
@@ -36,7 +36,7 @@
     
     if ([state isKindOfClass:[f3GameState class]])
     {
-        f3GraphNodeStrategy *gameStrategy = (f3GraphNodeStrategy *)[(f3GameState *)state Strategy];
+        f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[(f3GameState *)state Strategy];
 
         for (fgHouseNode *node in feedbackOnNodes)
         {

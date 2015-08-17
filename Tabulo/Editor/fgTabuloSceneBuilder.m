@@ -174,7 +174,7 @@
     }
 }
 
-- (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GraphNodeStrategy *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (void)buildHouse:(fgTabuloDirector *)_director node:(fgHouseNode *)_node type:(enum f3TabuloPawnType)_type state:(f3GraphSchemaStrategy *)_state writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float houseX1 = (128.f +(_type *384.f)) /2048.f;
     float houseX2 = (512.f +(_type *384.f)) /2048.f;
@@ -269,7 +269,7 @@
     }
 }
 
-- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildPawn:(fgTabuloDirector *)_director state:(f3GraphSchemaStrategy *)_state node:(f3GraphNode *)_node type:(enum f3TabuloPawnType)_type writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     CGPoint textureCoordonate;
     switch (_type) {
@@ -368,7 +368,7 @@
     return _view;
 }
 
-- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildSmallPlank:(fgTabuloDirector *)_director state:(f3GraphSchemaStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float holeOffset;
     
@@ -508,7 +508,7 @@
     return _view;
 }
 
-- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GraphNodeStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
+- (f3ViewAdaptee *)buildMediumPlank:(fgTabuloDirector *)_director state:(f3GraphSchemaStrategy *)_state node:(f3GraphNode *)_node angle:(float)_angle hole:(enum f3TabuloHoleType)_hole writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
     
     float holeOffset;
 

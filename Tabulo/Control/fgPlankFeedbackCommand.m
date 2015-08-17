@@ -10,7 +10,7 @@
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
-#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 #import "fgPlankEdge.h"
 

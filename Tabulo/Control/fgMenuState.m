@@ -36,12 +36,6 @@
     return self;
 }
 
-
-- (void)setPrevious:(f3ControllerState *)_previous {
-    
-    previousState = nil;
-}
-
 - (void)buildSceneLayer:(f3ViewBuilder *)_builder screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
 
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
@@ -358,7 +352,7 @@
             inputCurrentY = _relativePoint.y;
             break;
             
-        case GRAPH_EVENT_MAX:
+        case GRAPH_NODE_EVENT_MAX:
         default:
             // TODO throw f3Exception
             break;

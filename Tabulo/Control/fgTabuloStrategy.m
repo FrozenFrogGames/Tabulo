@@ -94,7 +94,7 @@
     f3EventButtonState *pauseControl = [[f3EventButtonState alloc] initWithNode:node event:pauseEvent];
     [self appendGameController:[[f3Controller alloc] initWithState:pauseControl]];
 
-    position = CGPointMake((2.125f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale)), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
+    position = CGPointMake(((_screen.width /2.f) / (_unit.width *_scale)) - (0.75f /_scale), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
     [self buildButton:_builder position:position sprite:CGPointMake(1408.f, 960.f) scale:_scale];
 
     node = [self buildNode:position withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
@@ -217,11 +217,11 @@
         {
             enum fgTabuloGrade grade = GRADE_gold;
             
-            if (graphPathCount > greaterDistanceToGoal)
+            if (graphStepCount > greaterDistanceToGoal)
             {
                 grade = GRADE_bronze;
             }
-            else if (graphPathCount > minimumDistanceToGoal)
+            else if (graphStepCount > minimumDistanceToGoal)
             {
                 grade = GRADE_silver;
             }
@@ -261,10 +261,12 @@
         return TRUE;
     }
 
-    return FALSE;
+    return [super notifyEvent:_event];
 }
 
 - (void)buildHelperLayer:(f3ViewBuilder *)_builder {
+
+    // TODO if greaterDistanceToGoal is greater than minimumDistanceToGoal then backward action before to display hint
 
     f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
     if (hintEdge != nil)
@@ -292,7 +294,7 @@
             [_builder buildComposite:1]; // create helper layer with the view to manipulate
 
             f3GameAdaptee *producer = [f3GameAdaptee Producer];
-            hintCommand = [[f3ControlCommand alloc] init];
+            hintCommand = [[f3ControlSequence alloc] init];
             [producer appendComponent:hintCommand]; // push command that will manipulate the view
             
             [hintEdge buildGraphCommand:producer.Builder view:view slowMotion:2.f];
@@ -318,7 +320,7 @@
     }
 }
 
-+ (f3ViewAdaptee *)buildPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
     
     NSNumber *nodeKey = _node.Key;
     CGPoint textureCoordonate;
@@ -376,7 +378,7 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphNodeStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
 
     NSNumber *nodeKey = _edge.OriginKey;
 

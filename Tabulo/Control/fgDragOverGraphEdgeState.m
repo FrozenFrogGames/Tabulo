@@ -9,7 +9,7 @@
 #import "fgDragOverGraphEdgeState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
-#import "../../../Framework/Framework/Control/f3GraphNodeStrategy.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
 #import "fgHouseNode.h"
@@ -167,7 +167,7 @@
                         if ([producer.State isKindOfClass:[f3GameState class]])
                         {
                             f3GameState *gameState =(f3GameState *)producer.State;
-                            f3GraphNodeStrategy *gameStrategy =(f3GraphNodeStrategy *)[gameState Strategy];
+                            f3GraphSchemaStrategy *gameStrategy =(f3GraphSchemaStrategy *)[gameState Strategy];
                             
                             for (f3GraphEdgeWithInputNode *edge in edges)
                             {

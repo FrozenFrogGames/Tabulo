@@ -10,7 +10,7 @@
 #import "../View/fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
-#import "../../../Framework/Framework/Control/f3ControlCommand.h"
+#import "../../../Framework/Framework/Control/f3ControlSequence.h"
 #import "../../../Framework/Framework/Control/f3TransformCommand.h"
 #import "../../../Framework/Framework/Control/f3SetAngleCommand.h"
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
@@ -75,7 +75,7 @@
 
     float speed = [self distanceBetween:[f3GraphNode nodeForKey:originKey].Position to:targetNode.Position] /2.f *_slowmo;
 
-    f3ControlCommand *command = [[f3ControlCommand alloc] init];
+    f3ControlSequence *command = [[f3ControlSequence alloc] init];
     f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle]
                                                                     Rotation:rotationAngle Radius:rotationRadius Angle:targetAngle Speed:speed];
     [command appendComponent:transform];

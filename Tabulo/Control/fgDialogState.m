@@ -59,7 +59,7 @@ enum TabuloDialogItem {
             dialogScale /= 12.f;
         }
         
-        f3GraphNodeStrategy *graphStrategy = (f3GraphNodeStrategy *)gameStrategy;
+        f3GraphSchemaStrategy *graphStrategy = (f3GraphSchemaStrategy *)gameStrategy;
         
         switch (dialogEvent.Event) {
                 

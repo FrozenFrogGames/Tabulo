@@ -274,8 +274,6 @@
 			children = (
 				F682185E189736720041DA80 /* Adapter */,
 				F6A6CA80188096F8006AAE57 /* Control */,
-				F6145D5718B2F3ED00924636 /* fgTabuloStrategy.h */,
-				F6145D5818B2F3ED00924636 /* fgTabuloStrategy.m */,
 				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
@@ -313,6 +311,8 @@
 		F611860C188C4F46004497C2 /* State */ = {
 			isa = PBXGroup;
 			children = (
+				F6145D5718B2F3ED00924636 /* fgTabuloStrategy.h */,
+				F6145D5818B2F3ED00924636 /* fgTabuloStrategy.m */,
 				F6EB416818E8EFDA0017487E /* fgMenuState.h */,
 				F6EB416918E8EFDA0017487E /* fgMenuState.m */,
 				F6DF01F518B598CC00E7DF6C /* fgDialogState.h */,

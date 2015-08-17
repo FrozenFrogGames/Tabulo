@@ -8,7 +8,7 @@
 
 #import "fgPawnEdge.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
-#import "../../../Framework/Framework/Control/f3ControlCommand.h"
+#import "../../../Framework/Framework/Control/f3ControlSequence.h"
 #import "../../../Framework/Framework/Control/f3TranslationCommand.h"
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 
@@ -24,7 +24,7 @@
     
     float speed = [self distanceBetween:originPoint to:targetNode.Position] /40.f *_slowmo;
 
-    f3ControlCommand *command = [[f3ControlCommand alloc] init];
+    f3ControlSequence *command = [[f3ControlSequence alloc] init];
     [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view translation:translation speed:speed]];
     [command appendComponent:[[f3SetOffsetCommand alloc] initWithView:_view Offset:targetPoint]];
     [_builder push:command];
