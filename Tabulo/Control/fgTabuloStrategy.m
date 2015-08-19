@@ -17,8 +17,12 @@
 #import "../../../Framework/Framework/Control/f3ActionEvent.h"
 #import "../../../Framework/Framework/Control/f3CustomEvent.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
+#import "../../../Framework/Framework/Control/f3MutableGraphNodeState.h"
+#import "../../../Framework/Framework/Control/f3DragOverGraphEdgeState.h"
+#import "../../../Framework/Framework/Control/f3DragAroundGraphNodeState.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
+#import "../../../Framework/Framework/Model/f3GraphSchemaMemento.h"
 #import "fgTabuloDirector.h"
 #import "fgTabuloEvent.h"
 #import "fgDialogState.h"
@@ -32,7 +36,7 @@
 
 - (id)init {
     
-    return nil;
+    return nil; // TODO throw f3Exception
 }
 
 - (id)init:(NSUInteger)_level {
@@ -44,7 +48,6 @@
         levelIndex = _level;
         levelGrade = [(fgTabuloDirector *)[f3GameDirector Director] getGradeForLevel:_level];
         hintCommand = nil;
-        hintEnable = false; // (_level < 7);
     }
     
     return self;
@@ -217,7 +220,7 @@
         {
             enum fgTabuloGrade grade = GRADE_gold;
             
-            if (graphStepCount > greaterDistanceToGoal)
+            if (memento != nil)
             {
                 grade = GRADE_bronze;
             }
@@ -266,57 +269,86 @@
 
 - (void)buildHelperLayer:(f3ViewBuilder *)_builder {
 
-    // TODO if greaterDistanceToGoal is greater than minimumDistanceToGoal then backward action before to display hint
-
-    f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
-    if (hintEdge != nil)
-    {
-        f3ViewAdaptee *view = nil;
-
-        if ([hintEdge isKindOfClass:[fgPawnEdge class]])
-        {
-            f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
-    
-            view = [fgTabuloStrategy buildPawn:_builder node:originNode strategy:self opacity:0.6f];
-        }
-        else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
-        {
-            f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
-
-            view = [fgTabuloStrategy buildPlank:_builder edge:edgeWithRotation strategy:self opacity:0.6f];
-        }
-
-        [hintCommand interrupt]; // cancel previous command if not nil
-
-        if (view != nil)
-        {
-            [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
-            [_builder buildComposite:1]; // create helper layer with the view to manipulate
-
-            f3GameAdaptee *producer = [f3GameAdaptee Producer];
-            hintCommand = [[f3ControlSequence alloc] init];
-            [producer appendComponent:hintCommand]; // push command that will manipulate the view
-            
-            [hintEdge buildGraphCommand:producer.Builder view:view slowMotion:2.f];
-
-            f3ControlComponent *action = [producer.Builder popComponent];
-            while (action != nil)
-            {
-                [hintCommand appendComponent:action];
-                
-                action = [producer.Builder popComponent];
-            }
-        }
-    }
-    else
+    if (hintCommand == nil)
     {
         f3ViewScene *scene = [f3GameDirector Director].Scene;
-        
-        [hintCommand interrupt];
-
         [scene removeLayerAtIndex:HelperOverlay];
         
-        hintCommand = nil;
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        hintCommand = [[f3ControlSequence alloc] init];
+
+        if (memento == nil)
+        {
+            f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
+            if (hintEdge != nil)
+            {
+                f3ViewAdaptee *view = nil;
+                
+                if ([hintEdge isKindOfClass:[fgPawnEdge class]])
+                {
+                    f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
+                    
+                    view = [fgTabuloStrategy buildPawn:_builder node:originNode strategy:self opacity:0.6f];
+                }
+                else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
+                {
+                    f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
+                    
+                    view = [fgTabuloStrategy buildPlank:_builder edge:edgeWithRotation strategy:self opacity:0.6f];
+                }
+                
+                if (view != nil)
+                {
+                    [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
+                    [_builder buildComposite:1]; // create helper layer with the view to manipulate
+                    
+                    [hintEdge buildGraphCommand:producer.Builder view:view slowMotion:2.f];
+                    
+                    f3ControlComponent *action = [producer.Builder popComponent];
+                    while (action != nil)
+                    {
+                        [hintCommand appendComponent:action];
+                        action = [producer.Builder popComponent];
+                    }
+                }
+            }
+        }
+        else
+        {
+            while (memento != nil) // rewind action until minimum distance before to display helper
+            {
+                f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema keys:keys];
+                if (previousEdge != nil) // TODO reverse command for the edge from previous to current schema
+                {
+                    graphSchema = memento.Schema;
+
+                    f3Controller *controller = [producer findController:[f3GraphNode nodeForKey:previousEdge.OriginKey]];
+                    if ([controller.State isKindOfClass:[f3MutableGraphNodeState class]])
+                    {
+                        f3MutableGraphNodeState *state = (f3MutableGraphNodeState *)controller.State;
+                        f3GraphNode *node = [f3GraphNode nodeForKey:previousEdge.TargetKey];
+
+                        [controller pushState:[[f3MutableGraphNodeState alloc] initWithNode:node forView:state.View nextState:state.NextState]];
+                        [previousEdge buildGraphCommand:producer.Builder view:state.View slowMotion:1.f];
+                        
+                        f3ControlComponent *action = [producer.Builder popComponent];
+                        while (action != nil)
+                        {
+                            [hintCommand appendComponent:action];
+                            action = [producer.Builder popComponent];
+                        }
+                    }
+
+                    memento = (f3GraphSchemaMemento *)memento.Previous;
+                }
+                else
+                {
+                    break; // TODO throw f3Exception
+                }
+            }
+        }
+        
+        [producer appendComponent:hintCommand];
     }
 }
 

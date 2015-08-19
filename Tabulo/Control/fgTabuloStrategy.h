@@ -25,7 +25,6 @@
     NSUInteger levelIndex;
     enum fgTabuloGrade levelGrade;
     f3ControlSequence *hintCommand;
-    bool hintEnable;
 }
 
 @property (readonly) int Level;

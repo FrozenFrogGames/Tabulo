@@ -13,7 +13,7 @@
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/View/f3AngleDecorator.h"
 #import "../../../Framework/Framework/View/f3ViewSearch.h"
-#import "../../../Framework/Framework/Control/f3DragGraphNodeState.h"
+#import "../../../Framework/Framework/Control/f3MutableGraphNodeState.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3Controller.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
@@ -394,7 +394,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&viewIndex length:sizeof(uint16_t)];
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
 
-    f3DragGraphNodeState *controlState = [[f3DragGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragOverGraphEdgeState class]];
+    f3MutableGraphNodeState *controlState = [[f3MutableGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragOverGraphEdgeState class]];
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
@@ -408,7 +408,7 @@ const NSUInteger LEVEL_COUNT = 36;
     [_data readBytes:&viewIndex length:sizeof(uint16_t)];
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
     
-    f3DragGraphNodeState *controlState = [[f3DragGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragAroundGraphNodeState class]];
+    f3MutableGraphNodeState *controlState = [[f3MutableGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragAroundGraphNodeState class]];
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
