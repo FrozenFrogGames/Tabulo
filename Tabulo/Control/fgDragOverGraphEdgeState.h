@@ -9,8 +9,8 @@
 #import "../../../Framework/Framework/Control/f3DragOverGraphEdgeState.h"
 
 @interface fgDragOverGraphEdgeState : f3DragOverGraphEdgeState {
-
-    bool feedbackDisplayed, feedbackToRemove;
+    
+    NSMutableArray *feedbackEdges;
 }
 
 @end

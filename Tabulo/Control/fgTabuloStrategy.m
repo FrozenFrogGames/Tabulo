@@ -29,8 +29,6 @@
 #import "fgHouseNode.h"
 #import "fgPawnEdge.h"
 #import "fgPlankEdge.h"
-#import "fgPawnFeedbackCommand.h"
-#import "fgPlankFeedbackCommand.h"
 
 @implementation fgTabuloStrategy
 
@@ -180,16 +178,13 @@
     {
         if (_event.Event == CUSTOM_Helper)
         {
-            if (hintCommand == nil)
+            [self buildHelperLayer:director.Builder];
+            
+            id helperLayer = [director.Builder popComponent];
+            
+            if ([helperLayer isKindOfClass:[f3ViewLayer class]])
             {
-                [self buildHelperLayer:director.Builder];
-                
-                id helperLayer = [director.Builder popComponent];
-                
-                if ([helperLayer isKindOfClass:[f3ViewLayer class]])
-                {
-                    [director.Scene appendLayer:(f3ViewLayer *)helperLayer];
-                }
+                [director.Scene appendLayer:(f3ViewLayer *)helperLayer];
             }
         }
         
@@ -267,13 +262,250 @@
     return [super notifyEvent:_event];
 }
 
++ (void)setPawnAttribute:(f3GraphSchemaStrategy *)_strategy key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate {
+    
+    CGPoint textureCoordonate;
+    
+    if ([_strategy getNodeFlag:_key flag:TABULO_PawnOne])
+    {
+        textureCoordonate = CGPointMake(0.f, 0.f);
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnTwo])
+    {
+        textureCoordonate = CGPointMake(0.f, 128.f);
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnThree])
+    {
+        textureCoordonate = CGPointMake(0.f, 256.f);
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnFour])
+    {
+        textureCoordonate = CGPointMake(0.f, 384.f);
+    }
+    else // if ([_strategy getNodeFlag:_key flag:TABULO_PawnFive])
+    {
+        textureCoordonate = CGPointMake(0.f, 512.f); // fail-safe
+    }
+    
+    (*_coordonate) = [f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
+}
+
++ (void)setPlankAttribute:(f3GraphSchemaStrategy *)_strategy key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate vertex:(f3FloatArray **)_vertex {
+    
+    float holeOffset = 0.f;
+    
+    if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_One])
+    {
+        holeOffset = 432.f;
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Two])
+    {
+        holeOffset = 688.f;
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Three])
+    {
+        holeOffset = 944.f;
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Four])
+    {
+        holeOffset = 1200.f;
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Five])
+    {
+        holeOffset = 1456.f;
+    }
+    
+    if ([_strategy getNodeFlag:_key flag:TABULO_HaveSmallPlank])
+    {
+        if (holeOffset == 0.f)
+        {
+            holeOffset = 176.f;
+        }
+        
+        (*_coordonate) = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
+                          FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
+                          FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
+                          FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
+                          FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.444444444f), // 4
+                          FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.444444444f),
+                          FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 6
+                          FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
+                          FLOAT_BOX(0.1640625f), FLOAT_BOX(0.444444444f), // 8
+                          FLOAT_BOX(0.1875f), FLOAT_BOX(0.444444444f),
+                          FLOAT_BOX(0.1640625f), FLOAT_BOX(0.666666667f), // 10
+                          FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f), nil];
+        
+        (*_vertex) = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-1.f), // 2
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
+                      FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(1.f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
+                      FLOAT_BOX(0.5f), FLOAT_BOX(1.f), nil];
+    }
+    else if ([_strategy getNodeFlag:_key flag:TABULO_HaveMediumPlank])
+    {
+        if (holeOffset == 0.f)
+        {
+            holeOffset = 112.f;
+        }
+        
+        (*_coordonate) = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
+                          FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
+                          FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
+                          FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
+                          FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 4
+                          FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
+                          FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.888888889f), // 6
+                          FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.888888889f),
+                          FLOAT_BOX(0.1328125f), FLOAT_BOX(0.666666667f), // 8
+                          FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f),
+                          FLOAT_BOX(0.1328125f), FLOAT_BOX(0.888888889f), // 10
+                          FLOAT_BOX(0.1875f), FLOAT_BOX(0.888888889f), nil];
+        
+        (*_vertex) = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-1.5f), // 2
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
+                      FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
+                      FLOAT_BOX(-0.5f), FLOAT_BOX(1.5f),
+                      FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
+                      FLOAT_BOX(0.5f), FLOAT_BOX(1.5f), nil];
+    }
+    else
+    {
+        (*_coordonate) = nil;
+        (*_vertex) = nil;
+    }
+}
+
+- (void)buildFeedbackLayer:(f3ViewBuilder *)_builder edges:(NSArray *)_edges {
+
+    if (_edges.count > 0)
+    {
+        if (hintCommand != nil)
+        {
+            hintCommand = nil;
+        }
+
+        for (f3GraphEdge *edge in _edges)
+        {
+            if ([edge isKindOfClass:[fgPawnEdge class]])
+            {
+                fgPawnEdge *pawnEdge = (fgPawnEdge *)edge;
+
+                [fgTabuloStrategy buildFeedbackPawn:_builder edge:pawnEdge strategy:self opacity:0.5f];
+
+                // TODO support house feedback
+            }
+            else if ([edge isKindOfClass:[fgPlankEdge class]])
+            {
+                fgPlankEdge *plankEdge = (fgPlankEdge *)edge;
+
+                [fgTabuloStrategy buildFeedbackPlank:_builder edge:plankEdge strategy:self opacity:0.5f];
+            }
+        }
+
+        [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
+        [_builder buildComposite:1]; // create feedback layer
+    }
+}
+
++ (f3ViewAdaptee *)buildFeedbackPawn:(f3ViewBuilder *)_builder edge:(fgPawnEdge *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
+
+    CGPoint position = [f3GraphNode nodeForKey:_edge.TargetKey].Position;
+    
+    f3FloatArray *coordonateHandle;
+
+    [self setPawnAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle];
+
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
+    f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
+    
+    [_builder push:indicesHandle];
+    [_builder push:vertexHandle];
+    [_builder buildAdaptee:DRAW_TRIANGLES];
+    
+    f3ViewAdaptee *adaptee = [_builder top];
+    
+    if (_opacity < 1.f)
+    {
+        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
+        [_builder buildProperty:0];
+    }
+    
+    [_builder push:coordonateHandle];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
+    [_builder buildDecorator:4];
+    
+    [_builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
+    [_builder buildDecorator:2];
+    
+    [_builder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
+    [_builder buildDecorator:1];
+    
+    return adaptee;
+}
+
++ (f3ViewAdaptee *)buildFeedbackPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
+    
+    f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
+                                     USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
+                                     USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
+                                     USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
+                                     USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
+                                     USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
+    
+    f3FloatArray *vertexHandle, *coordonateHandle;
+    
+    [self setPlankAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
+    
+    [_builder push:indicesHandle];
+    [_builder push:vertexHandle];
+    [_builder buildAdaptee:DRAW_TRIANGLES];
+    
+    f3ViewAdaptee *adaptee = (f3ViewAdaptee *)[_builder top];
+    
+    if (_opacity < 1.f)
+    {
+        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
+        [_builder buildProperty:0];
+    }
+    
+    [_builder push:coordonateHandle];
+    [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
+    [_builder buildDecorator:4];
+    
+    CGPoint targetPosition = [f3GraphNode nodeForKey:_edge.TargetKey].Position;
+    CGPoint rotationPosition = [f3GraphNode nodeForKey:_edge.RotationKey].Position;
+
+    float plankAngle = [f3GraphEdge computeAngleBetween:targetPosition and:rotationPosition];
+    
+    [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(plankAngle), nil]];
+    [_builder buildDecorator:3];
+    
+    [_builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
+    [_builder buildDecorator:2];
+    
+    [_builder push:[f3VectorHandle buildHandleForX:targetPosition.x y:targetPosition.y]];
+    [_builder buildDecorator:1];
+    
+    return adaptee;
+}
+
 - (void)buildHelperLayer:(f3ViewBuilder *)_builder {
 
     if (hintCommand == nil)
     {
-        f3ViewScene *scene = [f3GameDirector Director].Scene;
-        [scene removeLayerAtIndex:HelperOverlay];
-        
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
         hintCommand = [[f3ControlSequence alloc] init];
 
@@ -288,13 +520,13 @@
                 {
                     f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
                     
-                    view = [fgTabuloStrategy buildPawn:_builder node:originNode strategy:self opacity:0.6f];
+                    view = [fgTabuloStrategy buildHelperPawn:_builder node:originNode strategy:self opacity:0.8f];
                 }
                 else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
                 {
                     f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
                     
-                    view = [fgTabuloStrategy buildPlank:_builder edge:edgeWithRotation strategy:self opacity:0.6f];
+                    view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation strategy:self opacity:0.8f];
                 }
                 
                 if (view != nil)
@@ -352,39 +584,14 @@
     }
 }
 
-+ (f3ViewAdaptee *)buildPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
-    
-    NSNumber *nodeKey = _node.Key;
-    CGPoint textureCoordonate;
-    
-    if ([_strategy getNodeFlag:nodeKey flag:TABULO_PawnOne])
-    {
-        textureCoordonate = CGPointMake(0.f, 0.f);
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_PawnTwo])
-    {
-        textureCoordonate = CGPointMake(0.f, 128.f);
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_PawnThree])
-    {
-        textureCoordonate = CGPointMake(0.f, 256.f);
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_PawnFour])
-    {
-        textureCoordonate = CGPointMake(0.f, 384.f);
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_PawnFive])
-    {
-        textureCoordonate = CGPointMake(0.f, 512.f);
-    }
-    else
-    {
-        return nil; // TODO throw f3Exception
-    }
++ (f3ViewAdaptee *)buildHelperPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
+    f3FloatArray *coordonateHandle;
+    [self setPawnAttribute:_strategy key:_node.Key coordonate:&coordonateHandle];
+
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
@@ -397,7 +604,7 @@
         [_builder buildProperty:0];
     }
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:coordonateHandle];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
     [_builder buildDecorator:4];
     
@@ -410,112 +617,18 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
 
-    NSNumber *nodeKey = _edge.OriginKey;
-
-    float holeOffset = 0.f;
-
-    if ([_strategy getNodeFlag:nodeKey flag:TABULO_OneHole_One])
-    {
-        holeOffset = 432.f;
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_OneHole_Two])
-    {
-        holeOffset = 688.f;
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_OneHole_Three])
-    {
-        holeOffset = 944.f;
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_OneHole_Four])
-    {
-        holeOffset = 1200.f;
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_OneHole_Five])
-    {
-        holeOffset = 1456.f;
-    }
-
-    f3FloatArray *vertexHandle, *coordonateHandle;
-
-    if ([_strategy getNodeFlag:nodeKey flag:TABULO_HaveSmallPlank])
-    {
-        if (holeOffset == 0.f)
-        {
-            holeOffset = 176.f;
-        }
-
-        coordonateHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.0625f), FLOAT_BOX(0.444444444f), // 0
-                            FLOAT_BOX(0.0859375f), FLOAT_BOX(0.444444444f),
-                            FLOAT_BOX(0.0625f), FLOAT_BOX(0.666666667f), // 2
-                            FLOAT_BOX(0.0859375f), FLOAT_BOX(0.666666667f),
-                            FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.444444444f), // 4
-                            FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.444444444f),
-                            FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 6
-                            FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
-                            FLOAT_BOX(0.1640625f), FLOAT_BOX(0.444444444f), // 8
-                            FLOAT_BOX(0.1875f), FLOAT_BOX(0.444444444f),
-                            FLOAT_BOX(0.1640625f), FLOAT_BOX(0.666666667f), // 10
-                            FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f), nil];
-
-        vertexHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.f), // 0
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-1.f), // 2
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
-                        FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(1.f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
-                        FLOAT_BOX(0.5f), FLOAT_BOX(1.f), nil];
-    }
-    else if ([_strategy getNodeFlag:nodeKey flag:TABULO_HaveMediumPlank])
-    {
-        if (holeOffset == 0.f)
-        {
-            holeOffset = 112.f;
-        }
-
-        coordonateHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(0.f), FLOAT_BOX(0.666666667f), // 0
-                            FLOAT_BOX(0.0546875f), FLOAT_BOX(0.666666667f),
-                            FLOAT_BOX(0.f), FLOAT_BOX(0.888888889f), // 2
-                            FLOAT_BOX(0.0546875f), FLOAT_BOX(0.888888889f),
-                            FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.666666667f), // 4
-                            FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.666666667f),
-                            FLOAT_BOX(holeOffset / 2048.f), FLOAT_BOX(0.888888889f), // 6
-                            FLOAT_BOX((holeOffset +160.f) / 2048.f), FLOAT_BOX(0.888888889f),
-                            FLOAT_BOX(0.1328125f), FLOAT_BOX(0.666666667f), // 8
-                            FLOAT_BOX(0.1875f), FLOAT_BOX(0.666666667f),
-                            FLOAT_BOX(0.1328125f), FLOAT_BOX(0.888888889f), // 10
-                            FLOAT_BOX(0.1875f), FLOAT_BOX(0.888888889f), nil];
-        
-        vertexHandle = [f3FloatArray buildHandleForFloat32:24, FLOAT_BOX(-0.5f), FLOAT_BOX(-1.5f), // 0
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-1.5f), // 2
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f),
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(-0.625f), // 4
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(-0.625f), // 6
-                        FLOAT_BOX(0.5f), FLOAT_BOX(0.625f),
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(0.625f), // 8
-                        FLOAT_BOX(-0.5f), FLOAT_BOX(1.5f),
-                        FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
-                        FLOAT_BOX(0.5f), FLOAT_BOX(1.5f), nil];
-    }
-    else
-    {
-        return nil; // TODO throw f3Exception
-    }
-    
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
                                      USHORT_BOX(4), USHORT_BOX(5), USHORT_BOX(6),
                                      USHORT_BOX(6), USHORT_BOX(5), USHORT_BOX(7),
                                      USHORT_BOX(8), USHORT_BOX(9), USHORT_BOX(10),
                                      USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
+    
+    f3FloatArray *vertexHandle, *coordonateHandle;
+    
+    [self setPlankAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
 
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
@@ -533,7 +646,7 @@
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetLevel]];
     [_builder buildDecorator:4];
 
-    f3GraphNode *originNode = [f3GraphNode nodeForKey:nodeKey];
+    f3GraphNode *originNode = [f3GraphNode nodeForKey:_edge.OriginKey];
     f3GraphNode *rotationNode = [f3GraphNode nodeForKey:_edge.RotationKey];
     
     float plankAngle = [f3GraphEdge computeAngleBetween:originNode.Position and:rotationNode.Position];    

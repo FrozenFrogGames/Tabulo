@@ -12,97 +12,77 @@
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
+#import "fgTabuloStrategy.h"
 #import "fgHouseNode.h"
 #import "../View/fgTabuloDirector.h"
-#import "fgPawnFeedbackCommand.h"
-#import "fgPlankFeedbackCommand.h"
-#import "fgRemoveFeedbackCommand.h"
 
 @implementation fgDragOverGraphEdgeState
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
 
-    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
-    
     [super begin:_previousState owner:_owner];
-    
-//  f3ControlComponent *feedbackCommand = [[fgPawnFeedbackCommand alloc] initWithView:view Node:node];
-//  [builder push:feedbackCommand];
 
-    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]];
-    [builder push:scaleCommand];
+    feedbackEdges = [NSMutableArray array];
     
-    f3ControlComponent *command = [builder popComponent];
-    
-    while (command != nil)
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+    if ([producer.State isKindOfClass:[f3GameState class]])
     {
-        [_owner appendComponent:command];
-        
-        if ([command isKindOfClass:[f3AppendFeedbackCommand class]])
+        f3GameState *gameState = (f3GameState *)producer.State;
+        if ([gameState.Strategy isKindOfClass:[fgTabuloStrategy class]])
         {
-            feedbackDisplayed = true;
-        }
+            fgTabuloStrategy *gameStrategy = (fgTabuloStrategy *)gameState.Strategy;
 
-        command = [builder popComponent];
+            for (f3GraphEdge *edge in edges)
+            {
+                if ([gameStrategy evaluateEdge:edge])
+                {
+                    [feedbackEdges addObject:edge];
+                }
+            }
+
+            if ([feedbackEdges count] > 0)
+            {
+                f3GameDirector *director = [f3GameDirector Director];
+                f3ViewBuilder *viewBuilder = director.Builder;
+                [gameStrategy buildFeedbackLayer:viewBuilder edges:feedbackEdges];
+
+                id feedbackLayer = [viewBuilder popComponent];
+                if ([feedbackLayer isKindOfClass:[f3ViewLayer class]])
+                {
+                    [director.Scene appendLayer:(f3ViewLayer *)feedbackLayer];
+                }
+            }
+        }
     }
+
+    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]]];
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
-    
-    if (feedbackToRemove)
-    {
-        [self clearFeedback:_owner];
 
-        feedbackToRemove = false;
-    }
-    
     [super update:_elapsed owner:_owner];
+    
+    if ([feedbackEdges count] > 0 && [pendingActions count] > 0)
+    {
+        f3GameDirector *director = [f3GameDirector Director];
+        [director.Scene removeLayerAtIndex:HelperOverlay];
+        [feedbackEdges removeAllObjects];
+    }
 }
 
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
-    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
-
     [super end:_nextState owner:_owner];
 
-    f3ControlComponent *scaleCommand = [[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
-        
-    [builder push:scaleCommand];
+    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]]];
 
-    f3ControlComponent *command = [builder popComponent];
+    if ([feedbackEdges count] > 0)
+    {
+        f3GameDirector *director = [f3GameDirector Director];
+        [director.Scene removeLayerAtIndex:HelperOverlay];
+    }
     
-    while (command != nil)
-    {
-        [_owner appendComponent:command];
-        
-        command = [builder popComponent];
-    }
-
-    [self clearFeedback:_owner];
-}
-
-- (void)clearFeedback:(f3Controller *)_owner {
-
-    if (feedbackDisplayed)
-    {
-        f3ControlComponent *feedbackCommand = [[fgRemoveFeedbackCommand alloc] initWithView:view];
-        
-        for (f3GraphEdgeWithInputNode *edge in edges)
-        {
-            f3GraphNode *houseNode = [f3GraphNode nodeForKey:edge.TargetKey];
-            if ([houseNode isKindOfClass:[fgHouseNode class]])
-            {
-                if (currentEdge == nil || currentEdge.TargetKey != edge.TargetKey)
-                {
-                    [(fgRemoveFeedbackCommand *)feedbackCommand appendHouseNode:(fgHouseNode *)houseNode];
-                }
-            }
-        }
-        
-        [_owner appendComponent:feedbackCommand];
-
-        feedbackDisplayed = false;
-    }
+    feedbackEdges = nil;
 }
 
 - (void)attachListener {
@@ -175,7 +155,6 @@
                                 {
                                     if ([gameStrategy evaluateEdge:edge])
                                     {
-                                        feedbackToRemove = feedbackDisplayed;
                                         currentEdge = edge;
 //                                      NSLog(@"State: %@, target: %@", self, edge.Target);
                                         break;

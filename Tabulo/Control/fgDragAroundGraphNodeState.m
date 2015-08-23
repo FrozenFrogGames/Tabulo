@@ -8,7 +8,7 @@
 
 #import "fgDragAroundGraphNodeState.h"
 #import "../View/fgTabuloDirector.h"
-#import "fgPlankFeedbackCommand.h"
+#import "fgTabuloStrategy.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
@@ -67,26 +67,53 @@
 
 - (void)begin:(f3ControllerState *)_previousState owner:(f3Controller *)_owner {
     
-    f3ControlBuilder *builder = [f3GameAdaptee Producer].Builder;
-    
     [super begin:_previousState owner:_owner];
+
+    feedbackEdges = [NSMutableArray array];
     
-//  f3ControlComponent *feedbackCommand = [[fgPlankFeedbackCommand alloc] initWithView:view Node:node];
-//  [builder push:feedbackCommand];
-    
-    f3ControlComponent *command = [builder popComponent];
-    
-    while (command != nil)
+    f3GameAdaptee *producer = [f3GameAdaptee Producer];
+    if ([producer.State isKindOfClass:[f3GameState class]])
     {
-        [_owner appendComponent:command];
-/*
-        if ([command isKindOfClass:[f3AppendFeedbackCommand class]])
+        f3GameState *gameState = (f3GameState *)producer.State;
+        if ([gameState.Strategy isKindOfClass:[fgTabuloStrategy class]])
         {
-            feedbackDisplayed = true;
+            fgTabuloStrategy *gameStrategy = (fgTabuloStrategy *)gameState.Strategy;
+            
+            for (f3GraphEdge *edge in edges)
+            {
+                if ([gameStrategy evaluateEdge:edge])
+                {
+                    [feedbackEdges addObject:edge];
+                }
+            }
+            
+            if ([feedbackEdges count] > 0)
+            {
+                f3GameDirector *director = [f3GameDirector Director];
+                f3ViewBuilder *viewBuilder = director.Builder;
+                [gameStrategy buildFeedbackLayer:viewBuilder edges:feedbackEdges];
+                
+                id feedbackLayer = [viewBuilder popComponent];
+                if ([feedbackLayer isKindOfClass:[f3ViewLayer class]])
+                {
+                    [director.Scene appendLayer:(f3ViewLayer *)feedbackLayer];
+                }
+            }
         }
- */        
-        command = [builder popComponent];
     }
+}
+
+- (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
+    
+    [super end:_nextState owner:_owner];
+    
+    if ([feedbackEdges count] > 0)
+    {
+        f3GameDirector *director = [f3GameDirector Director];
+        [director.Scene removeLayerAtIndex:HelperOverlay];
+    }
+    
+    feedbackEdges = nil;
 }
 
 - (bool)acceptTargetNode:(f3GraphNode *)_node {

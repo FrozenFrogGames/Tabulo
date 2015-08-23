@@ -8,6 +8,9 @@
 
 #import "../../../Framework/Framework/Control/f3DragAroundGraphNodeState.h"
 
-@interface fgDragAroundGraphNodeState : f3DragAroundGraphNodeState
+@interface fgDragAroundGraphNodeState : f3DragAroundGraphNodeState {
+    
+    NSMutableArray *feedbackEdges;
+}
 
 @end
