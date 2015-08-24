@@ -29,7 +29,6 @@
 
         targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
         rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
-        rotationRadius = 0.f;
 
         if (rotationAngle > 180.f)
         {
@@ -39,6 +38,8 @@
         {
             rotationAngle += 360.f;
         }
+
+        rotationRadius = 1.75f;
     }
 
     return self;

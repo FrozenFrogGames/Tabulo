@@ -36,6 +36,13 @@
             {
                 if ([gameStrategy evaluateEdge:edge])
                 {
+                    f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+
+                    if ([targetNode isKindOfClass:[fgHouseNode class]])
+                    {
+                        [(fgHouseNode *)targetNode buildHouseFeedback:gameStrategy edge:(fgPawnEdge *)edge];
+                    }
+
                     [feedbackEdges addObject:edge];
                 }
             }
@@ -66,7 +73,31 @@
     {
         f3GameDirector *director = [f3GameDirector Director];
         [director.Scene removeLayerAtIndex:HelperOverlay];
-        [feedbackEdges removeAllObjects];
+
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        if ([producer.State isKindOfClass:[f3GameState class]])
+        {
+            f3GameState *gameState = (f3GameState *)producer.State;
+
+            for (f3GraphEdge *edge in feedbackEdges)
+            {
+                f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+                if ([targetNode isKindOfClass:[fgHouseNode class]])
+                {
+                    if (edge != currentEdge) // clear feedback except for the edge in action
+                    {
+                        [(fgHouseNode *)targetNode clearHouseFeedback:(f3GraphSchemaStrategy *)gameState.Strategy];
+                    }
+                }
+            }
+
+            if ([node isKindOfClass:[fgHouseNode class]])
+            {
+                [(fgHouseNode *)node clearHouseFeedback:nil]; // force feedback to false on the current node
+            }
+            
+            [feedbackEdges removeAllObjects];
+        }
     }
 }
 
@@ -76,10 +107,27 @@
 
     [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]]];
 
+    f3GameDirector *director = [f3GameDirector Director];
+    [director.Scene removeLayerAtIndex:HelperOverlay];
+    
     if ([feedbackEdges count] > 0)
     {
-        f3GameDirector *director = [f3GameDirector Director];
-        [director.Scene removeLayerAtIndex:HelperOverlay];
+        f3GameAdaptee *producer = [f3GameAdaptee Producer];
+        if ([producer.State isKindOfClass:[f3GameState class]])
+        {
+            f3GameState *gameState = (f3GameState *)producer.State;
+            
+            for (f3GraphEdge *edge in feedbackEdges)
+            {
+                f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+                if ([targetNode isKindOfClass:[fgHouseNode class]])
+                {
+                    [(fgHouseNode *)targetNode clearHouseFeedback:(f3GraphSchemaStrategy *)gameState.Strategy];
+                }
+            }
+            
+            [feedbackEdges removeAllObjects];
+        }
     }
     
     feedbackEdges = nil;

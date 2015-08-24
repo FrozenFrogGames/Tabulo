@@ -22,7 +22,7 @@
     CGPoint originPoint = [f3GraphNode nodeForKey:originKey].Position;
     f3VectorHandle *translation = [f3VectorHandle buildHandleForWidth:targetPoint.X - originPoint.x height:targetPoint.Y - originPoint.y];
     
-    float speed = [self distanceBetween:originPoint to:targetNode.Position] /40.f *_slowmo;
+    float speed = [self distanceBetween:originPoint to:targetNode.Position] /50.f *_slowmo;
 
     f3ControlSequence *command = [[f3ControlSequence alloc] init];
     [command appendComponent:[[f3TranslationCommand alloc] initWithView:_view translation:translation speed:speed]];

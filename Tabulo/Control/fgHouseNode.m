@@ -7,6 +7,8 @@
 //
 
 #import "fgHouseNode.h"
+#import "fgPawnEdge.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
 #import "../../../Framework/Framework/View/f3ViewSearch.h"
@@ -45,15 +47,24 @@
     houseType = _type;
 }
 
-- (void)buildHouseFeedback:(enum f3TabuloPawnType)_type {
+- (void)buildHouseFeedback:(f3GraphSchemaStrategy *)_strategy edge:(fgPawnEdge *)_edge {
 
-    if (_type == houseType)
+    bool isPawnMatches = [_strategy getNodeFlag:_edge.OriginKey flag:houseType];
+    
+    [self replaceHouseTexture:isPawnMatches];
+}
+
+- (void)clearHouseFeedback:(f3GraphSchemaStrategy *)_strategy {
+    
+    if (_strategy == nil)
     {
-        [self replaceHouseTexture:true];
+        [self replaceHouseTexture:false];
     }
     else
     {
-        [self replaceHouseTexture:false];
+        bool isPawnMatches = [_strategy getNodeFlag:nodeKey flag:houseType];
+
+        [self replaceHouseTexture:isPawnMatches];
     }
 }
 

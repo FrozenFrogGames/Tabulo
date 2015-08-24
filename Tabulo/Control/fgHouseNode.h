@@ -10,6 +10,9 @@
 #import "../../../Framework/Framework/view/f3ViewAdaptee.h"
 #import "../View/fgTabuloDirector.h"
 
+@class f3GraphSchemaStrategy;
+@class fgPawnEdge;
+
 @interface fgHouseNode : f3GraphNode {
 
     f3ViewAdaptee *houseView;
@@ -17,6 +20,8 @@
 }
 
 - (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type;
-- (void)buildHouseFeedback:(enum f3TabuloPawnType)_type;
+
+- (void)buildHouseFeedback:(f3GraphSchemaStrategy *)_strategy edge:(fgPawnEdge *)_edge;
+- (void)clearHouseFeedback:(f3GraphSchemaStrategy *)_strategy;
 
 @end

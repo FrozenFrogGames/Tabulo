@@ -67,10 +67,13 @@
         {
             case 3: Grade = GRADE_none;
                 break;
+
             case 2: Grade = GRADE_bronze;
                 break;
+
             case 1: Grade = GRADE_silver;
                 break;
+
             case 0: Grade = GRADE_gold;
                 break;
         }
