@@ -507,75 +507,81 @@
     if (hintCommand == nil)
     {
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
-        hintCommand = [[f3ControlSequence alloc] init];
 
-        if (memento == nil)
+        hintCommand = [[f3ControlSequence alloc] init];
+        
+        bool bDelayViewVisibility = false;
+
+        while (memento != nil && memento.Schema.DistanceToGoal < graphSchema.DistanceToGoal)
         {
-            f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
-            if (hintEdge != nil)
+            f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema keys:keys];
+
+            if (previousEdge != nil)
             {
-                f3ViewAdaptee *view = nil;
+                graphSchema = memento.Schema;
                 
-                if ([hintEdge isKindOfClass:[fgPawnEdge class]])
+                f3Controller *controller = [producer findController:[f3GraphNode nodeForKey:previousEdge.OriginKey]];
+                if ([controller.State isKindOfClass:[f3MutableGraphNodeState class]])
                 {
-                    f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
+                    f3MutableGraphNodeState *state = (f3MutableGraphNodeState *)controller.State;
+                    f3GraphNode *node = [f3GraphNode nodeForKey:previousEdge.TargetKey];
                     
-                    view = [fgTabuloStrategy buildHelperPawn:_builder node:originNode strategy:self opacity:0.8f];
-                }
-                else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
-                {
-                    f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
-                    
-                    view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation strategy:self opacity:0.8f];
-                }
-                
-                if (view != nil)
-                {
-                    [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
-                    [_builder buildComposite:1]; // create helper layer with the view to manipulate
-                    
-                    [hintEdge buildGraphCommand:producer.Builder view:view slowMotion:2.f];
+                    [controller pushState:[[f3MutableGraphNodeState alloc] initWithNode:node forView:state.View nextState:state.NextState]];
+                    [previousEdge buildGraphCommand:producer.Builder view:state.View slowMotion:1.f];
                     
                     f3ControlComponent *action = [producer.Builder popComponent];
                     while (action != nil)
                     {
+                        // TODO reverse command for the edge from previous to current schema
+
                         [hintCommand appendComponent:action];
                         action = [producer.Builder popComponent];
                     }
+                    
+                    bDelayViewVisibility = true;
                 }
+                
+                memento = (f3GraphSchemaMemento *)memento.Previous;
+            }
+            else
+            {
+                break; // fail-safe with f3Exception
             }
         }
-        else
+
+        f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
+        if (hintEdge != nil)
         {
-            while (memento != nil) // rewind action until minimum distance before to display helper
+            f3ViewAdaptee *view = nil;
+            
+            if ([hintEdge isKindOfClass:[fgPawnEdge class]])
             {
-                f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema keys:keys];
-                if (previousEdge != nil) // TODO reverse command for the edge from previous to current schema
+                f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
+                
+                view = [fgTabuloStrategy buildHelperPawn:_builder node:originNode strategy:self opacity:0.8f];
+            }
+            else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
+            {
+                f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
+                
+                view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation strategy:self opacity:0.8f];
+            }
+            
+            if (view != nil)
+            {
+                view.IsHidden = bDelayViewVisibility; // delay visibility when rewind is required
+                
+                [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
+                [_builder buildComposite:1]; // create helper layer with the view to manipulate
+                
+                [hintEdge buildGraphCommand:producer.Builder view:view slowMotion:2.f];
+                
+                f3ControlComponent *action = [producer.Builder popComponent];
+                while (action != nil)
                 {
-                    graphSchema = memento.Schema;
+                    [hintCommand appendComponent:action];
 
-                    f3Controller *controller = [producer findController:[f3GraphNode nodeForKey:previousEdge.OriginKey]];
-                    if ([controller.State isKindOfClass:[f3MutableGraphNodeState class]])
-                    {
-                        f3MutableGraphNodeState *state = (f3MutableGraphNodeState *)controller.State;
-                        f3GraphNode *node = [f3GraphNode nodeForKey:previousEdge.TargetKey];
-
-                        [controller pushState:[[f3MutableGraphNodeState alloc] initWithNode:node forView:state.View nextState:state.NextState]];
-                        [previousEdge buildGraphCommand:producer.Builder view:state.View slowMotion:1.f];
-                        
-                        f3ControlComponent *action = [producer.Builder popComponent];
-                        while (action != nil)
-                        {
-                            [hintCommand appendComponent:action];
-                            action = [producer.Builder popComponent];
-                        }
-                    }
-
-                    memento = (f3GraphSchemaMemento *)memento.Previous;
-                }
-                else
-                {
-                    break; // TODO throw f3Exception
+                    action = [producer.Builder popComponent];
                 }
             }
         }
