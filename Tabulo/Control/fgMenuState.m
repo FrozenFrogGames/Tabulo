@@ -7,18 +7,17 @@
 //
 
 #import "fgMenuState.h"
+#import "fgTabuloEvent.h"
+#import "fgDialogState.h"
+#import "fgHouseNode.h"
+#import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameStrategy.h"
 #import "../../../Framework/Framework/Control/f3TranslationCommand.h"
 #import "../../../Framework/Framework/Control/f3SetOffsetCommand.h"
 #import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3ZoomCommand.h"
-#import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
-#import "../View/fgTabuloDirector.h"
-#import "fgTabuloEvent.h"
-#import "fgDialogState.h"
-#import "fgHouseNode.h"
 
 @implementation fgMenuState
 
@@ -138,7 +137,7 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(0.f, 0.f) withExtend:CGSizeMake(2048.f, 320.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(0.f, 0.f) withExtend:CGSizeMake(2048.f, 320.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -199,7 +198,7 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(320.f, 320.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(320.f, 320.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -232,7 +231,7 @@
     
     CGPoint coordonatePoint = CGPointMake((_digit *128.f) +768.f, 322.f);
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 252.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 252.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     

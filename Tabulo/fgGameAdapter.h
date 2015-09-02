@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
-#import "View/fgTabuloDirector.h"
+#import "fgTabuloDirector.h"
 #import "../../Framework/Framework/Control/f3GameAdaptee.h"
 
 @interface fgGameAdapter : GLKViewController {

@@ -7,7 +7,7 @@
 //
 
 #import "fgPlankEdge.h"
-#import "../View/fgTabuloDirector.h"
+#import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3ControlSequence.h"
@@ -74,7 +74,7 @@
     f3GraphNode *targetNode = [f3GraphNode nodeForKey:targetKey];
     f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(targetAngle), nil];
 
-    float speed = [self distanceBetween:[f3GraphNode nodeForKey:originKey].Position to:targetNode.Position] /2.f *_slowmo;
+    float speed = [f3GraphEdge distanceBetween:[f3GraphNode nodeForKey:originKey].Position to:targetNode.Position] /2.f *_slowmo;
 
     f3ControlSequence *command = [[f3ControlSequence alloc] init];
     f3TransformCommand *transform = [[f3TransformCommand alloc] initWithView:_view Point:[rotationNode getPositionHandle]

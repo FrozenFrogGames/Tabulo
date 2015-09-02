@@ -13,7 +13,7 @@
 #import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/IDataAdapter.h"
-#import "../View/fgTabuloDirector.h"
+#import "fgTabuloDirector.h"
 #import "fgTabuloEvent.h"
 
 @class fgHouseNode;

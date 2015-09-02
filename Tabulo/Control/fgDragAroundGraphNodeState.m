@@ -7,8 +7,8 @@
 //
 
 #import "fgDragAroundGraphNodeState.h"
-#import "../View/fgTabuloDirector.h"
 #import "fgTabuloStrategy.h"
+#import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"

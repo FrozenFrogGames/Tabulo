@@ -124,7 +124,7 @@
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
-    f3FloatArray *coordonateHandle = [f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:CGPointMake(1664.f, 512.f)
+    f3FloatArray *coordonateHandle = [f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:CGPointMake(1664.f, 512.f)
                                                          withExtend:CGSizeMake(384.f, 384.f)];
     
     CGSize scale = CGSizeMake(3.f, 3.f);
@@ -304,7 +304,7 @@
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f),
                                   FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
-    f3FloatArray *coordonateHandle = [f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
+    f3FloatArray *coordonateHandle = [f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
     
     CGSize scale = CGSizeMake(1.f, 1.f);
     CGPoint position = _node.Position;

@@ -7,15 +7,15 @@
 //
 
 #import "fgDialogState.h"
+#import "fgTabuloStrategy.h"
+#import "fgMenuState.h"
+#import "../fgTabuloDirector.h"
+#import "../fgDataAdapter.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
 #import "../../../Framework/Framework/View/f3ViewScene.h"
-#import "fgTabuloStrategy.h"
-#import "fgMenuState.h"
-#import "../View/fgTabuloDirector.h"
-#import "../fgDataAdapter.h"
 #import "../Editor/fgTabuloHeader.h"
 
 @implementation fgDialogState
@@ -204,7 +204,7 @@ enum TabuloDialogItem {
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:buttonSize]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:buttonSize]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -243,7 +243,7 @@ enum TabuloDialogItem {
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(768.f, 576.f) withExtend:CGSizeMake(768.f, 256.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(768.f, 576.f) withExtend:CGSizeMake(768.f, 256.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -266,7 +266,7 @@ enum TabuloDialogItem {
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 256.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 256.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     [_builder push:[f3VectorHandle buildHandleForWidth:(0.75f *dialogScale) height:(1.5f *dialogScale)]];
@@ -331,7 +331,7 @@ enum TabuloDialogItem {
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:coordonatePoint withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -353,7 +353,7 @@ enum TabuloDialogItem {
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(0.f, 320.f) withExtend:CGSizeMake(768.f, 896.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:CGPointMake(0.f, 320.f) withExtend:CGSizeMake(768.f, 896.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     

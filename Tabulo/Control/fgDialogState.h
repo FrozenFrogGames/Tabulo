@@ -9,7 +9,7 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../Control/fgTabuloEvent.h"
-#import "../View/fgTabuloDirector.h"
+#import "../fgTabuloDirector.h"
 
 @interface fgDialogState : f3GameState {
     

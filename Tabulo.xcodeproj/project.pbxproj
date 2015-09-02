@@ -50,11 +50,11 @@
 		F61CD7BB19687DCC006F3C04 /* fgLevel021.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BA19687DCC006F3C04 /* fgLevel021.m */; };
 		F61CD7BE19688C16006F3C04 /* fgLevel020.m in Sources */ = {isa = PBXBuildFile; fileRef = F61CD7BD19688C16006F3C04 /* fgLevel020.m */; };
 		F6494ED91969DBB700339F70 /* fgLevel022.m in Sources */ = {isa = PBXBuildFile; fileRef = F6494ED81969DBB700339F70 /* fgLevel022.m */; };
+		F66D88381B92663C007A656A /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F66D88361B92663C007A656A /* fgTabuloDirector.m */; };
 		F69231BB19C61F650046B322 /* fgDragAroundGraphNodeState.m in Sources */ = {isa = PBXBuildFile; fileRef = F69231BA19C61F650046B322 /* fgDragAroundGraphNodeState.m */; };
 		F6959B5C19E707340069D07B /* fgLevel032.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5B19E707340069D07B /* fgLevel032.m */; };
 		F6959B5F19E720560069D07B /* fgLevel033.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B5E19E720560069D07B /* fgLevel033.m */; };
 		F6959B6219E74C130069D07B /* fgLevel034.m in Sources */ = {isa = PBXBuildFile; fileRef = F6959B6119E74C130069D07B /* fgLevel034.m */; };
-		F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */; };
 		F6AA4C6C19283C3E00E93CAF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F6AA4C6B19283C3E00E93CAF /* Images.xcassets */; };
 		F6BDB2AE18C16E0700430653 /* spritesheet-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6BDB2AD18C16E0700430653 /* spritesheet-gameplay.png */; };
 		F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */; };
@@ -158,6 +158,8 @@
 		F61CD7BD19688C16006F3C04 /* fgLevel020.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel020.m; path = Editor/fgLevel020.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6494ED71969DBB700339F70 /* fgLevel022.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel022.h; path = Editor/fgLevel022.h; sourceTree = "<group>"; };
 		F6494ED81969DBB700339F70 /* fgLevel022.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel022.m; path = Editor/fgLevel022.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		F66D88361B92663C007A656A /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fgTabuloDirector.m; sourceTree = "<group>"; };
+		F66D88371B92663C007A656A /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fgTabuloDirector.h; sourceTree = "<group>"; };
 		F69231B919C61F650046B322 /* fgDragAroundGraphNodeState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragAroundGraphNodeState.h; path = Control/fgDragAroundGraphNodeState.h; sourceTree = "<group>"; };
 		F69231BA19C61F650046B322 /* fgDragAroundGraphNodeState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragAroundGraphNodeState.m; path = Control/fgDragAroundGraphNodeState.m; sourceTree = "<group>"; };
 		F6959B5A19E707340069D07B /* fgLevel032.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel032.h; path = Editor/fgLevel032.h; sourceTree = "<group>"; };
@@ -166,8 +168,6 @@
 		F6959B5E19E720560069D07B /* fgLevel033.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel033.m; path = Editor/fgLevel033.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		F6959B6019E74C130069D07B /* fgLevel034.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgLevel034.h; path = Editor/fgLevel034.h; sourceTree = "<group>"; };
 		F6959B6119E74C130069D07B /* fgLevel034.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = fgLevel034.m; path = Editor/fgLevel034.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloDirector.h; path = View/fgTabuloDirector.h; sourceTree = "<group>"; };
-		F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloDirector.m; path = View/fgTabuloDirector.m; sourceTree = "<group>"; };
 		F6AA4C6B19283C3E00E93CAF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Tabulo/Images.xcassets; sourceTree = "<group>"; };
 		F6BDB2AD18C16E0700430653 /* spritesheet-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-gameplay.png"; sourceTree = "<group>"; };
 		F6BDB2B718C2DAD600430653 /* fgPawnEdge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPawnEdge.h; path = Control/fgPawnEdge.h; sourceTree = "<group>"; };
@@ -265,7 +265,6 @@
 			children = (
 				F682185E189736720041DA80 /* Adapter */,
 				F6A6CA80188096F8006AAE57 /* Control */,
-				F6A6CA60187DF175006AAE57 /* View */,
 				F60250D4187DDDC80029915C /* Supporting Files */,
 			);
 			path = Tabulo;
@@ -421,17 +420,10 @@
 				F6025101187DDEFB0029915C /* fgViewAdapter.m */,
 				F6025102187DDEFB0029915C /* fgViewCanvas.h */,
 				F6025103187DDEFB0029915C /* fgViewCanvas.m */,
+				F66D88371B92663C007A656A /* fgTabuloDirector.h */,
+				F66D88361B92663C007A656A /* fgTabuloDirector.m */,
 			);
 			name = Adapter;
-			sourceTree = "<group>";
-		};
-		F6A6CA60187DF175006AAE57 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				F6A6CA61187DF1AC006AAE57 /* fgTabuloDirector.h */,
-				F6A6CA62187DF1AC006AAE57 /* fgTabuloDirector.m */,
-			);
-			name = View;
 			sourceTree = "<group>";
 		};
 		F6A6CA80188096F8006AAE57 /* Control */ = {
@@ -551,6 +543,7 @@
 				F6C4D52919D87C1D00FB309E /* fgLevel031.m in Sources */,
 				F6DF023018BED35A00E7DF6C /* fgHouseNode.m in Sources */,
 				F6BDB2B918C2DAD600430653 /* fgPawnEdge.m in Sources */,
+				F66D88381B92663C007A656A /* fgTabuloDirector.m in Sources */,
 				F6EC62EB196F4E5B00B661B3 /* fgLevel023.m in Sources */,
 				F6C4D51119C91DD900FB309E /* fgLevel025.m in Sources */,
 				F61CD7851958D6EC006F3C04 /* fgLevel003.m in Sources */,
@@ -579,7 +572,6 @@
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6959B5F19E720560069D07B /* fgLevel033.m in Sources */,
-				F6A6CA63187DF1AC006AAE57 /* fgTabuloDirector.m in Sources */,
 				F61CD7BB19687DCC006F3C04 /* fgLevel021.m in Sources */,
 				F61CD78B195CA4D0006F3C04 /* fgLevel002.m in Sources */,
 				F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */,

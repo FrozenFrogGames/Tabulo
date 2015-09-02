@@ -20,7 +20,6 @@
 #import "../../../Framework/Framework/Control/f3MutableGraphNodeState.h"
 #import "../../../Framework/Framework/Control/f3DragOverGraphEdgeState.h"
 #import "../../../Framework/Framework/Control/f3DragAroundGraphNodeState.h"
-#import "../../../Framework/Framework/View/f3ViewScene.h"
 #import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 #import "../../../Framework/Framework/Model/f3GraphSchemaMemento.h"
 #import "fgTabuloDirector.h"
@@ -74,7 +73,7 @@
     [_builder push:vertexHandle];
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
-    [_builder push:[f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:_sprite withExtend:CGSizeMake(128.f, 128.f)]];
+    [_builder push:[f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1472.f) atPoint:_sprite withExtend:CGSizeMake(128.f, 128.f)]];
     [_builder push:[(fgTabuloDirector *)[f3GameDirector Director] getResourceIndex:RESOURCE_SpritesheetMenu]];
     [_builder buildDecorator:4];
     
@@ -287,7 +286,7 @@
         textureCoordonate = CGPointMake(0.f, 512.f); // fail-safe
     }
     
-    (*_coordonate) = [f3ViewScene computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
+    (*_coordonate) = [f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
 }
 
 + (void)setPlankAttribute:(f3GraphSchemaStrategy *)_strategy key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate vertex:(f3FloatArray **)_vertex {

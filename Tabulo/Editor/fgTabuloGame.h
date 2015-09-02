@@ -8,7 +8,7 @@
 
 #import "../fgDataAdapter.h"
 #import "../Control/fgTabuloStrategy.h"
-#import "../View/fgTabuloDirector.h"
+#import "../fgTabuloDirector.h"
 #import "../Editor/fgTabuloSceneBuilder.h"
 
 // TODO implement as an operation using visitor on scene root node

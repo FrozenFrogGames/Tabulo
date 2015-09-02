@@ -8,7 +8,7 @@
 
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/view/f3ViewAdaptee.h"
-#import "../View/fgTabuloDirector.h"
+#import "../fgTabuloDirector.h"
 
 @class f3GraphSchemaStrategy;
 @class fgPawnEdge;

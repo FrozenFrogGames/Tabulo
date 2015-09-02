@@ -7,12 +7,12 @@
 //
 
 #import "fgGameAdapter.h"
+#import "fgDataAdapter.h"
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
-#import "fgDataAdapter.h"
+#import "fgTabuloDirector.h"
 #import "Control/fgTabuloEvent.h"
 #import "Control/fgMenuState.h"
-#import "View/fgTabuloDirector.h"
 
 @interface fgGameAdapter ()
 

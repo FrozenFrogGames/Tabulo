@@ -7,14 +7,13 @@
 //
 
 #import "fgDragOverGraphEdgeState.h"
+#import "fgTabuloStrategy.h"
+#import "fgHouseNode.h"
+#import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
-#import "../../../Framework/Framework/Control/f3SetScaleCommand.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
-#import "fgTabuloStrategy.h"
-#import "fgHouseNode.h"
-#import "../View/fgTabuloDirector.h"
 
 @implementation fgDragOverGraphEdgeState
 
@@ -61,8 +60,6 @@
             }
         }
     }
-
-    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.2f height:1.2f]]];
 }
 
 - (void)update:(NSTimeInterval)_elapsed owner:(f3Controller *)_owner {
@@ -104,8 +101,6 @@
 - (void)end:(f3ControllerState *)_nextState owner:(f3Controller *)_owner {
 
     [super end:_nextState owner:_owner];
-
-    [_owner appendComponent:[[f3SetScaleCommand alloc] initWithView:view scale:[f3VectorHandle buildHandleForWidth:1.f height:1.f]]];
 
     f3GameDirector *director = [f3GameDirector Director];
     [director.Scene removeLayerAtIndex:HelperOverlay];
