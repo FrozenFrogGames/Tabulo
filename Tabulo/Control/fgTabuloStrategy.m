@@ -435,11 +435,9 @@
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
     f3ViewAdaptee *adaptee = [_builder top];
-    
     if (_opacity < 1.f)
     {
-        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
-        [_builder buildProperty:0];
+        adaptee.Color = GLKVector4Make(adaptee.Color.r, adaptee.Color.g, adaptee.Color.b, _opacity);
     }
     
     [_builder push:coordonateHandle];
@@ -473,11 +471,9 @@
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
     f3ViewAdaptee *adaptee = (f3ViewAdaptee *)[_builder top];
-    
     if (_opacity < 1.f)
     {
-        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
-        [_builder buildProperty:0];
+        adaptee.Color = GLKVector4Make(adaptee.Color.r, adaptee.Color.g, adaptee.Color.b, _opacity);
     }
     
     [_builder push:coordonateHandle];
@@ -602,11 +598,9 @@
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
     f3ViewAdaptee *adaptee = [_builder top];
-    
     if (_opacity < 1.f)
     {
-        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
-        [_builder buildProperty:0];
+        adaptee.Color = GLKVector4Make(adaptee.Color.r, adaptee.Color.g, adaptee.Color.b, _opacity);
     }
     
     [_builder push:coordonateHandle];
@@ -640,11 +634,9 @@
     [_builder buildAdaptee:DRAW_TRIANGLES];
     
     f3ViewAdaptee *adaptee = (f3ViewAdaptee *)[_builder top];
-    
     if (_opacity < 1.f)
     {
-        [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(_opacity),nil]];
-        [_builder buildProperty:0];
+        adaptee.Color = GLKVector4Make(adaptee.Color.r, adaptee.Color.g, adaptee.Color.b, _opacity);
     }
     
     [_builder push:coordonateHandle];
