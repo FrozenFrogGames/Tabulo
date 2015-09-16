@@ -211,7 +211,8 @@
     if (!isLevelLocked)
     {
         f3GameStrategy *strategy = [_state Strategy];
-        f3GraphNode *node = [strategy buildNode:_position withExtend:CGSizeMake(_scale *.45, _scale *.45) writer:nil symbols:nil];
+        f3GraphNode *node = [[f3GraphNode alloc] init:_position extend:CGSizeMake(_scale *.45, _scale *.45)];
+        [strategy appendTouchListener:node];
         fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
         f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];
         [strategy appendGameController:[[f3Controller alloc] initWithState:controlView]];

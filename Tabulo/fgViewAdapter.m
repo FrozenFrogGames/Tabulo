@@ -105,26 +105,24 @@
 
     if (CGSizeEqualToSize(relativeScale, CGSizeZero))
     {
-        ressource.transform.modelviewMatrix = GLKMatrix4Identity;
+        relativeScale = CGSizeMake(1.f, 1.f); // default value
     }
-    else
+
+    CGPoint absolutePosition = CGPointMake((_resolution.width / 2.f) + (_scale.width * relativePosition.x),
+                                           (_resolution.height / 2.f) - (_scale.height * relativePosition.y) );
+
+    GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
+
+    if (angleDegree > 0)
     {
-        CGPoint absolutePosition = CGPointMake((_resolution.width / 2.f) + (_scale.width * relativePosition.x),
-                                               (_resolution.height / 2.f) - (_scale.height * relativePosition.y) );
-
-        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(absolutePosition.x, _resolution.height - absolutePosition.y, 0.0f);
-
-        if (angleDegree > 0)
-        {
-            modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeRotation(degreeToRadian(angleDegree), 0.f, 0.f, -1.f));
-        }
-
-        CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
-    
-        modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f));
-
-        ressource.transform.modelviewMatrix = modelMatrix;
+        modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeRotation(degreeToRadian(angleDegree), 0.f, 0.f, -1.f));
     }
+
+    CGSize absoluteScale = CGSizeMake(_scale.width * relativeScale.width, _scale.height * relativeScale.height);
+
+    modelMatrix = GLKMatrix4Multiply(modelMatrix, GLKMatrix4MakeScale(absoluteScale.width, absoluteScale.height, 0.0f));
+
+    ressource.transform.modelviewMatrix = modelMatrix;
 }
 
 - (void)drawItem:(NSObject<IViewCanvas> *)_canvas {

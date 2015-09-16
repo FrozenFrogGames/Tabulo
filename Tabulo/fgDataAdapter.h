@@ -16,8 +16,8 @@
     NSUInteger cursor;
 }
 
-- (id)initWithName:(NSString *)_filename fromBundle:(bool)_fromBundle;
+- (id)init:(NSString *)_filename bundle:(bool)_bundle;
 
-- (void)closeWithName:(NSString *)_filename;
+- (void)close:(NSString *)_filename;
 
 @end

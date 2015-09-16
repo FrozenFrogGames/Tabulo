@@ -89,7 +89,9 @@
     CGPoint position = CGPointMake((0.75f /_scale) - ((_screen.width /2.f) / (_unit.width *_scale)), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
     [self buildButton:_builder position:position sprite:CGPointMake(1408.f, 832.f) scale:_scale];
 
-    f3GraphNode *node = [self buildNode:position withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
+    f3GraphNode *node = [[f3GraphNode alloc] init:position extend:CGSizeMake(0.5f /_scale, 0.5f/_scale)];
+    [self appendTouchListener:node];
+
     fgTabuloEvent *pauseEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
     f3EventButtonState *pauseControl = [[f3EventButtonState alloc] initWithNode:node event:pauseEvent];
     [self appendGameController:[[f3Controller alloc] initWithState:pauseControl]];
@@ -97,76 +99,15 @@
     position = CGPointMake(((_screen.width /2.f) / (_unit.width *_scale)) - (0.75f /_scale), (0.75f /_scale) - ((_screen.height /2.f) / (_unit.height *_scale)));
     [self buildButton:_builder position:position sprite:CGPointMake(1408.f, 960.f) scale:_scale];
 
-    node = [self buildNode:position withExtend:CGSizeMake(0.5f /_scale, 0.5f/_scale) writer:nil symbols:nil];
+    node = [[f3GraphNode alloc] init:position extend:CGSizeMake(0.5f /_scale, 0.5f/_scale)];
+    [self appendTouchListener:node];
+
     f3CustomEvent *helperEvent = [[f3CustomEvent alloc] init:CUSTOM_Helper];
     f3EventButtonState *helperControl = [[f3EventButtonState alloc] initWithNode:node event:helperEvent];
     [self appendGameController:[[f3Controller alloc] initWithState:helperControl]];
 
     [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(InterfaceLayer), nil]];
     [_builder buildComposite:1];
-}
-
-- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
-    
-    uint16_t dataLength = sizeof(float) *4;
-    float *dataArray = malloc(dataLength);
-    
-    [_data readBytes:dataArray length:dataLength];
-    
-    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
-    CGSize extend = CGSizeMake(dataArray[2], dataArray[3]);
-    
-    fgHouseNode *node = [[fgHouseNode alloc] initPosition:position extend:extend];
-    
-    if (minimumDistanceToGoal == UINT8_MAX)
-    {
-        [keys addObject:node.Key];
-    }
-
-    [self appendTouchListener:node];
-    
-    free(dataArray);
-    
-    if (_symbols != nil)
-    {
-        [_symbols addObject:node];
-    }
-    
-    return node;
-}
-
-- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols {
-    
-    if (_writer != nil)
-    {
-        uint16_t dataLength = sizeof(float) *4;
-        float *dataArray = malloc(dataLength);
-        dataArray[0] = (float)_position.x;
-        dataArray[1] = (float)_position.y;
-        dataArray[2] = (float)_extend.width;
-        dataArray[3] = (float)_extend.height;
-        
-        [_writer writeMarker:0x04];
-        [_writer writeBytes:dataArray length:dataLength];
-        
-        free(dataArray);
-    }
-    
-    fgHouseNode *node = [[fgHouseNode alloc] initPosition:_position extend:_extend];
-    
-    if (minimumDistanceToGoal == UINT8_MAX)
-    {
-        [keys addObject:node.Key];
-    }
-
-    [self appendTouchListener:node];
-    
-    if (_symbols != nil)
-    {
-        [_symbols addObject:node];
-    }
-    
-    return node;
 }
 
 - (bool)notifyEvent:(f3GameEvent *)_event {
@@ -261,60 +202,52 @@
     return [super notifyEvent:_event];
 }
 
-+ (void)setPawnAttribute:(f3GraphSchemaStrategy *)_strategy key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate {
++ (void)setPawnAttribute:(f3GraphSchema *)_schema key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate {
     
     CGPoint textureCoordonate;
     
-    if ([_strategy getNodeFlag:_key flag:TABULO_PawnOne])
+    if ([_schema getNodeFlag:_key flag:TABULO_PAWN_Red])
     {
         textureCoordonate = CGPointMake(0.f, 0.f);
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnTwo])
+    else if ([_schema getNodeFlag:_key flag:TABULO_PAWN_Green])
     {
         textureCoordonate = CGPointMake(0.f, 128.f);
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnThree])
+    else if ([_schema getNodeFlag:_key flag:TABULO_PAWN_Blue])
     {
         textureCoordonate = CGPointMake(0.f, 256.f);
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_PawnFour])
+    else if ([_schema getNodeFlag:_key flag:TABULO_PAWN_Yellow])
     {
         textureCoordonate = CGPointMake(0.f, 384.f);
-    }
-    else // if ([_strategy getNodeFlag:_key flag:TABULO_PawnFive])
-    {
-        textureCoordonate = CGPointMake(0.f, 512.f); // fail-safe
     }
     
     (*_coordonate) = [f3ViewAdaptee computeCoordonate:CGSizeMake(2048.f, 1152.f) atPoint:textureCoordonate withExtend:CGSizeMake(128.f, 128.f)];
 }
 
-+ (void)setPlankAttribute:(f3GraphSchemaStrategy *)_strategy key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate vertex:(f3FloatArray **)_vertex {
++ (void)setPlankAttribute:(f3GraphSchema *)_schema key:(NSNumber *)_key coordonate:(f3FloatArray **)_coordonate vertex:(f3FloatArray **)_vertex {
     
     float holeOffset = 0.f;
     
-    if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_One])
+    if ([_schema getNodeFlag:_key flag:TABULO_HOLE_Red])
     {
         holeOffset = 432.f;
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Two])
+    else if ([_schema getNodeFlag:_key flag:TABULO_HOLE_Green])
     {
         holeOffset = 688.f;
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Three])
+    else if ([_schema getNodeFlag:_key flag:TABULO_HOLE_Blue])
     {
         holeOffset = 944.f;
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Four])
+    else if ([_schema getNodeFlag:_key flag:TABULO_HOLE_Yellow])
     {
         holeOffset = 1200.f;
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_OneHole_Five])
-    {
-        holeOffset = 1456.f;
-    }
     
-    if ([_strategy getNodeFlag:_key flag:TABULO_HaveSmallPlank])
+    if ([_schema getNodeFlag:_key flag:TABULO_PLANK_Small])
     {
         if (holeOffset == 0.f)
         {
@@ -347,7 +280,7 @@
                       FLOAT_BOX(0.5f), FLOAT_BOX(0.625f), // 10
                       FLOAT_BOX(0.5f), FLOAT_BOX(1.f), nil];
     }
-    else if ([_strategy getNodeFlag:_key flag:TABULO_HaveMediumPlank])
+    else if ([_schema getNodeFlag:_key flag:TABULO_PLANK_Medium])
     {
         if (holeOffset == 0.f)
         {
@@ -400,17 +333,13 @@
         {
             if ([edge isKindOfClass:[fgPawnEdge class]])
             {
-                fgPawnEdge *pawnEdge = (fgPawnEdge *)edge;
-
-                [fgTabuloStrategy buildFeedbackPawn:_builder edge:pawnEdge strategy:self opacity:0.5f];
-
-                // TODO support house feedback
+                [fgTabuloStrategy buildFeedbackPawn:_builder edge:edge schema:graphSchema opacity:0.5f];
             }
             else if ([edge isKindOfClass:[fgPlankEdge class]])
             {
                 fgPlankEdge *plankEdge = (fgPlankEdge *)edge;
 
-                [fgTabuloStrategy buildFeedbackPlank:_builder edge:plankEdge strategy:self opacity:0.5f];
+                [fgTabuloStrategy buildFeedbackPlank:_builder edge:plankEdge schema:graphSchema opacity:0.5f];
             }
         }
 
@@ -419,13 +348,13 @@
     }
 }
 
-+ (f3ViewAdaptee *)buildFeedbackPawn:(f3ViewBuilder *)_builder edge:(fgPawnEdge *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildFeedbackPawn:(f3ViewBuilder *)_builder edge:(f3GraphEdge *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
 
     CGPoint position = [f3GraphNode nodeForKey:_edge.TargetKey].Position;
     
     f3FloatArray *coordonateHandle;
 
-    [self setPawnAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle];
+    [self setPawnAttribute:_schema key:_edge.OriginKey coordonate:&coordonateHandle];
 
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
@@ -453,7 +382,7 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildFeedbackPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildFeedbackPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -464,7 +393,7 @@
     
     f3FloatArray *vertexHandle, *coordonateHandle;
     
-    [self setPlankAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
+    [self setPlankAttribute:_schema key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
     
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
@@ -483,7 +412,7 @@
     CGPoint targetPosition = [f3GraphNode nodeForKey:_edge.TargetKey].Position;
     CGPoint rotationPosition = [f3GraphNode nodeForKey:_edge.RotationKey].Position;
 
-    float plankAngle = [f3GraphEdge computeAngleBetween:targetPosition and:rotationPosition];
+    float plankAngle = [f3GraphEdge angleBetween:targetPosition and:rotationPosition];
     
     [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(plankAngle), nil]];
     [_builder buildDecorator:3];
@@ -506,10 +435,10 @@
         hintCommand = [[f3ControlSequence alloc] init];
         
         bool bDelayViewVisibility = false;
-
+/*
         while (memento != nil && memento.Schema.DistanceToGoal < graphSchema.DistanceToGoal)
         {
-            f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema keys:keys];
+            f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema];
 
             if (previousEdge != nil)
             {
@@ -543,23 +472,21 @@
                 break; // fail-safe with f3Exception
             }
         }
-
-        f3GraphEdge *hintEdge = [graphSchema findBestEdge:self keys:keys];
+ */
+        f3GraphEdge *hintEdge = [graphSchema findBestEdge:graphSchema];
         if (hintEdge != nil)
         {
             f3ViewAdaptee *view = nil;
             
             if ([hintEdge isKindOfClass:[fgPawnEdge class]])
             {
-                f3GraphNode *originNode = [f3GraphNode nodeForKey:hintEdge.OriginKey];
-                
-                view = [fgTabuloStrategy buildHelperPawn:_builder node:originNode strategy:self opacity:0.8f];
+                view = [fgTabuloStrategy buildHelperPawn:_builder edge:hintEdge schema:graphSchema opacity:0.8f];
             }
             else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
             {
                 f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
                 
-                view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation strategy:self opacity:0.8f];
+                view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation schema:graphSchema opacity:0.8f];
             }
             
             if (view != nil)
@@ -585,13 +512,15 @@
     }
 }
 
-+ (f3ViewAdaptee *)buildHelperPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildHelperPawn:(f3ViewBuilder *)_builder edge:(f3GraphEdge *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:6, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2), USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3), nil];
     f3FloatArray *vertexHandle = [f3FloatArray buildHandleForFloat32:8, FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(-0.5f), FLOAT_BOX(0.5f), FLOAT_BOX(-0.5f), nil];
     
     f3FloatArray *coordonateHandle;
-    [self setPawnAttribute:_strategy key:_node.Key coordonate:&coordonateHandle];
+    [self setPawnAttribute:_schema key:_edge.OriginKey coordonate:&coordonateHandle];
+    
+    CGPoint originPosition = [f3GraphNode nodeForKey:_edge.OriginKey].Position;
 
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
@@ -610,13 +539,13 @@
     [_builder push:[f3VectorHandle buildHandleForWidth:1.f height:1.f]];
     [_builder buildDecorator:2];
     
-    [_builder push:[f3VectorHandle buildHandleForX:_node.Position.x y:_node.Position.y]];
+    [_builder push:[f3VectorHandle buildHandleForX:originPosition.x y:originPosition.y]];
     [_builder buildDecorator:1];
     
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
 
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -627,7 +556,7 @@
     
     f3FloatArray *vertexHandle, *coordonateHandle;
     
-    [self setPlankAttribute:_strategy key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
+    [self setPlankAttribute:_schema key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
 
     [_builder push:indicesHandle];
     [_builder push:vertexHandle];
@@ -644,9 +573,11 @@
     [_builder buildDecorator:4];
 
     f3GraphNode *originNode = [f3GraphNode nodeForKey:_edge.OriginKey];
+    CGPoint originPosition = originNode.Position;
     f3GraphNode *rotationNode = [f3GraphNode nodeForKey:_edge.RotationKey];
-    
-    float plankAngle = [f3GraphEdge computeAngleBetween:originNode.Position and:rotationNode.Position];    
+    CGPoint rotationPosition = rotationNode.Position;
+
+    float plankAngle = [f3GraphEdge angleBetween:originPosition and:rotationPosition];
     
     [_builder push:[f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(plankAngle), nil]];
     [_builder buildDecorator:3];
@@ -654,7 +585,7 @@
     [_builder push:[f3VectorHandle buildHandleForWidth:2.f height:1.f]];
     [_builder buildDecorator:2];
     
-    [_builder push:[f3VectorHandle buildHandleForX:originNode.Position.x y:originNode.Position.y]];
+    [_builder push:[f3VectorHandle buildHandleForX:originPosition.x y:originPosition.y]];
     [_builder buildDecorator:1];
     
     return adaptee;

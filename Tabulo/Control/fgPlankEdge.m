@@ -27,8 +27,8 @@
         CGPoint targetPoint = [[f3GraphNode nodeForKey:_targetKey] Position];
         CGPoint rotationPoint = [[f3GraphNode nodeForKey:_rotationKey] Position];
 
-        targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
-        rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
+        targetAngle = [f3GraphEdge angleBetween:targetPoint and:rotationPoint];
+        rotationAngle = targetAngle - [f3GraphEdge angleBetween:originPoint and:rotationPoint];
 
         if (rotationAngle > 180.f)
         {
@@ -54,15 +54,15 @@
 
     switch (_type)
     {
-        case TABULO_HaveSmallPlank:
+        case TABULO_PLANK_Small:
             rotationRadius = 1.75f; // small plank is 3.5 (3.42) units
             break;
             
-        case TABULO_HaveMediumPlank: // medium plank is 5 (4.95) units
+        case TABULO_PLANK_Medium: // medium plank is 5 (4.95) units
             rotationRadius = 2.5f;
             break;
             
-        case TABULO_HaveLongPlank:
+        case TABULO_PLANK_Long:
             rotationRadius = 3.5f; // long plank is 7 (7.07) units length
             break;
     }

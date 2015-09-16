@@ -12,6 +12,7 @@
 #import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
 
@@ -33,13 +34,13 @@
 
             for (f3GraphEdge *edge in edges)
             {
-                if ([gameStrategy evaluateEdge:edge])
+                if ([gameStrategy.Schema evaluate:edge.Conditions])
                 {
                     f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
 
                     if ([targetNode isKindOfClass:[fgHouseNode class]])
                     {
-                        [(fgHouseNode *)targetNode buildHouseFeedback:gameStrategy edge:(fgPawnEdge *)edge];
+                        [(fgHouseNode *)targetNode buildHouseFeedback:gameStrategy.Schema edge:(fgPawnEdge *)edge];
                     }
 
                     [feedbackEdges addObject:edge];
@@ -75,15 +76,19 @@
         if ([producer.State isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)producer.State;
-
-            for (f3GraphEdge *edge in feedbackEdges)
+            if ([gameState.Strategy isKindOfClass:[f3GraphSchemaStrategy class]])
             {
-                f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
-                if ([targetNode isKindOfClass:[fgHouseNode class]])
+                f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)gameState.Strategy;
+
+                for (f3GraphEdge *edge in feedbackEdges)
                 {
-                    if (edge != currentEdge) // clear feedback except for the edge in action
+                    f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+                    if ([targetNode isKindOfClass:[fgHouseNode class]])
                     {
-                        [(fgHouseNode *)targetNode clearHouseFeedback:(f3GraphSchemaStrategy *)gameState.Strategy];
+                        if (edge != currentEdge) // clear feedback except for the edge in action
+                        {
+                            [(fgHouseNode *)targetNode clearHouseFeedback:gameStrategy.Schema];
+                        }
                     }
                 }
             }
@@ -111,13 +116,17 @@
         if ([producer.State isKindOfClass:[f3GameState class]])
         {
             f3GameState *gameState = (f3GameState *)producer.State;
-            
-            for (f3GraphEdge *edge in feedbackEdges)
+            if ([gameState.Strategy isKindOfClass:[f3GraphSchemaStrategy class]])
             {
-                f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
-                if ([targetNode isKindOfClass:[fgHouseNode class]])
+                f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)gameState.Strategy;
+
+                for (f3GraphEdge *edge in feedbackEdges)
                 {
-                    [(fgHouseNode *)targetNode clearHouseFeedback:(f3GraphSchemaStrategy *)gameState.Strategy];
+                    f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
+                    if ([targetNode isKindOfClass:[fgHouseNode class]])
+                    {
+                        [(fgHouseNode *)targetNode clearHouseFeedback:gameStrategy.Schema];
+                    }
                 }
             }
             
@@ -196,7 +205,7 @@
                             {
                                 if (edge.TargetKey == nodeKey || edge.InputKey == nodeKey)
                                 {
-                                    if ([gameStrategy evaluateEdge:edge])
+                                    if ([gameStrategy.Schema evaluate:edge.Conditions])
                                     {
                                         currentEdge = edge;
 //                                      NSLog(@"State: %@, target: %@", self, edge.Target);

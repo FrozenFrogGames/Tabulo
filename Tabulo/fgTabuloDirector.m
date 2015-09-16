@@ -13,12 +13,10 @@
 #import "../../Framework/Framework/View/f3ViewComposite.h"
 #import "../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../Framework/Framework/View/f3AngleDecorator.h"
-#import "../../Framework/Framework/View/f3ViewSearch.h"
 #import "../../Framework/Framework/Control/f3MutableGraphNodeState.h"
 #import "../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../Framework/Framework/Control/f3Controller.h"
 #import "../../Framework/Framework/Control/f3GraphNode.h"
-#import "../../Framework/Framework/Control/f3GraphEdge.h"
 #import "../../Framework/Framework/Control/f3GraphSchema.h"
 #import "Control/fgDragOverGraphEdgeState.h"
 #import "Control/fgDragAroundGraphNodeState.h"
@@ -191,7 +189,7 @@ const NSUInteger LEVEL_COUNT = 36;
 
 - (void)loadSavegame {
 
-    fgDataAdapter *dataFlags = [[fgDataAdapter alloc] initWithName:@"DATASAVE" fromBundle:false];
+    fgDataAdapter *dataFlags = [[fgDataAdapter alloc] init:@"DATASAVE" bundle:false];
     
     for (NSUInteger i = 0; i < LEVEL_COUNT; ++i)
     {
@@ -278,130 +276,254 @@ const NSUInteger LEVEL_COUNT = 36;
         [(__LevelFlags *)[levelFlags objectAtIndex:i] serialize:dataFlags];
     }
 
-    [dataFlags closeWithName:@"DATASAVE"];
+    [dataFlags close:@"DATASAVE"];
 }
 
-- (void)buildBackground:(NSObject<IDataAdapter> *)_data screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale symbols:(NSMutableArray *)_symbols {
+- (f3GraphNode *)buildNodeWithExtend:(NSObject<IDataAdapter> *)_data {
+    
+    uint16_t dataLength = sizeof(float) *4;
+    float *dataArray = malloc(dataLength);
+    [_data readBytes:dataArray length:dataLength];
+    
+    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
+    CGSize extend = CGSizeMake(dataArray[2], dataArray[3]);
+    
+    f3GraphNode *node = [[f3GraphNode alloc] init:position extend:extend];
+    free(dataArray);
+    return node;
+}
 
+- (f3GraphNode *)buildNodeWithRadius:(NSObject<IDataAdapter> *)_data {
+    
+    uint16_t dataLength = sizeof(float) *3;
+    float *dataArray = malloc(dataLength);
+    [_data readBytes:dataArray length:dataLength];
+    
+    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
+    
+    f3GraphNode *node = [[f3GraphNode alloc] init:position radius:dataArray[2]];
+    free(dataArray);
+    return node;
+}
+
+- (f3GraphNode *)buildHouseNodeWithExtend:(NSObject<IDataAdapter> *)_data {
+    
+    uint16_t dataLength = sizeof(float) *4;
+    float *dataArray = malloc(dataLength);
+    [_data readBytes:dataArray length:dataLength];
+
+    uint8_t flag;
+    [_data readBytes:&flag length:sizeof(uint8_t)];
+    
+    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
+    CGSize extend = CGSizeMake(dataArray[2], dataArray[3]);
+    
+    fgHouseNode *node = [[fgHouseNode alloc] init:position extend:extend flag:flag];
+    free(dataArray);
+    return node;
+}
+
+- (f3GraphNode *)buildHouseNodeWithRadius:(NSObject<IDataAdapter> *)_data {
+    
+    uint16_t dataLength = sizeof(float) *3;
+    float *dataArray = malloc(dataLength);
+    [_data readBytes:dataArray length:dataLength];
+    
+    uint8_t flag;
+    [_data readBytes:&flag length:sizeof(uint8_t)];
+    
+    CGPoint position = CGPointMake(dataArray[0], dataArray[1]);
+
+    fgHouseNode *node = [[fgHouseNode alloc] init:position radius:dataArray[2] flag:flag];
+    free(dataArray);
+    return node;
+}
+
+- (f3ViewAdaptee *)buildViewAdaptee:(NSObject<IDataAdapter> *)_data {
+    
     f3ModelData *indicesModel = [[f3ModelData alloc] init:_data];
     f3ModelData *vertexModel = [[f3ModelData alloc] init:_data];
-    f3ModelData *coordonateModel = [[f3ModelData alloc] init:_data];
-    
-    uint8_t dataResource;
-    [_data readBytes:&dataResource length:sizeof(uint8_t)];
     
     f3IntegerArray *indicesHandle = [[f3IntegerArray alloc] initWithModel:indicesModel size:sizeof(unsigned short)];
     f3FloatArray *vertexHandle = [[f3FloatArray alloc] initWithModel:vertexModel size:sizeof(float)];
-    f3FloatArray *coordonateHandle = [[f3FloatArray alloc] initWithModel:coordonateModel size:sizeof(float)];
-    
-    enum f3TabuloResource resourceIndex = dataResource;
-    float backgroundWith = _screen.width / _unit.width;
-    float backgroundHeight = _screen.height / _unit.height;
     
     [viewBuilder push:indicesHandle];
     [viewBuilder push:vertexHandle];
     [viewBuilder buildAdaptee:DRAW_TRIANGLES];
-    
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[viewBuilder top];
-    if (_symbols != nil)
-    {
-        [_symbols addObject:_view];
-    }
+
+    return (f3ViewAdaptee *)[viewBuilder top];
+}
+
+- (void)buildOffsetDecorator:(NSObject<IDataAdapter> *)_data {
+
+    f3ModelData *offsetModel = [[f3ModelData alloc] init:_data];
+    f3VectorHandle *offsetHandle = [[f3VectorHandle alloc] initWithModel:offsetModel size:sizeof(float)];
+
+    [viewBuilder push:offsetHandle];
+    [viewBuilder buildDecorator:1];
+}
+
+- (void)buildScaleDecorator:(NSObject<IDataAdapter> *)_data {
+
+    f3ModelData *scaleModel = [[f3ModelData alloc] init:_data];
+    f3VectorHandle *scaleHandle = [[f3VectorHandle alloc] initWithModel:scaleModel size:sizeof(float)];
+
+    [viewBuilder push:scaleHandle];
+    [viewBuilder buildDecorator:2];
+}
+
+- (void)buildAngleDecorator:(NSObject<IDataAdapter> *)_data {
+
+    f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
+    f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
+
+    [viewBuilder push:angleHandle];
+    [viewBuilder buildDecorator:3];
+}
+
+- (void)buildTextureDecorator:(NSObject<IDataAdapter> *)_data {
+
+    f3ModelData *resourceModel = [[f3ModelData alloc] init:_data];
+    f3ModelData *coordonateModel = [[f3ModelData alloc] init:_data];
+
+    f3IntegerArray *resourceHandle = [[f3IntegerArray alloc] initWithModel:resourceModel size:sizeof(unsigned short)];
+    f3FloatArray *coordonateHandle = [[f3FloatArray alloc] initWithModel:coordonateModel size:sizeof(float)];
 
     [viewBuilder push:coordonateHandle];
-    [viewBuilder push:[self getResourceIndex:resourceIndex]];
+    [viewBuilder push:resourceHandle];
     [viewBuilder buildDecorator:4];
+}
+
+- (void)buildBackgroundDecorator:(NSObject<IDataAdapter> *)_data screen:(CGSize)_screen unit:(CGSize)_unit scale:(float)_scale {
+
+    float backgroundWith = _screen.width / _unit.width;
+    float backgroundHeight = _screen.height / _unit.height;
 
     [viewBuilder push:[f3VectorHandle buildHandleForWidth:backgroundWith /_scale height:backgroundHeight /_scale]];
     [viewBuilder buildDecorator:2];
-    
-    [viewBuilder push:[f3VectorHandle buildHandleForX:0.f y:0.f]];
-    [viewBuilder buildDecorator:1];
+}
 
-    [viewBuilder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(BackgroundLayer), nil]];
+- (void)buildViewLayer:(NSObject<IDataAdapter> *)_data {
+
+    f3ModelData *layerModel = [[f3ModelData alloc] init:_data];
+    f3IntegerArray *layerHandle = [[f3IntegerArray alloc] initWithModel:layerModel size:sizeof(unsigned short)];
+
+    [viewBuilder push:layerHandle];
     [viewBuilder buildComposite:1];
 }
 
-- (void)buildLayer:(NSObject<IDataAdapter> *)_data {
-
-    uint8_t dataIndex;
-    [_data readBytes:&dataIndex length:sizeof(uint8_t)];
-
-    [viewBuilder push:[f3IntegerArray buildHandleForUInt16:1, USHORT_BOX(dataIndex), nil]];
-    [viewBuilder buildComposite:1];
-}
-
-- (void)buildPawn:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
-
-    uint16_t dataIndex;
-    [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
+- (void)bindViewToNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
     
-    uint8_t dataPawn;
-    [_data readBytes:&dataPawn length:sizeof(uint8_t)];
-    enum f3TabuloPawnType pawnType = dataPawn;
-
-    [_strategy setNodeFlag:node.Key flag:pawnType value:true];
+    uint16_t nodeIndex;
+    [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
+    f3GraphNode *node = [_symbols objectAtIndex:nodeIndex];
+    
+    uint16_t viewIndex;
+    [_data readBytes:&viewIndex length:sizeof(uint16_t)];
+    f3ViewAdaptee *view = [_symbols objectAtIndex:viewIndex];
+    
+    if ([node isKindOfClass:[fgHouseNode class]])
+    {
+        [(fgHouseNode *)node bindView:view];
+    }
 }
 
-- (void)buildPlank:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
-
-    f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
-    f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
-
-    uint16_t dataIndex;
-    [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
-
-    uint8_t dataPlank;
-    [_data readBytes:&dataPlank length:sizeof(uint8_t)];
-    enum f3TabuloPlankType plankType = dataPlank;
-
-    [_strategy setNodeFlag:node.Key flag:plankType value:true];
-
-    [viewBuilder push:angleHandle];
-    [viewBuilder buildDecorator:3];
+- (void)buildEdgeForPawn:(uint8_t)_pawn origin:(NSNumber *)_origin target:(NSNumber *)_target plank:(uint8_t)_plank node:(NSNumber *)_node {
+    
+    f3GraphEdgeWithInputNode *edge = [[fgPawnEdge alloc] init:_origin target:_target input:_node];
+    
+    [edge bindCondition:[[f3GraphCondition alloc] init:_origin flag:_pawn result:true]];
+    [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:_plank result:true]];
+    
+    switch (_pawn)
+    {
+        case TABULO_PAWN_Red:
+            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Red result:false]];
+            break;
+            
+        case TABULO_PAWN_Green:
+            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Green result:false]];
+            break;
+            
+        case TABULO_PAWN_Blue:
+            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Blue result:false]];
+            break;
+            
+        case TABULO_PAWN_Yellow:
+            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Yellow result:false]];
+            break;
+    }
+    
+    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Red result:false]];
+    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Green result:false]];
+    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Blue result:false]];
+    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Yellow result:false]];
 }
 
-- (void)buildPlankWithHole:(NSObject<IDataAdapter> *)_data strategy:(fgTabuloStrategy *)_strategy symbols:(NSMutableArray *)_symbols {
+- (void)buildEdgeForPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols plank:(uint8_t)_plank {
 
-    f3ModelData *angleModel = [[f3ModelData alloc] init:_data];
-    f3FloatArray *angleHandle = [[f3FloatArray alloc] initWithModel:angleModel size:sizeof(float)];
+    uint16_t plankIndex;
+    [_data readBytes:&plankIndex length:sizeof(uint16_t)];
+    f3GraphNode *plankNode = [_symbols objectAtIndex:plankIndex];
+    
+    uint16_t originIndex;
+    [_data readBytes:&originIndex length:sizeof(uint16_t)];
+    f3GraphNode *originNode = [_symbols objectAtIndex:originIndex];
+    
+    uint16_t targetIndex;
+    [_data readBytes:&targetIndex length:sizeof(uint16_t)];
+    f3GraphNode *targetNode = [_symbols objectAtIndex:targetIndex];
 
-    uint16_t dataIndex;
-    [_data readBytes:&dataIndex length:sizeof(uint16_t)];
-    f3GraphNode *node = [_symbols objectAtIndex:dataIndex];
-
-    uint8_t dataPlank;
-    [_data readBytes:&dataPlank length:sizeof(uint8_t)];
-    enum f3TabuloPlankType plankType = dataPlank;
-
-    uint8_t dataHole;
-    [_data readBytes:&dataHole length:sizeof(uint8_t)];
-    enum f3TabuloHoleType plankHole = dataHole;
-
-    [_strategy setNodeFlag:node.Key flag:plankType value:true];
-    [_strategy setNodeFlag:node.Key flag:plankHole value:true];
-
-    [viewBuilder push:angleHandle];
-    [viewBuilder buildDecorator:3];
+    [self buildEdgeForPawn:TABULO_PAWN_Red origin:originNode.Key target:targetNode.Key plank:_plank node:plankNode.Key];
+    [self buildEdgeForPawn:TABULO_PAWN_Green origin:originNode.Key target:targetNode.Key plank:_plank node:plankNode.Key];
+    [self buildEdgeForPawn:TABULO_PAWN_Blue origin:originNode.Key target:targetNode.Key plank:_plank node:plankNode.Key];
+    [self buildEdgeForPawn:TABULO_PAWN_Yellow origin:originNode.Key target:targetNode.Key plank:_plank node:plankNode.Key];
 }
 
-- (void)buildDragPawnControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
-
+- (void)buildControlOverGraphEdge:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(f3GameStrategy *)_strategy {
+    
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
     f3GraphNode *_node = [_symbols objectAtIndex:nodeIndex];
-
+    
     uint16_t viewIndex;
     [_data readBytes:&viewIndex length:sizeof(uint16_t)];
     f3ViewAdaptee *_view = [_symbols objectAtIndex:viewIndex];
-
+    
     f3MutableGraphNodeState *controlState = [[f3MutableGraphNodeState alloc] initWithNode:_node forView:_view nextState:[fgDragOverGraphEdgeState class]];
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
-- (void)buildDragPlankControl:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
+- (void)buildEdgeForPlank:(uint8_t)_plank origin:(NSNumber *)_origin target:(NSNumber *)_target node:(NSNumber *)_node {
+
+    for (int pawn = TABULO_PAWN_Red; pawn < TABULO_HOLE_Red; ++pawn)
+    {
+        f3GraphEdgeWithRotationNode *edge = [[fgPlankEdge alloc] init:_origin target:_target rotation:_node];
+
+        [edge bindCondition:[[f3GraphCondition alloc] init:_origin flag:_plank result:true]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:_plank result:false]];
+        [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:pawn result:true]];
+    }
+}
+
+- (void)buildEdgeForPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols plank:(uint8_t)_plank {
+
+    uint16_t pawnIndex;
+    [_data readBytes:&pawnIndex length:sizeof(uint16_t)];
+    f3GraphNode *pawnNode = [_symbols objectAtIndex:pawnIndex];
+
+    uint16_t originIndex;
+    [_data readBytes:&originIndex length:sizeof(uint16_t)];
+    f3GraphNode *originNode = [_symbols objectAtIndex:originIndex];
+
+    uint16_t targetIndex;
+    [_data readBytes:&targetIndex length:sizeof(uint16_t)];
+    f3GraphNode *targetNode = [_symbols objectAtIndex:targetIndex];
+
+    [self buildEdgeForPlank:_plank origin:originNode.Key target:targetNode.Key node:pawnNode.Key];
+}
+
+- (void)buildControlAroundGraphNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(f3GameStrategy *)_strategy {
     
     uint16_t nodeIndex;
     [_data readBytes:&nodeIndex length:sizeof(uint16_t)];
@@ -415,278 +537,121 @@ const NSUInteger LEVEL_COUNT = 36;
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
-- (void)buildSprite:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
-
-    f3ModelData *indicesModel = [[f3ModelData alloc] init:_data];
-    f3ModelData *vertexModel = [[f3ModelData alloc] init:_data];
-    f3ModelData *coordonateModel = [[f3ModelData alloc] init:_data];
-
-    uint8_t dataResource;
-    [_data readBytes:&dataResource length:sizeof(uint8_t)];
-
-    uint16_t dataLength = sizeof(float) *4;
-    float *dataArray = malloc(dataLength);
-    [_data readBytes:dataArray length:dataLength];
-
-    f3IntegerArray *indicesHandle = [[f3IntegerArray alloc] initWithModel:indicesModel size:sizeof(unsigned short)];
-    f3FloatArray *vertexHandle = [[f3FloatArray alloc] initWithModel:vertexModel size:sizeof(float)];
-    f3FloatArray *coordonateHandle = [[f3FloatArray alloc] initWithModel:coordonateModel size:sizeof(float)];
-
-    enum f3TabuloResource resourceIndex = dataResource;
-
-    CGSize scale = CGSizeMake(dataArray[0], dataArray[1]);
-    CGPoint position = CGPointMake(dataArray[2], dataArray[3]);
-
-    [viewBuilder push:indicesHandle];
-    [viewBuilder push:vertexHandle];
-    [viewBuilder buildAdaptee:DRAW_TRIANGLES];
-
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[viewBuilder top];
-    if (_symbols != nil)
-    {
-        [_symbols addObject:_view];
-    }
-
-    [viewBuilder push:coordonateHandle];
-    [viewBuilder push:[self getResourceIndex:resourceIndex]];
-    [viewBuilder buildDecorator:4];
-
-    [viewBuilder push:[f3VectorHandle buildHandleForWidth:scale.width height:scale.height]];
-    [viewBuilder buildDecorator:2];
-
-    [viewBuilder push:[f3VectorHandle buildHandleForX:position.x y:position.y]];
-    [viewBuilder buildDecorator:1];
-}
-
-- (void)buildHouseCondition:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols strategy:(fgTabuloStrategy *)_strategy {
-
-    uint16_t dataLength = sizeof(uint16_t) *2;
-    uint16_t *dataArray = malloc(dataLength);
-    [_data readBytes:dataArray length:dataLength];
-    fgHouseNode *_node = (fgHouseNode *)[_symbols objectAtIndex:dataArray[0]];
-    f3ViewAdaptee *_view = (f3ViewAdaptee *)[_symbols objectAtIndex:dataArray[1]];
-
-    uint8_t dataFlag;
-    [_data readBytes:&dataFlag length:sizeof(uint8_t)];
-    enum f3TabuloPawnType _type = dataFlag;
-
-    f3GraphEdgeCondition *condition = [[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true];
-    [_strategy bindCondition:condition];
-    [_node bindView:_view type:_type];
-    
-    free(dataArray);
-}
-
-- (void)buildEdgesForPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
-
-    uint8_t dataFlag;
-    [_data readBytes:&dataFlag length:sizeof(uint8_t)];
-    enum f3TabuloPlankType _type = dataFlag;
-
-    uint16_t dataLength = sizeof(uint16_t) *3;
-    uint16_t *dataArray = malloc(dataLength);
-    [_data readBytes:dataArray length:dataLength];
-    f3GraphNode *_node = [_symbols objectAtIndex:dataArray[0]];
-    f3GraphNode *_origin = [_symbols objectAtIndex:dataArray[1]];
-    f3GraphNode *_target = [_symbols objectAtIndex:dataArray[2]];
-    
-    for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
-    {
-        fgPawnEdge *edge = [[fgPawnEdge alloc] init:_origin.Key target:_target.Key input:_node.Key];
-
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:_type result:true]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:pawnType result:true]];
-
-        switch (pawnType) // restrict edge if a hole is present
-        {
-            case TABULO_PawnOne:
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_One result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
-                break;
-                
-            case TABULO_PawnTwo:
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Two result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneTwo result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
-                break;
-                
-            case TABULO_PawnThree:
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Three result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoThree result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
-                break;
-                
-            case TABULO_PawnFour:
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Four result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFour result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
-                break;
-                
-            case TABULO_PawnFive:
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_OneHole_Five result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_OneFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_TwoFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_ThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_TwoHoles_FourFive result:false]];
-                
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneTwoFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_OneFourFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoThreeFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_TwoFourFive result:false]];
-                [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:TABULO_ThreeHoles_ThreeFourFire result:false]];
-                break;
-        }
-        
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnOne result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnTwo result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnThree result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFive result:false]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:TABULO_PawnFour result:false]];
-    }
-}
-
-- (void)buildEdgesForPlank:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols {
-
-    uint8_t dataFlag;
-    [_data readBytes:&dataFlag length:sizeof(uint8_t)];
-    enum f3TabuloPlankType _type = dataFlag;
-    
-    uint16_t dataLength = sizeof(uint16_t) *3;
-    uint16_t *dataArray = malloc(dataLength);
-    [_data readBytes:dataArray length:dataLength];
-    f3GraphNode *_node = [_symbols objectAtIndex:dataArray[0]];
-    f3GraphNode *_origin = [_symbols objectAtIndex:dataArray[1]];
-    f3GraphNode *_target = [_symbols objectAtIndex:dataArray[2]];
-    
-    for (int pawnType = TABULO_PawnOne; pawnType < TABULO_PAWN_MAX; ++pawnType)
-    {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_origin.Key target:_target.Key rotation:_node.Key];
-        [edge setPlankType:_type];
-    
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.OriginKey flag:_type result:true]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:_node.Key flag:pawnType result:true]];
-        [edge bindCondition:[[f3GraphEdgeCondition alloc] init:edge.TargetKey flag:_type result:false]];
-    }
-}
-
 - (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
 
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
-    fgTabuloStrategy *strategy = (fgTabuloStrategy *)[_state Strategy];
+    f3GraphSchemaStrategy *strategy = (f3GraphSchemaStrategy *)[_state Strategy];
+    f3GraphSchema *schema = nil;
+    f3GraphNode *node = nil;
 
-    if (scene == nil)
-    {
-        scene = [[f3ViewScene alloc] init];
-    }
-    
     NSMutableArray *symbols = [NSMutableArray array];
     uint8_t marker = [_data readMarker];
-    
+
     while (marker != 0xFF)
     {
         switch (marker)
         {
+            // graph marker
             case 0x00:
-                [strategy initGraphStrategy:nil symbols:symbols];
+                if (schema == nil)
+                {
+                    [f3GraphSchema initNodeKeys:_data symbols:symbols];
+                }
+                else
+                {
+                    // TODO throw f3Exception
+                }
                 break;
-
             case 0x01:
-                [self buildBackground:_data screen:producer.ScreenSize unit:producer.UnitSize scale:producer.UnitScale symbols:symbols];
-                break;
+                if (schema == nil)
+                {
+                    schema = [[f3GraphSchema alloc] init:_data];
 
+                    [strategy initGraphSchema:schema producer:producer];
+                }
+                else // notify initial schema in order to keep best neighbors for hint
+                {
+                    f3GraphSchema *nextSchema = [[f3GraphSchema alloc] init:_data];
+
+                    [schema bindNeighbor:nextSchema];
+                }
+                break;
+            // node marker
             case 0x02:
-                [strategy buildNodeWithExtend:_data symbols:symbols];
+                node = [self buildNodeWithExtend:_data];
+                [symbols addObject:node];
+                [strategy appendTouchListener:node];
+                node = nil;
                 break;
             case 0x03:
-                [strategy buildNodeWithRadius:_data symbols:symbols];
+                node = [self buildNodeWithRadius:_data];
+                [symbols addObject:node];
+                [strategy appendTouchListener:node];
+                node = nil;
                 break;
             case 0x04:
-                [strategy buildHouseNode:_data symbols:symbols];
+                node = [self buildHouseNodeWithExtend:_data];
+                [symbols addObject:node];
+                [strategy appendTouchListener:node];
+                node = nil;
                 break;
             case 0x05:
-                [self buildPawn:_data strategy:strategy symbols:symbols];
+                node = [self buildHouseNodeWithRadius:_data];
+                [symbols addObject:node];
+                [strategy appendTouchListener:node];
+                node = nil;
                 break;
+            // decorator marker
             case 0x06:
-                [self buildPlank:_data strategy:strategy symbols:symbols];
+                [self buildOffsetDecorator:_data];
                 break;
             case 0x07:
-                [self buildPlankWithHole:_data strategy:strategy symbols:symbols];
+                [self buildScaleDecorator:_data];
                 break;
             case 0x08:
-                [self buildDragPawnControl:_data symbols:symbols strategy:strategy];
+                [self buildAngleDecorator:_data];
                 break;
             case 0x09:
-                [self buildDragPlankControl:_data symbols:symbols strategy:strategy];
+                [self buildTextureDecorator:_data];
                 break;
-
-            case 0x0A:
-                [self buildLayer:_data];
-                break;
-
             case 0x0B:
-                [strategy extractFirstGraphPath:_data]; // ready to render the scene once that initial graph path has been red
+                [self buildBackgroundDecorator:_data screen:producer.ScreenSize unit:producer.UnitSize scale:producer.UnitScale];
+                break;
+            // view marker
+            case 0x0A:
+                [symbols addObject:[self buildViewAdaptee:_data]];
                 break;
             case 0x0C:
-                [strategy extractNextGraphPath:_data]; // keep create graph path in background for help
+                [self buildViewLayer:_data];
                 break;
+            // control marker
             case 0x0D:
-                [strategy buildGraphPath]; // end of file - bind neighbors and compute help
+                [self buildControlOverGraphEdge:_data symbols:symbols strategy:strategy];
                 break;
-
             case 0x0E:
-                [self buildSprite:_data symbols:symbols];
+                [self buildControlAroundGraphNode:_data symbols:symbols strategy:strategy];
                 break;
-            case 0x0F:
-                [self buildHouseCondition:_data symbols:symbols strategy:strategy];
-                break;
+            // tabulo marker
             case 0x10:
-                [self buildEdgesForPawn:_data symbols:symbols];
+                [self bindViewToNode:_data symbols:symbols];
                 break;
             case 0x11:
-                [self buildEdgesForPlank:_data symbols:symbols];
+                [self buildEdgeForPawn:_data symbols:symbols plank:TABULO_PLANK_Small];
+                break;
+            case 0x12:
+                [self buildEdgeForPawn:_data symbols:symbols plank:TABULO_PLANK_Medium];
+                break;
+            case 0x13:
+                [self buildEdgeForPawn:_data symbols:symbols plank:TABULO_PLANK_Long];
+                break;
+            case 0x14:
+                [self buildEdgeForPlank:_data symbols:symbols plank:TABULO_PLANK_Small];
+                break;
+            case 0x15:
+                [self buildEdgeForPlank:_data symbols:symbols plank:TABULO_PLANK_Medium];
+                break;
+            case 0x16:
+                [self buildEdgeForPlank:_data symbols:symbols plank:TABULO_PLANK_Long];
                 break;
         }
 

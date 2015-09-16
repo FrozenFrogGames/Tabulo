@@ -24,7 +24,7 @@
     return self;
 }
 
-- (id)initWithName:(NSString *)_filename fromBundle:(bool)_fromBundle {
+- (id)init:(NSString *)_filename bundle:(bool)_bundle {
 
     self = [super init];
 
@@ -35,7 +35,7 @@
 
         data = nil;
 
-        if (_fromBundle)
+        if (_bundle)
         {
             @try
             {
@@ -90,7 +90,7 @@
     return self;
 }
 
-- (void)closeWithName:(NSString *)_filename {
+- (void)close:(NSString *)_filename {
 
     NSError *fileError;
     NSString *path;

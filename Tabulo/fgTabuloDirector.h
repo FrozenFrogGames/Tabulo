@@ -15,55 +15,25 @@
 
 enum f3TabuloPawnType {
 
-    TABULO_PawnOne   = 0,
-    TABULO_PawnTwo   = 1,
-    TABULO_PawnThree = 2,
-    TABULO_PawnFour  = 3,
-    TABULO_PawnFive  = 4,
-
-    TABULO_PAWN_MAX  = 5
-};
-
-enum f3TabuloPlankType {
-
-    TABULO_HaveSmallPlank  = 5,
-    TABULO_HaveMediumPlank = 6,
-    TABULO_HaveLongPlank   = 7,
-
-    TABULO_PLANK_MAX = 8
+    TABULO_PAWN_Red     = 0,
+    TABULO_PAWN_Green   = 1,
+    TABULO_PAWN_Blue    = 2,
+    TABULO_PAWN_Yellow  = 3
 };
 
 enum f3TabuloHoleType {
 
-    TABULO_OneHole_One              = 8,
-    TABULO_OneHole_Two              = 9,
-    TABULO_OneHole_Three            = 10,
-    TABULO_OneHole_Four             = 11,
-    TABULO_OneHole_Five             = 12,
+    TABULO_HOLE_Red    = 4,
+    TABULO_HOLE_Green  = 5,
+    TABULO_HOLE_Blue   = 6,
+    TABULO_HOLE_Yellow = 7
+};
 
-    TABULO_TwoHoles_OneTwo          = 13,
-    TABULO_TwoHoles_OneThree        = 14,
-    TABULO_TwoHoles_OneFour         = 15,
-    TABULO_TwoHoles_OneFive         = 16,
-    TABULO_TwoHoles_TwoThree        = 17,
-    TABULO_TwoHoles_TwoFour         = 18,
-    TABULO_TwoHoles_TwoFive         = 19,
-    TABULO_TwoHoles_ThreeFour       = 20,
-    TABULO_TwoHoles_ThreeFive       = 21,
-    TABULO_TwoHoles_FourFive        = 22,
+enum f3TabuloPlankType {
 
-    TABULO_ThreeHoles_OneTwoThree   = 23,
-    TABULO_ThreeHoles_OneTwoFour    = 24,
-    TABULO_ThreeHoles_OneTwoFive    = 25,
-    TABULO_ThreeHoles_OneThreeFour  = 26,
-    TABULO_ThreeHoles_OneThreeFive  = 27,
-    TABULO_ThreeHoles_OneFourFive   = 28,
-    TABULO_ThreeHoles_TwoThreeFour  = 29,
-    TABULO_ThreeHoles_TwoThreeFive  = 30,
-    TABULO_ThreeHoles_TwoFourFive   = 31,
-    TABULO_ThreeHoles_ThreeFourFire = 32,
-    
-    TABULO_HOLE_MAX = 33
+    TABULO_PLANK_Small  = 8,
+    TABULO_PLANK_Medium = 9,
+    TABULO_PLANK_Long   = 10
 };
 
 enum f3TabuloResource {
