@@ -8,61 +8,56 @@
 
 #import "fgHouseNode.h"
 #import "fgPawnEdge.h"
-#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
-#import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
+#import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
-#import "../../../Framework/Framework/View/f3ViewSearch.h"
 
 @implementation fgHouseNode
 
-- (id)initPosition:(CGPoint)_position extend:(CGSize)_extend {
+- (id)init:(CGPoint)_position extend:(CGSize)_extend flag:(uint8_t)_flag {
 
-    self = [super initPosition:_position extend:_extend];
+    self = [super init:_position extend:_extend flag:_flag];
 
     if (self != nil)
     {
         houseView = nil;
-        houseType = TABULO_PAWN_MAX;
     }
 
     return self;
 }
 
-- (id)initPosition:(CGPoint)_position radius:(float)_radius {
+- (id)init:(CGPoint)_position radius:(float)_radius flag:(uint8_t)_flag {
 
-    self = [super initPosition:_position radius:_radius];
+    self = [super init:_position radius:_radius];
 
     if (self != nil)
     {
         houseView = nil;
-        houseType = TABULO_PAWN_MAX;
     }
 
     return self;
 }
 
-- (void)bindView:(f3ViewAdaptee *)_view type:(enum f3TabuloPawnType)_type {
+- (void)bindView:(f3ViewAdaptee *)_view {
     
     houseView = _view;
-    houseType = _type;
 }
 
-- (void)buildHouseFeedback:(f3GraphSchemaStrategy *)_strategy edge:(fgPawnEdge *)_edge {
+- (void)buildHouseFeedback:(f3GraphSchema *)_schema edge:(fgPawnEdge *)_edge {
 
-    bool isPawnMatches = [_strategy getNodeFlag:_edge.OriginKey flag:houseType];
+    bool isPawnMatches = [_schema getNodeFlag:_edge.OriginKey flag:goalFlag];
     
     [self replaceHouseTexture:isPawnMatches];
 }
 
-- (void)clearHouseFeedback:(f3GraphSchemaStrategy *)_strategy {
+- (void)clearHouseFeedback:(f3GraphSchema *)_schema {
     
-    if (_strategy == nil)
+    if (_schema == nil)
     {
         [self replaceHouseTexture:false];
     }
     else
     {
-        bool isPawnMatches = [_strategy getNodeFlag:nodeKey flag:houseType];
+        bool isPawnMatches = [_schema getNodeFlag:nodeKey flag:goalFlag];
 
         [self replaceHouseTexture:isPawnMatches];
     }
@@ -72,28 +67,13 @@
 
     if (houseView != nil)
     {
-        f3ViewSearch *searchDecorator = [[f3ViewSearch alloc] initSearch:houseView forType:[f3TextureDecorator class]];
+        f3ViewDecorator *textureDecorator = [(f3ViewAdaptee *)houseView getDecorator:[f3TextureDecorator class]];
         
-        [houseView.ViewLayer accept:searchDecorator];
-        
-        if (searchDecorator.Result != nil)
+        if (textureDecorator != nil)
         {
-            f3ViewSearch *searchComponent = [[f3ViewSearch alloc] initSearch:houseView ownedBy:searchDecorator.Result];
+            f3TextureDecorator *decorator = [self buildTextureDecorator:[textureDecorator getComponent] result:_result];
             
-            [searchDecorator.Result accept:searchComponent]; // check for decorator between the texture and the view
-            
-            if (searchComponent.Result != nil)
-            {
-                f3TextureDecorator *decorator = [self buildTextureDecorator:searchComponent.Result result:_result];
-                
-                [houseView.ViewLayer replaceComponent:searchDecorator.Result byComponent:decorator];
-            }
-            else
-            {
-                f3TextureDecorator *decorator = [self buildTextureDecorator:houseView result:_result];
-                
-                [houseView.ViewLayer replaceComponent:searchDecorator.Result byComponent:decorator];
-            }
+            [houseView.ViewLayer replaceComponent:textureDecorator byComponent:decorator];
         }
     }
 }
@@ -102,8 +82,8 @@
     
     fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
     
-    float houseX1 = (128.f +(houseType *384.f)) /2048.f;
-    float houseX2 = (512.f +(houseType *384.f)) /2048.f;
+    float houseX1 = (128.f +(goalFlag *384.f)) /2048.f;
+    float houseX2 = (512.f +(goalFlag *384.f)) /2048.f;
     float houseY1 = _home ? 0.334201390f : 0.222222222f;
     float houseY2 = _home ? 0.444444444f : 0.333333333f;
     

@@ -7,10 +7,9 @@
 //
 
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
-#import "../../../Framework/Framework/Control/f3GraphEdgeCondition.h"
 #import "../../../Framework/Framework/Control/f3ControlSequence.h"
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
-#import "../../../Framework/Framework/View/f3ViewScene.h"
+#import "../../../Framework/Framework/View/f3DrawScene.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/IDataAdapter.h"
 #import "fgTabuloDirector.h"
@@ -31,11 +30,5 @@
 
 - (id)init:(NSUInteger)_level;
 - (void)buildFeedbackLayer:(f3ViewBuilder *)_builder edges:(NSArray *)_edges;
-
-- (f3GraphNode *)buildHouseNode:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols;
-- (fgHouseNode *)buildHouseNode:(CGPoint)_position extend:(CGSize)_extend writer:(NSObject<IDataAdapter> *)_writer symbols:(NSMutableArray *)_symbols;
-
-+ (f3ViewAdaptee *)buildHelperPawn:(f3ViewBuilder *)_builder node:(f3GraphNode *)_node strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity;
-+ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge strategy:(f3GraphSchemaStrategy *)_strategy opacity:(float)_opacity;
 
 @end

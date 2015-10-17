@@ -7,7 +7,7 @@
 //
 
 #import "../../Framework/Framework/IViewCanvas.h"
-#import "../../Framework/Framework/View/f3ViewScene.h"
+#import "../../Framework/Framework/View/f3DrawScene.h"
 
 @protocol IViewScene;
 

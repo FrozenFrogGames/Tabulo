@@ -9,6 +9,8 @@
 #import "fgPlankEdge.h"
 #import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Model/f3VectorHandle.h"
+#import "../../../Framework/Framework/Control/f3GameAdaptee.h"
+#import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3ControlSequence.h"
 #import "../../../Framework/Framework/Control/f3TransformCommand.h"
@@ -17,7 +19,52 @@
 
 @implementation fgPlankEdge
 
++ (float)getOrientationFlag:(float)_angle {
+
+    float orientationAngle = (_angle > 165) ? _angle - 180.f : _angle;
+
+    if (orientationAngle < 15.f)
+    {
+        return 0x0000;
+    }
+    else if (orientationAngle < 35.f)
+    {
+        return (0x0001 << 0xB);
+    }
+    else if (orientationAngle < 55.f)
+    {
+        return (0x0002 << 0xB);
+    }
+    else if (orientationAngle < 75.f)
+    {
+        return (0x0003 << 0xB);
+    }
+    else if (orientationAngle < 105.f)
+    {
+        return (0x0004 << 0xB);
+    }
+    else if (orientationAngle < 125.f)
+    {
+        return (0x0005 << 0xB);
+    }
+    else if (orientationAngle < 145.f)
+    {
+        return (0x0006 << 0xB);
+    }
+    else if (orientationAngle < 165.f)
+    {
+        return (0x0007 << 0xB);
+    }
+
+    return 0x0000; // orientationAngle >= 165.f
+}
+
 - (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey {
+    
+    return [self init:_originKey target:_targetKey rotation:_rotationKey plank:UINT8_MAX];
+}
+
+- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey plank:(uint8_t)_plank {
 
     self = [super init:_originKey target:_targetKey rotation:_rotationKey];
 
@@ -27,8 +74,11 @@
         CGPoint targetPoint = [[f3GraphNode nodeForKey:_targetKey] Position];
         CGPoint rotationPoint = [[f3GraphNode nodeForKey:_rotationKey] Position];
 
-        targetAngle = [f3GraphEdge computeAngleBetween:targetPoint and:rotationPoint];
-        rotationAngle = targetAngle - [f3GraphEdge computeAngleBetween:originPoint and:rotationPoint];
+        targetAngle = [f3GraphEdge angleBetween:targetPoint and:rotationPoint];
+
+        orientationFlag = [fgPlankEdge getOrientationFlag:targetAngle];
+
+        rotationAngle = targetAngle - [f3GraphEdge angleBetween:originPoint and:rotationPoint];
 
         if (rotationAngle > 180.f)
         {
@@ -39,7 +89,24 @@
             rotationAngle += 360.f;
         }
 
-        rotationRadius = 1.75f;
+        switch (_plank)
+        {
+            case TABULO_PLANK_Small:
+                rotationRadius = 1.75f; // small plank is 3.5 (3.42) units
+                break;
+                
+            case TABULO_PLANK_Long:
+                rotationRadius = 3.5f; // long plank is 7 (7.07) units length
+                break;
+
+            case TABULO_PLANK_Medium: // medium plank is 5 (4.95) units
+                rotationRadius = 2.5f;
+                break;
+
+            default:
+                rotationRadius = 0.f; // TODO throw f3Exception
+                break;
+        }
     }
 
     return self;
@@ -48,24 +115,6 @@
 - (float)Angle {
 
     return targetAngle;
-}
-
-- (void)setPlankType:(unsigned char)_type {
-
-    switch (_type)
-    {
-        case TABULO_HaveSmallPlank:
-            rotationRadius = 1.75f; // small plank is 3.5 (3.42) units
-            break;
-            
-        case TABULO_HaveMediumPlank: // medium plank is 5 (4.95) units
-            rotationRadius = 2.5f;
-            break;
-            
-        case TABULO_HaveLongPlank:
-            rotationRadius = 3.5f; // long plank is 7 (7.07) units length
-            break;
-    }
 }
 
 - (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view slowMotion:(float)_slowmo {
@@ -85,6 +134,20 @@
     [composite appendComponent:[[f3SetAngleCommand alloc] initWithView:_view Angle:angleHandle]];
     [command appendComponent: composite];
     [_builder push:command];
+}
+
+- (f3NodeFlags)apply:(f3NodeFlags)_target origin:(f3NodeFlags)_origin {
+
+    if (_origin != 0x0000 && (_origin & TABULO_PAWN_MASK) == 0x0000)
+    {
+        f3NodeFlags result = _origin & (TABULO_PLANK_MASK | TABULO_HOLE_MASK);
+
+        return result | orientationFlag;
+    }
+
+    // TODO throw f3Exception
+
+    return 0x0000;
 }
 
 @end

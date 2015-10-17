@@ -9,7 +9,7 @@
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
 #import "../../Framework/Framework/Control/f3GameAdaptee.h"
-#import "../../Framework/Framework/View/f3ViewScene.h"
+#import "../../Framework/Framework/View/f3DrawScene.h"
 
 @implementation fgViewCanvas
 
@@ -39,7 +39,7 @@
     
     if (!CGSizeEqualToSize(screenSize, CGSizeZero) && !CGSizeEqualToSize(unitSize, CGSizeZero))
     {
-        f3ViewScene *scene = [f3GameDirector Director].Scene;
+        f3DrawScene *scene = [f3GameDirector Director].Scene;
         if (scene != nil)
         {
             fgViewAdapter *currentView = (fgViewAdapter *)[scene firstView];
