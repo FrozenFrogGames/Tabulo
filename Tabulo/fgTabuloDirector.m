@@ -17,6 +17,7 @@
 #import "../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../Framework/Framework/Control/f3Controller.h"
 #import "../../Framework/Framework/Control/f3GraphNode.h"
+#import "../../Framework/Framework/Control/f3GraphMaskCondition.h"
 #import "../../Framework/Framework/Control/f3GraphSchema.h"
 #import "Control/fgDragOverGraphEdgeState.h"
 #import "Control/fgDragAroundGraphNodeState.h"
@@ -429,35 +430,39 @@ const NSUInteger LEVEL_COUNT = 36;
 }
 
 - (void)buildEdgeForPawn:(uint8_t)_pawn origin:(NSNumber *)_origin target:(NSNumber *)_target plank:(uint8_t)_plank node:(NSNumber *)_node {
-    
+
     f3GraphEdgeWithInputNode *edge = [[fgPawnEdge alloc] init:_origin target:_target input:_node];
-    
-    [edge bindCondition:[[f3GraphCondition alloc] init:_origin flag:_pawn result:true]];
-    [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:_plank result:true]];
+
+    [edge bindCondition:[[f3GraphFlagCondition alloc] init:_origin flag:_pawn result:true]];
+    [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:_plank result:true]];
     
     switch (_pawn)
     {
         case TABULO_PAWN_Red:
-            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Red result:false]];
+            [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:TABULO_HOLE_Red result:false]];
             break;
             
         case TABULO_PAWN_Green:
-            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Green result:false]];
+            [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:TABULO_HOLE_Green result:false]];
             break;
             
         case TABULO_PAWN_Blue:
-            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Blue result:false]];
+            [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:TABULO_HOLE_Blue result:false]];
             break;
             
         case TABULO_PAWN_Yellow:
-            [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:TABULO_HOLE_Yellow result:false]];
+            [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:TABULO_HOLE_Yellow result:false]];
             break;
     }
-    
-    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Red result:false]];
-    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Green result:false]];
-    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Blue result:false]];
-    [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:TABULO_PAWN_Yellow result:false]];
+
+    CGPoint originPoint = [[f3GraphNode nodeForKey:_origin] Position];
+    CGPoint targetPoint = [[f3GraphNode nodeForKey:_target] Position];
+    float plankAngle = [f3GraphEdge angleBetween:originPoint and:targetPoint];
+    f3NodeFlags orientationFlag = [fgPlankEdge getOrientationFlag:plankAngle];
+    f3GraphMaskCondition *orientationCondition = [[f3GraphMaskCondition alloc] init:_node mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
+
+    [edge bindCondition:orientationCondition];
+    [edge bindCondition:[[f3GraphMaskCondition alloc] init:_target mask:TABULO_PAWN_MASK result:0x0000]];
 }
 
 - (void)buildEdgeForPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols plank:(uint8_t)_plank {
@@ -496,13 +501,24 @@ const NSUInteger LEVEL_COUNT = 36;
 
 - (void)buildEdgeForPlank:(uint8_t)_plank origin:(NSNumber *)_origin target:(NSNumber *)_target node:(NSNumber *)_node {
 
+    CGPoint originPoint = [[f3GraphNode nodeForKey:_origin] Position];
+    CGPoint rotationPoint = [[f3GraphNode nodeForKey:_node] Position];
+    float originAngle = [f3GraphEdge angleBetween:originPoint and:rotationPoint];
+
+    f3NodeFlags orientationFlag = [fgPlankEdge getOrientationFlag:originAngle];
+    f3GraphMaskCondition *orientationCondition = [[f3GraphMaskCondition alloc] init:_origin mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
+
+    f3GraphFlagCondition *originCondition = [[f3GraphFlagCondition alloc] init:_origin flag:_plank result:true];
+    f3GraphFlagCondition *targetCondition = [[f3GraphFlagCondition alloc] init:_target flag:_plank result:false];
+
     for (int pawn = TABULO_PAWN_Red; pawn < TABULO_HOLE_Red; ++pawn)
     {
-        f3GraphEdgeWithRotationNode *edge = [[fgPlankEdge alloc] init:_origin target:_target rotation:_node];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_origin target:_target rotation:_node plank:_plank];
 
-        [edge bindCondition:[[f3GraphCondition alloc] init:_origin flag:_plank result:true]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_target flag:_plank result:false]];
-        [edge bindCondition:[[f3GraphCondition alloc] init:_node flag:pawn result:true]];
+        [edge bindCondition:originCondition];
+        [edge bindCondition:targetCondition];
+        [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:pawn result:true]];
+        [edge bindCondition:orientationCondition];
     }
 }
 
@@ -537,11 +553,9 @@ const NSUInteger LEVEL_COUNT = 36;
     [_strategy appendGameController:[[f3Controller alloc] initWithState:controlState]];
 }
 
-- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state {
+- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data strategy:(f3GraphSchemaStrategy *)_strategy {
 
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
-    f3GraphSchemaStrategy *strategy = (f3GraphSchemaStrategy *)[_state Strategy];
-    f3GraphSchema *schema = nil;
     f3GraphNode *node = nil;
 
     NSMutableArray *symbols = [NSMutableArray array];
@@ -553,52 +567,41 @@ const NSUInteger LEVEL_COUNT = 36;
         {
             // graph marker
             case 0x00:
-                if (schema == nil)
+                [f3GraphSchema initNodeKeys:_data symbols:symbols];
+                break;
+            case 0x01:
+                if (_strategy.Schema == nil)
                 {
-                    [f3GraphSchema initNodeKeys:_data symbols:symbols];
+                    [_strategy initGraphSchema:[[f3GraphSchema alloc] init:_data] producer:producer];
                 }
                 else
                 {
-                    // TODO throw f3Exception
-                }
-                break;
-            case 0x01:
-                if (schema == nil)
-                {
-                    schema = [[f3GraphSchema alloc] init:_data];
-
-                    [strategy initGraphSchema:schema producer:producer];
-                }
-                else // notify initial schema in order to keep best neighbors for hint
-                {
-                    f3GraphSchema *nextSchema = [[f3GraphSchema alloc] init:_data];
-
-                    [schema bindNeighbor:nextSchema];
+                    __unused f3GraphSchema *neighbor = [[f3GraphSchema alloc] init:_data];
                 }
                 break;
             // node marker
             case 0x02:
                 node = [self buildNodeWithExtend:_data];
                 [symbols addObject:node];
-                [strategy appendTouchListener:node];
+                [_strategy appendTouchListener:node];
                 node = nil;
                 break;
             case 0x03:
                 node = [self buildNodeWithRadius:_data];
                 [symbols addObject:node];
-                [strategy appendTouchListener:node];
+                [_strategy appendTouchListener:node];
                 node = nil;
                 break;
             case 0x04:
                 node = [self buildHouseNodeWithExtend:_data];
                 [symbols addObject:node];
-                [strategy appendTouchListener:node];
+                [_strategy appendTouchListener:node];
                 node = nil;
                 break;
             case 0x05:
                 node = [self buildHouseNodeWithRadius:_data];
                 [symbols addObject:node];
-                [strategy appendTouchListener:node];
+                [_strategy appendTouchListener:node];
                 node = nil;
                 break;
             // decorator marker
@@ -626,10 +629,10 @@ const NSUInteger LEVEL_COUNT = 36;
                 break;
             // control marker
             case 0x0D:
-                [self buildControlOverGraphEdge:_data symbols:symbols strategy:strategy];
+                [self buildControlOverGraphEdge:_data symbols:symbols strategy:_strategy];
                 break;
             case 0x0E:
-                [self buildControlAroundGraphNode:_data symbols:symbols strategy:strategy];
+                [self buildControlAroundGraphNode:_data symbols:symbols strategy:_strategy];
                 break;
             // tabulo marker
             case 0x10:

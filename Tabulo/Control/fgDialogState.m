@@ -15,7 +15,7 @@
 #import "../../../Framework/Framework/Control/f3GraphNode.h"
 #import "../../../Framework/Framework/Control/f3EventButtonState.h"
 #import "../../../Framework/Framework/View/f3GameDirector.h"
-#import "../../../Framework/Framework/View/f3ViewScene.h"
+#import "../../../Framework/Framework/View/f3DrawScene.h"
 #import "../../../Framework/Framework/View/f3ViewAdaptee.h"
 
 @implementation fgDialogState
@@ -406,9 +406,10 @@ enum TabuloDialogItem {
 
                 if (dataWriter != nil)
                 {
-                    f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:[[fgTabuloStrategy alloc] init:nextLevel]];
+                    fgTabuloStrategy *nextGameStrategy = [[fgTabuloStrategy alloc] init:nextLevel];
+                    f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:nextGameStrategy];
                     
-                    [director loadSceneFromFile:dataWriter state:nextGameState];
+                    [director loadSceneFromFile:dataWriter strategy:nextGameStrategy];
                     
                     [producer buildScene:director.Builder state:nextGameState];
                 }

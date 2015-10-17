@@ -7,7 +7,7 @@
 //
 
 #import "../../Framework/Framework/Control/f3GraphNode.h"
-#import "../../Framework/Framework/Control/f3GameState.h"
+#import "../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
 #import "../../Framework/Framework/Model/f3IntegerArray.h"
 #import "../../Framework/Framework/Model/f3FloatArray.h"
 #import "../../Framework/Framework/View/f3GameDirector.h"
@@ -15,11 +15,13 @@
 
 enum f3TabuloPawnType {
 
-    TABULO_PAWN_Red     = 0,
-    TABULO_PAWN_Green   = 1,
-    TABULO_PAWN_Blue    = 2,
-    TABULO_PAWN_Yellow  = 3
+    TABULO_PAWN_Red    = 0,
+    TABULO_PAWN_Green  = 1,
+    TABULO_PAWN_Blue   = 2,
+    TABULO_PAWN_Yellow = 3
 };
+
+const uint16_t TABULO_PAWN_MASK = 15;
 
 enum f3TabuloHoleType {
 
@@ -29,12 +31,18 @@ enum f3TabuloHoleType {
     TABULO_HOLE_Yellow = 7
 };
 
+const uint16_t TABULO_HOLE_MASK = 240;
+
 enum f3TabuloPlankType {
 
     TABULO_PLANK_Small  = 8,
     TABULO_PLANK_Medium = 9,
     TABULO_PLANK_Long   = 10
 };
+
+const uint16_t TABULO_PLANK_MASK = 1792;
+
+const uint16_t TABULO_PLANK_ORIENTATION = 14336;
 
 enum f3TabuloResource {
     
@@ -69,6 +77,6 @@ enum fgTabuloGrade {
 - (bool)isLevelLocked:(NSUInteger)_level;
 - (NSUInteger)getLevelCount;
 
-- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data state:(f3GameState *)_state;
+- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data strategy:(f3GraphSchemaStrategy *)_strategy;
 
 @end

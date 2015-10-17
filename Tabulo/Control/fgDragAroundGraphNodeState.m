@@ -8,6 +8,7 @@
 
 #import "fgDragAroundGraphNodeState.h"
 #import "fgTabuloStrategy.h"
+#import "fgPlankEdge.h"
 #import "../fgTabuloDirector.h"
 #import "../../../Framework/Framework/Control/f3GameAdaptee.h"
 #import "../../../Framework/Framework/Control/f3GameState.h"
@@ -118,63 +119,6 @@
     }
     
     feedbackEdges = nil;
-}
-
-- (bool)acceptTargetNode:(f3GraphNode *)_node {
-    
-    f3ControllerState *state = [f3GameAdaptee Producer].State;
-    
-    if ([super acceptTargetNode:_node])
-    {
-        NSNumber *nodeKey = [_node Key];
-        
-        if ([state isKindOfClass:[f3GameState class]])
-        {
-            f3GameState *gameState = (f3GameState *)state;
-            if ([gameState.Strategy isKindOfClass:[f3GraphSchemaStrategy class]])
-            {
-                f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[gameState Strategy];
-
-                if (![gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PLANK_Small]  &&
-                    ![gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PLANK_Medium] &&
-                    ![gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PLANK_Long]   )
-                {
-                    return true;
-                }
-            }
-        }
-    }
-    
-    return false;
-}
-
-- (bool)acceptRotationNode:(f3GraphNode *)_node {
-
-    f3ControllerState *state = [f3GameAdaptee Producer].State;
-
-    if ([super acceptRotationNode:_node])
-    {
-        NSNumber *nodeKey = [_node Key];
-        
-        if ([state isKindOfClass:[f3GameState class]])
-        {
-            f3GameState *gameState = (f3GameState *)state;
-            if ([gameState.Strategy isKindOfClass:[f3GraphSchemaStrategy class]])
-            {
-                f3GraphSchemaStrategy *gameStrategy = (f3GraphSchemaStrategy *)[gameState Strategy];
-
-                if ([gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PAWN_Red]    ||
-                    [gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PAWN_Green]  ||
-                    [gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PAWN_Blue]   ||
-                    [gameStrategy.Schema getNodeFlag:nodeKey flag:TABULO_PAWN_Yellow] )
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
 }
 
 @end

@@ -9,7 +9,6 @@
 #import "fgHouseNode.h"
 #import "fgPawnEdge.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
-#import "../../../Framework/Framework/View/f3GraphSceneBuilder.h"
 #import "../../../Framework/Framework/View/f3TextureDecorator.h"
 
 @implementation fgHouseNode

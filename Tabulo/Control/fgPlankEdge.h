@@ -11,10 +11,13 @@
 @interface fgPlankEdge : f3GraphEdgeWithRotationNode {
 
     float targetAngle, rotationAngle, rotationRadius;
+    f3NodeFlags orientationFlag;
 }
 
 @property (readonly) float Angle;
 
-- (void)setPlankType:(unsigned char)_type;
++ (float)getOrientationFlag:(float)_angle;
+
+- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey plank:(uint8_t)_plank;
 
 @end

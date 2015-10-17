@@ -97,7 +97,7 @@
             {
                 [(fgHouseNode *)node clearHouseFeedback:nil]; // force feedback to false on the current node
             }
-            
+
             [feedbackEdges removeAllObjects];
         }
     }
