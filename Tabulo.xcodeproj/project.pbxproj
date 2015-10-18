@@ -38,6 +38,7 @@
 		F6EB416A18E8EFDA0017487E /* fgMenuState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EB416918E8EFDA0017487E /* fgMenuState.m */; };
 		F6EB418018EB90AD0017487E /* spritesheet-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = F6EB417F18EB90AD0017487E /* spritesheet-menu.png */; };
 		F6EB418218EB90B90017487E /* background-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = F6EB418118EB90B90017487E /* background-menu.png */; };
+		F6F18FCF1BD41E01008E19FA /* fgPlankMaskCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F18FCE1BD41E01008E19FA /* fgPlankMaskCondition.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -90,6 +91,8 @@
 		F6EB416918E8EFDA0017487E /* fgMenuState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgMenuState.m; path = Control/fgMenuState.m; sourceTree = "<group>"; };
 		F6EB417F18EB90AD0017487E /* spritesheet-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spritesheet-menu.png"; sourceTree = "<group>"; };
 		F6EB418118EB90B90017487E /* background-menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-menu.png"; sourceTree = "<group>"; };
+		F6F18FCD1BD41E01008E19FA /* fgPlankMaskCondition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgPlankMaskCondition.h; path = Control/fgPlankMaskCondition.h; sourceTree = "<group>"; };
+		F6F18FCE1BD41E01008E19FA /* fgPlankMaskCondition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgPlankMaskCondition.m; path = Control/fgPlankMaskCondition.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +184,8 @@
 				F6BDB2B818C2DAD600430653 /* fgPawnEdge.m */,
 				F6BDB2BA18C2DAEF00430653 /* fgPlankEdge.h */,
 				F6BDB2BB18C2DAEF00430653 /* fgPlankEdge.m */,
+				F6F18FCD1BD41E01008E19FA /* fgPlankMaskCondition.h */,
+				F6F18FCE1BD41E01008E19FA /* fgPlankMaskCondition.m */,
 			);
 			name = Graph;
 			sourceTree = "<group>";
@@ -332,6 +337,7 @@
 				F6025107187DDEFB0029915C /* fgViewAdapter.m in Sources */,
 				F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */,
 				F6BDB2BC18C2DAEF00430653 /* fgPlankEdge.m in Sources */,
+				F6F18FCF1BD41E01008E19FA /* fgPlankMaskCondition.m in Sources */,
 				F6118612188C545A004497C2 /* fgDragOverGraphEdgeState.m in Sources */,
 				F6EB416A18E8EFDA0017487E /* fgMenuState.m in Sources */,
 				F6DF01F718B598CC00E7DF6C /* fgDialogState.m in Sources */,

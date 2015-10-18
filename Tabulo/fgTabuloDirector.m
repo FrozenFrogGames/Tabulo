@@ -25,6 +25,7 @@
 #import "Control/fgHouseNode.h"
 #import "Control/fgPawnEdge.h"
 #import "Control/fgPlankEdge.h"
+#import "Control/fgPlankMaskCondition.h"
 
 @interface __LevelFlags : NSObject
 
@@ -307,7 +308,7 @@ const NSUInteger LEVEL_COUNT = 36;
     return node;
 }
 
-- (f3GraphNode *)buildHouseNodeWithExtend:(NSObject<IDataAdapter> *)_data {
+- (f3GoalNode *)buildHouseNodeWithExtend:(NSObject<IDataAdapter> *)_data {
     
     uint16_t dataLength = sizeof(float) *4;
     float *dataArray = malloc(dataLength);
@@ -324,7 +325,7 @@ const NSUInteger LEVEL_COUNT = 36;
     return node;
 }
 
-- (f3GraphNode *)buildHouseNodeWithRadius:(NSObject<IDataAdapter> *)_data {
+- (f3GoalNode *)buildHouseNodeWithRadius:(NSObject<IDataAdapter> *)_data {
     
     uint16_t dataLength = sizeof(float) *3;
     float *dataArray = malloc(dataLength);
@@ -434,7 +435,14 @@ const NSUInteger LEVEL_COUNT = 36;
     f3GraphEdgeWithInputNode *edge = [[fgPawnEdge alloc] init:_origin target:_target input:_node];
 
     [edge bindCondition:[[f3GraphFlagCondition alloc] init:_origin flag:_pawn result:true]];
+    [edge bindCondition:[[f3GraphMaskCondition alloc] init:_target mask:TABULO_PAWN_MASK result:0x0000]];
+
+    float plankAngle = [f3GraphEdge angleBetween:[[f3GraphNode nodeForKey:_target] Position] and:[[f3GraphNode nodeForKey:_origin] Position]];
+    f3NodeFlags orientationFlag = [fgPlankEdge getOrientationFlag:plankAngle];
+    fgPlankMaskCondition *orientationCondition = [[fgPlankMaskCondition alloc] init:_node mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
+    
     [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:_plank result:true]];
+    [edge bindCondition:orientationCondition];
     
     switch (_pawn)
     {
@@ -454,15 +462,6 @@ const NSUInteger LEVEL_COUNT = 36;
             [edge bindCondition:[[f3GraphFlagCondition alloc] init:_node flag:TABULO_HOLE_Yellow result:false]];
             break;
     }
-
-    CGPoint originPoint = [[f3GraphNode nodeForKey:_origin] Position];
-    CGPoint targetPoint = [[f3GraphNode nodeForKey:_target] Position];
-    float plankAngle = [f3GraphEdge angleBetween:originPoint and:targetPoint];
-    f3NodeFlags orientationFlag = [fgPlankEdge getOrientationFlag:plankAngle];
-    f3GraphMaskCondition *orientationCondition = [[f3GraphMaskCondition alloc] init:_node mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
-
-    [edge bindCondition:orientationCondition];
-    [edge bindCondition:[[f3GraphMaskCondition alloc] init:_target mask:TABULO_PAWN_MASK result:0x0000]];
 }
 
 - (void)buildEdgeForPawn:(NSObject<IDataAdapter> *)_data symbols:(NSMutableArray *)_symbols plank:(uint8_t)_plank {
@@ -506,7 +505,7 @@ const NSUInteger LEVEL_COUNT = 36;
     float originAngle = [f3GraphEdge angleBetween:originPoint and:rotationPoint];
 
     f3NodeFlags orientationFlag = [fgPlankEdge getOrientationFlag:originAngle];
-    f3GraphMaskCondition *orientationCondition = [[f3GraphMaskCondition alloc] init:_origin mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
+    fgPlankMaskCondition *orientationCondition = [[fgPlankMaskCondition alloc] init:_origin mask:TABULO_PLANK_ORIENTATION result:orientationFlag];
 
     f3GraphFlagCondition *originCondition = [[f3GraphFlagCondition alloc] init:_origin flag:_plank result:true];
     f3GraphFlagCondition *targetCondition = [[f3GraphFlagCondition alloc] init:_target flag:_plank result:false];
@@ -559,6 +558,7 @@ const NSUInteger LEVEL_COUNT = 36;
     f3GraphNode *node = nil;
 
     NSMutableArray *symbols = [NSMutableArray array];
+    NSMutableArray *conditions = [NSMutableArray array];
     uint8_t marker = [_data readMarker];
 
     while (marker != 0xFF)
@@ -567,7 +567,7 @@ const NSUInteger LEVEL_COUNT = 36;
         {
             // graph marker
             case 0x00:
-                [f3GraphSchema initNodeKeys:_data symbols:symbols];
+                [f3GraphSchema initGraphSchema:_data symbols:symbols conditions:conditions];
                 break;
             case 0x01:
                 if (_strategy.Schema == nil)
@@ -595,12 +595,14 @@ const NSUInteger LEVEL_COUNT = 36;
             case 0x04:
                 node = [self buildHouseNodeWithExtend:_data];
                 [symbols addObject:node];
+                [conditions addObject:[(f3GoalNode *)node buildCondition]];
                 [_strategy appendTouchListener:node];
                 node = nil;
                 break;
             case 0x05:
                 node = [self buildHouseNodeWithRadius:_data];
                 [symbols addObject:node];
+                [conditions addObject:[(f3GoalNode *)node buildCondition]];
                 [_strategy appendTouchListener:node];
                 node = nil;
                 break;

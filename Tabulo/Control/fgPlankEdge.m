@@ -21,42 +21,40 @@
 
 + (float)getOrientationFlag:(float)_angle {
 
-    float orientationAngle = (_angle > 165) ? _angle - 180.f : _angle;
-
-    if (orientationAngle < 15.f)
+    float orientationAngle = (_angle < 168.75f) ? _angle : _angle - 191.25f;
+    
+    if (orientationAngle < 11.25f || orientationAngle >= 168.75f)
     {
-        return 0x0000;
+        return 0x00000000;
     }
-    else if (orientationAngle < 35.f)
+    else if (orientationAngle < 33.75f)
     {
-        return (0x0001 << 0xB);
+        return (0x00000001 << 0xB);
     }
-    else if (orientationAngle < 55.f)
+    else if (orientationAngle < 56.25f)
     {
-        return (0x0002 << 0xB);
+        return (0x00000002 << 0xB);
     }
-    else if (orientationAngle < 75.f)
+    else if (orientationAngle < 78.75f)
     {
-        return (0x0003 << 0xB);
+        return (0x00000003 << 0xB);
     }
-    else if (orientationAngle < 105.f)
+    else if (orientationAngle < 101.25f)
     {
-        return (0x0004 << 0xB);
+        return (0x00000004 << 0xB);
     }
-    else if (orientationAngle < 125.f)
+    else if (orientationAngle < 123.75f)
     {
-        return (0x0005 << 0xB);
+        return (0x00000005 << 0xB);
     }
-    else if (orientationAngle < 145.f)
+    else if (orientationAngle < 146.25f)
     {
-        return (0x0006 << 0xB);
+        return (0x00000006 << 0xB);
     }
-    else if (orientationAngle < 165.f)
+    else // if (orientationAngle < 168.75f)
     {
-        return (0x0007 << 0xB);
+        return (0x00000007 << 0xB);
     }
-
-    return 0x0000; // orientationAngle >= 165.f
 }
 
 - (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey {
@@ -138,7 +136,7 @@
 
 - (f3NodeFlags)apply:(f3NodeFlags)_target origin:(f3NodeFlags)_origin {
 
-    if (_origin != 0x0000 && (_origin & TABULO_PAWN_MASK) == 0x0000)
+    if (_origin != 0x00000000 && (_origin & TABULO_PAWN_MASK) == 0x00000000)
     {
         f3NodeFlags result = _origin & (TABULO_PLANK_MASK | TABULO_HOLE_MASK);
 
@@ -147,7 +145,7 @@
 
     // TODO throw f3Exception
 
-    return 0x0000;
+    return 0x00000000;
 }
 
 @end
