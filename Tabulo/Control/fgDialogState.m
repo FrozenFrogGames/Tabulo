@@ -45,11 +45,11 @@ enum TabuloDialogItem {
     f3GraphNode *itemNode;
     f3GameEvent *itemEvent;
     f3EventButtonState *itemState;
-    
+
     if (dialogEvent.Event < GAME_EVENT_MAX)
     {
         dialogScale = _screen.height /_unit.height /_scale;
-        
+
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
         {
             dialogScale /= 9.f;
@@ -58,9 +58,9 @@ enum TabuloDialogItem {
         {
             dialogScale /= 12.f;
         }
-        
-        switch (dialogEvent.Event) {
-                
+
+        switch (dialogEvent.Event)
+        {
             case GAME_Over:
                 
                 [self buildDialogItem:_builder atPosition:CGPointMake(-1.8f, -2.f) option:DIALOGITEM_Reset];
@@ -375,7 +375,6 @@ enum TabuloDialogItem {
 - (void)notifyEvent:(f3GameEvent *)_event {
 
     f3GameAdaptee *producer = [f3GameAdaptee Producer];
-    fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
 
     if ([_event isKindOfClass:[fgTabuloEvent class]])
     {
@@ -385,40 +384,38 @@ enum TabuloDialogItem {
         {
             [producer popMenu];
         }
+        else if (event.Event == GAME_Pause)
+        {
+            [producer popState];
+        }
         else
         {
-            if (event.Event == GAME_Pause)
+            NSUInteger nextLevel = event.Level;
+
+            if (event.Event == GAME_Next)
             {
-                [producer popState];
+                ++nextLevel; // increment to next level
+            }
+
+            NSString *filename = [@"LEVEL" stringByAppendingString:[NSString stringWithFormat:@"%03lu",(unsigned long)nextLevel]];
+
+            NSObject<IDataAdapter> *dataWriter = [[fgDataAdapter alloc] init:filename bundle:true];
+
+            if (dataWriter != nil)
+            {
+                fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
+
+                fgTabuloStrategy *nextGameStrategy = [[fgTabuloStrategy alloc] init:nextLevel];
+                [director loadSceneFromFile:dataWriter strategy:nextGameStrategy];
+                
+                f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:nextGameStrategy];
+                [producer buildScene:director.Builder state:nextGameState];
             }
             else
             {
-                NSUInteger nextLevel = event.Level;
+                NSLog(@"Failed load filename: %@", filename);
 
-                if (event.Event == GAME_Next)
-                {
-                    ++nextLevel; // increment to next level
-                }
-
-                NSString *filename = [@"LEVEL" stringByAppendingString:[NSString stringWithFormat:@"%03lu",(unsigned long)nextLevel]];
-
-                NSObject<IDataAdapter> *dataWriter = [[fgDataAdapter alloc] init:filename bundle:true];
-
-                if (dataWriter != nil)
-                {
-                    fgTabuloStrategy *nextGameStrategy = [[fgTabuloStrategy alloc] init:nextLevel];
-                    f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:nextGameStrategy];
-                    
-                    [director loadSceneFromFile:dataWriter strategy:nextGameStrategy];
-                    
-                    [producer buildScene:director.Builder state:nextGameState];
-                }
-                else
-                {
-                    NSLog(@"Failed load filename: %@", filename);
-
-                    [producer popMenu];
-                }
+                [producer popMenu];
             }
         }
     }
