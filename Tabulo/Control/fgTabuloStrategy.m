@@ -22,7 +22,6 @@
 #import "../../../Framework/Framework/Control/f3DragAroundGraphNodeState.h"
 #import "../../../Framework/Framework/Model/f3GraphSchemaMemento.h"
 #import "fgTabuloDirector.h"
-#import "fgTabuloEvent.h"
 #import "fgDialogState.h"
 #import "fgHouseNode.h"
 #import "fgPawnEdge.h"
@@ -366,7 +365,7 @@
     f3GraphNode *node = [[f3GraphNode alloc] init:position extend:CGSizeMake(0.5f /_scale, 0.5f/_scale)];
     [self appendTouchListener:node];
 
-    fgTabuloEvent *pauseEvent = [[fgTabuloEvent alloc] init:GAME_Pause level:levelIndex];
+    f3GameFlowEvent *pauseEvent = [[f3GameFlowEvent alloc] init:GAME_Pause level:levelIndex];
     f3EventButtonState *pauseControl = [[f3EventButtonState alloc] initWithNode:node event:pauseEvent];
     [self appendGameController:[[f3Controller alloc] initWithState:pauseControl]];
 
@@ -447,20 +446,20 @@
             
             if ([director isLevelLocked:levelIndex+1])
             {
-                dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:GAME_Over level:levelIndex]];
+                dialogState = [[fgDialogState alloc] initWithEvent:[[f3GameFlowEvent alloc] init:GAME_Over level:levelIndex]];
             }
             else
             {
-                dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:GAME_Next level:levelIndex]];
+                dialogState = [[fgDialogState alloc] initWithEvent:[[f3GameFlowEvent alloc] init:GAME_Next level:levelIndex]];
             }
         }
-        else if ([_event isKindOfClass:[fgTabuloEvent class]])
+        else if ([_event isKindOfClass:[f3GameFlowEvent class]])
         {
-            dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
+            dialogState = [[fgDialogState alloc] initWithEvent:(f3GameFlowEvent *)_event];
         }
         else
         {
-            dialogState = [[fgDialogState alloc] initWithEvent:[[fgTabuloEvent alloc] init:_event.Event level:levelIndex]];
+            dialogState = [[fgDialogState alloc] initWithEvent:[[f3GameFlowEvent alloc] init:_event.Event level:levelIndex]];
         }
         
         if (hintCommand != nil)
@@ -512,45 +511,6 @@
         
         hintCommand = [[f3ControlSequence alloc] init];
         
-        bool bDelayViewVisibility = false;
-        /*
-         while (memento != nil && memento.Schema.DistanceToGoal < graphSchema.DistanceToGoal)
-         {
-         f3GraphEdge *previousEdge = [graphSchema findEdgeTo:memento.Schema];
-         
-         if (previousEdge != nil)
-         {
-         graphSchema = memento.Schema;
-         
-         f3Controller *controller = [producer findController:[f3GraphNode nodeForKey:previousEdge.OriginKey]];
-         if ([controller.State isKindOfClass:[f3MutableGraphNodeState class]])
-         {
-         f3MutableGraphNodeState *state = (f3MutableGraphNodeState *)controller.State;
-         f3GraphNode *node = [f3GraphNode nodeForKey:previousEdge.TargetKey];
-         
-         [controller pushState:[[f3MutableGraphNodeState alloc] initWithNode:node forView:state.View nextState:state.NextState]];
-         [previousEdge buildGraphCommand:producer.Builder view:state.View slowMotion:1.f];
-         
-         f3ControlComponent *action = [producer.Builder popComponent];
-         while (action != nil)
-         {
-         // TODO reverse command for the edge from previous to current schema
-         
-         [hintCommand appendComponent:action];
-         action = [producer.Builder popComponent];
-         }
-         
-         bDelayViewVisibility = true;
-         }
-         
-         memento = (f3GraphSchemaMemento *)memento.Previous;
-         }
-         else
-         {
-         break; // fail-safe with f3Exception
-         }
-         }
-         */
         f3GraphEdge *hintEdge = [graphSchema findBestEdge:graphSchema];
         if (hintEdge != nil)
         {
@@ -569,8 +529,6 @@
             
             if (view != nil)
             {
-                view.IsHidden = bDelayViewVisibility; // delay visibility when rewind is required
-                
                 [_builder push:[f3IntegerArray buildHandleForUInt8:1, UCHAR_BOX(HelperOverlay), nil]];
                 [_builder buildComposite:1]; // create helper layer with the view to manipulate
                 

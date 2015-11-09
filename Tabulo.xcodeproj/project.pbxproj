@@ -20,7 +20,6 @@
 		F6025108187DDEFB0029915C /* fgViewCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = F6025103187DDEFB0029915C /* fgViewCanvas.m */; };
 		F6118612188C545A004497C2 /* fgDragOverGraphEdgeState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6118611188C545A004497C2 /* fgDragOverGraphEdgeState.m */; };
 		F6145D5018B04D5C00924636 /* background-gameplay.png in Resources */ = {isa = PBXBuildFile; fileRef = F6145D4E18B04D5C00924636 /* background-gameplay.png */; };
-		F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5518B1B24200924636 /* fgTabuloEvent.m */; };
 		F6145D5918B2F3ED00924636 /* fgTabuloStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = F6145D5818B2F3ED00924636 /* fgTabuloStrategy.m */; };
 		F61CD764193EBDEC006F3C04 /* libFramework.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD763193EBDEC006F3C04 /* libFramework.a */; };
 		F61CD766193EBEED006F3C04 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F61CD765193EBEED006F3C04 /* GameKit.framework */; };
@@ -38,7 +37,7 @@
 		F6EB416A18E8EFDA0017487E /* fgMenuState.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EB416918E8EFDA0017487E /* fgMenuState.m */; };
 		F6EB418018EB90AD0017487E /* spritesheet-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = F6EB417F18EB90AD0017487E /* spritesheet-menu.png */; };
 		F6EB418218EB90B90017487E /* background-menu.png in Resources */ = {isa = PBXBuildFile; fileRef = F6EB418118EB90B90017487E /* background-menu.png */; };
-		F6F18FCF1BD41E01008E19FA /* fgPlankMaskCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F18FCE1BD41E01008E19FA /* fgPlankMaskCondition.m */; settings = {ASSET_TAGS = (); }; };
+		F6F18FCF1BD41E01008E19FA /* fgPlankMaskCondition.m in Sources */ = {isa = PBXBuildFile; fileRef = F6F18FCE1BD41E01008E19FA /* fgPlankMaskCondition.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,8 +63,6 @@
 		F6118610188C545A004497C2 /* fgDragOverGraphEdgeState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgDragOverGraphEdgeState.h; path = Control/fgDragOverGraphEdgeState.h; sourceTree = "<group>"; };
 		F6118611188C545A004497C2 /* fgDragOverGraphEdgeState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgDragOverGraphEdgeState.m; path = Control/fgDragOverGraphEdgeState.m; sourceTree = "<group>"; };
 		F6145D4E18B04D5C00924636 /* background-gameplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "background-gameplay.png"; sourceTree = "<group>"; };
-		F6145D5418B1B24200924636 /* fgTabuloEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloEvent.h; path = Control/fgTabuloEvent.h; sourceTree = "<group>"; };
-		F6145D5518B1B24200924636 /* fgTabuloEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloEvent.m; path = Control/fgTabuloEvent.m; sourceTree = "<group>"; };
 		F6145D5718B2F3ED00924636 /* fgTabuloStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fgTabuloStrategy.h; path = Control/fgTabuloStrategy.h; sourceTree = "<group>"; };
 		F6145D5818B2F3ED00924636 /* fgTabuloStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = fgTabuloStrategy.m; path = Control/fgTabuloStrategy.m; sourceTree = "<group>"; };
 		F61CD763193EBDEC006F3C04 /* libFramework.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFramework.a; path = "../../Library/Developer/Xcode/DerivedData/TabuloGame-dvquwkaaxqsgewbeorclhpcfvyxb/Build/Products/Debug-iphoneos/libFramework.a"; sourceTree = "<group>"; };
@@ -227,20 +224,10 @@
 		F6A6CA80188096F8006AAE57 /* Control */ = {
 			isa = PBXGroup;
 			children = (
-				F6BDB2B318C277D900430653 /* Event */,
 				F6118608188C4E22004497C2 /* Graph */,
 				F611860C188C4F46004497C2 /* State */,
 			);
 			name = Control;
-			sourceTree = "<group>";
-		};
-		F6BDB2B318C277D900430653 /* Event */ = {
-			isa = PBXGroup;
-			children = (
-				F6145D5418B1B24200924636 /* fgTabuloEvent.h */,
-				F6145D5518B1B24200924636 /* fgTabuloEvent.m */,
-			);
-			name = Event;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -325,7 +312,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6145D5618B1B24200924636 /* fgTabuloEvent.m in Sources */,
 				F60250DA187DDDC80029915C /* main.m in Sources */,
 				F6025104187DDEFB0029915C /* fgAppDelegate.m in Sources */,
 				F6145D5918B2F3ED00924636 /* fgTabuloStrategy.m in Sources */,

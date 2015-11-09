@@ -10,7 +10,6 @@
 #import "../../../Framework/Framework/View/f3ViewBuilder.h"
 #import "../../../Framework/Framework/View/f3OffsetDecorator.h"
 #import "../../../Framework/Framework/View/f3ViewComposite.h"
-#import "fgTabuloEvent.h"
 
 @interface fgMenuState : f3GameState {
 

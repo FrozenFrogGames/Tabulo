@@ -7,7 +7,6 @@
 //
 
 #import "fgMenuState.h"
-#import "fgTabuloEvent.h"
 #import "fgDialogState.h"
 #import "fgHouseNode.h"
 #import "../fgTabuloDirector.h"
@@ -213,7 +212,7 @@
         f3GameStrategy *strategy = [_state Strategy];
         f3GraphNode *node = [[f3GraphNode alloc] init:_position extend:CGSizeMake(_scale *.45, _scale *.45)];
         [strategy appendTouchListener:node];
-        fgTabuloEvent * event = [[fgTabuloEvent alloc] init:GAME_Play level:_level];
+        f3GameFlowEvent * event = [[f3GameFlowEvent alloc] init:GAME_Play level:_level];
         f3EventButtonState *controlView = [[f3EventButtonState alloc] initWithNode:node event:event];
         [strategy appendGameController:[[f3Controller alloc] initWithState:controlView]];
     }
@@ -369,12 +368,12 @@
 
 - (void)notifyEvent:(f3GameEvent *)_event {
 
-    if ([_event isKindOfClass:[fgTabuloEvent class]] && insideOfArea && notInMotion)
+    if ([_event isKindOfClass:[f3GameFlowEvent class]] && insideOfArea && notInMotion)
     {
         f3GameAdaptee *producer = [f3GameAdaptee Producer];
         f3GameDirector *director = [f3GameDirector Director];
 
-        fgDialogState *dialogState = [[fgDialogState alloc] initWithEvent:(fgTabuloEvent *)_event];
+        fgDialogState *dialogState = [[fgDialogState alloc] initWithEvent:(f3GameFlowEvent *)_event];
 
         [producer buildScene:director.Builder state:dialogState];
     }

@@ -77,6 +77,4 @@ enum fgTabuloGrade {
 - (bool)isLevelLocked:(NSUInteger)_level;
 - (NSUInteger)getLevelCount;
 
-- (void)loadSceneFromFile:(NSObject<IDataAdapter> *)_data strategy:(f3GraphSchemaStrategy *)_strategy;
-
 @end

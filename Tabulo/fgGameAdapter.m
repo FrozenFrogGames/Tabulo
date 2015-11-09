@@ -11,7 +11,6 @@
 #import "fgViewCanvas.h"
 #import "fgViewAdapter.h"
 #import "fgTabuloDirector.h"
-#import "Control/fgTabuloEvent.h"
 #import "Control/fgMenuState.h"
 
 @interface fgGameAdapter ()
