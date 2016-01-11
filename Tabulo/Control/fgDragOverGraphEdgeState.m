@@ -14,7 +14,7 @@
 #import "../../../Framework/Framework/Control/f3GameState.h"
 #import "../../../Framework/Framework/Control/f3GraphSchema.h"
 #import "../../../Framework/Framework/Control/f3GraphSchemaStrategy.h"
-#import "../../../Framework/Framework/Control/f3GraphEdgeWithInputNode.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithNode.h"
 
 @implementation fgDragOverGraphEdgeState
 
@@ -143,7 +143,7 @@
     {
         nodeListening = [NSMutableArray array];
         
-        for (f3GraphEdgeWithInputNode *edge in edges)
+        for (f3GraphEdgeWithNode *edge in edges)
         {
             f3GraphNode *targetNode = [f3GraphNode nodeForKey:edge.TargetKey];
             if ([nodeListening containsObject:targetNode])
@@ -155,7 +155,7 @@
                 [nodeListening addObject:targetNode];
             }
             
-            f3GraphNode *inputNode = [f3GraphNode nodeForKey:edge.InputKey];
+            f3GraphNode *inputNode = [f3GraphNode nodeForKey:edge.NodeKey];
             if ([nodeListening containsObject:inputNode])
             {
                 // TODO throw f3Exception
@@ -201,9 +201,9 @@
                             f3GameState *gameState =(f3GameState *)producer.State;
                             f3GraphSchemaStrategy *gameStrategy =(f3GraphSchemaStrategy *)[gameState Strategy];
                             
-                            for (f3GraphEdgeWithInputNode *edge in edges)
+                            for (f3GraphEdgeWithNode *edge in edges)
                             {
-                                if (edge.TargetKey == nodeKey || edge.InputKey == nodeKey)
+                                if (edge.TargetKey == nodeKey || edge.NodeKey == nodeKey)
                                 {
                                     if ([gameStrategy.Schema evaluate:edge.Conditions])
                                     {

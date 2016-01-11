@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Frozenfrog Games. All rights reserved.
 //
 
-#import "../../../Framework/Framework/Control/f3GraphEdgeWithRotationNode.h"
+#import "../../../Framework/Framework/Control/f3GraphEdgeWithNode.h"
 
-@interface fgPlankEdge : f3GraphEdgeWithRotationNode {
+@interface fgPlankEdge : f3GraphEdgeWithNode {
 
     float targetAngle, rotationAngle, rotationRadius;
     f3NodeFlags orientationFlag;
@@ -18,6 +18,6 @@
 
 + (float)getOrientationFlag:(float)_angle;
 
-- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey plank:(uint8_t)_plank;
+- (id)init:(f3NodeFlags)_mask origin:(NSNumber *)_originKey target:(NSNumber *)_targetKey node:(NSNumber *)_nodeKey plank:(uint8_t)_plank;
 
 @end

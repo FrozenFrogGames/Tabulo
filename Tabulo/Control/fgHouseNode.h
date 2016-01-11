@@ -16,6 +16,7 @@
 @interface fgHouseNode : f3GoalNode {
 
     f3ViewAdaptee *houseView;
+    int pawnType;
 }
 
 - (void)bindView:(f3ViewAdaptee *)_view;

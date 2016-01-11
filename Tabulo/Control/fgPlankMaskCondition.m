@@ -18,7 +18,7 @@
     {
         return true;
     }
-    else if (maskFilter == TABULO_PLANK_ORIENTATION) // tolerance for plank orientation
+    else // tolerance for plank orientation
     {
         f3NodeFlags currentOrientation = [_schema getNodeMask:ownerKey mask:maskFilter] >> 0xB;
         f3NodeFlags expectedOrientation = maskResult >> 0xB;

@@ -63,7 +63,7 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildFeedbackPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildFeedbackPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -91,7 +91,7 @@
     [_builder buildDecorator:4];
     
     CGPoint targetPosition = [f3GraphNode nodeForKey:_edge.TargetKey].Position;
-    CGPoint rotationPosition = [f3GraphNode nodeForKey:_edge.RotationKey].Position;
+    CGPoint rotationPosition = [f3GraphNode nodeForKey:_edge.NodeKey].Position;
     
     float plankAngle = [f3GraphEdge angleBetween:targetPosition and:rotationPosition];
     
@@ -140,7 +140,7 @@
     return adaptee;
 }
 
-+ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithRotationNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
++ (f3ViewAdaptee *)buildHelperPlank:(f3ViewBuilder *)_builder edge:(f3GraphEdgeWithNode *)_edge schema:(f3GraphSchema *)_schema opacity:(float)_opacity {
     
     f3IntegerArray *indicesHandle = [f3IntegerArray buildHandleForUInt16:18, USHORT_BOX(0), USHORT_BOX(1), USHORT_BOX(2),
                                      USHORT_BOX(2), USHORT_BOX(1), USHORT_BOX(3),
@@ -150,7 +150,7 @@
                                      USHORT_BOX(10), USHORT_BOX(9), USHORT_BOX(11), nil];
     
     f3FloatArray *vertexHandle, *coordonateHandle;
-    
+
     [self setPlankAttribute:_schema key:_edge.OriginKey coordonate:&coordonateHandle vertex:&vertexHandle];
     
     [_builder push:indicesHandle];
@@ -169,7 +169,7 @@
     
     f3GraphNode *originNode = [f3GraphNode nodeForKey:_edge.OriginKey];
     CGPoint originPosition = originNode.Position;
-    f3GraphNode *rotationNode = [f3GraphNode nodeForKey:_edge.RotationKey];
+    f3GraphNode *rotationNode = [f3GraphNode nodeForKey:_edge.NodeKey];
     CGPoint rotationPosition = rotationNode.Position;
     
     float plankAngle = [f3GraphEdge angleBetween:originPosition and:rotationPosition];
@@ -511,7 +511,7 @@
         
         hintCommand = [[f3ControlSequence alloc] init];
         
-        f3GraphEdge *hintEdge = [graphSchema findBestEdge:graphSchema];
+        f3GraphEdge *hintEdge = (f3GraphEdge *)[graphSchema findBestEdge:graphSchema];
         if (hintEdge != nil)
         {
             f3ViewAdaptee *view = nil;
@@ -522,7 +522,7 @@
             }
             else if ([hintEdge isKindOfClass:[fgPlankEdge class]])
             {
-                f3GraphEdgeWithRotationNode *edgeWithRotation = (f3GraphEdgeWithRotationNode *)hintEdge;
+                f3GraphEdgeWithNode *edgeWithRotation = (f3GraphEdgeWithNode *)hintEdge;
                 
                 view = [fgTabuloStrategy buildHelperPlank:_builder edge:edgeWithRotation schema:graphSchema opacity:0.8f];
             }

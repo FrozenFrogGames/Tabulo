@@ -16,6 +16,7 @@
 #import "Control/fgPawnEdge.h"
 #import "Control/fgPlankEdge.h"
 #import "Control/fgPlankMaskCondition.h"
+#import "../../Framework/Framework/Control/f3GraphSchema.h"
 
 @interface __LevelFlags : NSObject
 
@@ -304,8 +305,8 @@ const NSUInteger LEVEL_COUNT = 36;
 
 - (void)buildEdgeForPawn:(uint8_t)_pawn origin:(NSNumber *)_origin target:(NSNumber *)_target plank:(uint8_t)_plank node:(NSNumber *)_node {
     
-    f3GraphEdgeWithInputNode *edge = [[fgPawnEdge alloc] init:_origin target:_target input:_node];
-    
+    f3GraphEdgeWithNode *edge = [[fgPawnEdge alloc] init:TABULO_PAWN_MASK origin:_origin target:_target node:_node];
+
     [edge bindCondition:[[f3GraphFlagCondition alloc] init:_origin flag:_pawn result:true]];
     [edge bindCondition:[[f3GraphMaskCondition alloc] init:_target mask:TABULO_PAWN_MASK result:0x0000]];
     
@@ -370,7 +371,7 @@ const NSUInteger LEVEL_COUNT = 36;
     
     for (int pawn = TABULO_PAWN_Red; pawn < TABULO_HOLE_Red; ++pawn)
     {
-        fgPlankEdge *edge = [[fgPlankEdge alloc] init:_origin target:_target rotation:_node plank:_plank];
+        fgPlankEdge *edge = [[fgPlankEdge alloc] init:TABULO_PLANK_MASK | TABULO_HOLE_MASK origin:_origin target:_target node:_node plank:_plank];
         
         [edge bindCondition:originCondition];
         [edge bindCondition:targetCondition];
@@ -427,6 +428,24 @@ const NSUInteger LEVEL_COUNT = 36;
     }
     
     return true;
+}
+
+- (void)sceneLoaded:(NSMutableArray *)_symbols strategy:(f3GameStrategy *)_strategy {
+
+    if ([_strategy isKindOfClass:[f3GraphSchemaStrategy class]])
+    {
+        f3GraphSchema *schema = [(f3GraphSchemaStrategy *)_strategy Schema];
+        
+        for (NSNumber *key in schema.Keys)
+        {
+            f3GraphNode *node = [f3GraphNode nodeForKey:key];
+            
+            if ([node isKindOfClass:[fgHouseNode class]])
+            {
+                [(fgHouseNode *)node clearHouseFeedback:schema];
+            }
+        }
+    }
 }
 
 @end

@@ -32,16 +32,4 @@
     [_builder push:command];
 }
 
-- (f3NodeFlags)apply:(f3NodeFlags)_target origin:(f3NodeFlags)_origin {
-
-    if (_origin == (_origin & TABULO_PAWN_MASK) && (_origin & TABULO_PLANK_MASK) == 0x0000)
-    {
-        return _origin;
-    }
-
-    // TODO throw f3Exception
-
-    return 0x0000;
-}
-
 @end

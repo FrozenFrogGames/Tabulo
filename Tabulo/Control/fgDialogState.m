@@ -404,16 +404,26 @@ enum TabuloDialogItem {
             if (dataWriter != nil)
             {
                 fgTabuloDirector *director = (fgTabuloDirector *)[f3GameDirector Director];
-
                 fgTabuloStrategy *nextGameStrategy = [[fgTabuloStrategy alloc] init:nextLevel];
-                [director loadScene:dataWriter strategy:nextGameStrategy];
+
+                unsigned short result = [director loadScene:dataWriter strategy:nextGameStrategy];
                 
-                f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:nextGameStrategy];
-                [producer buildScene:director.Builder state:nextGameState];
+                if (result == 0)
+                {
+                    f3GameState *nextGameState = [[f3GameState alloc] initWithStrategy:nextGameStrategy];
+
+                    [producer buildScene:director.Builder state:nextGameState];
+                }
+                else
+                {
+                    NSLog(@"Error %i loading filename: %@", result, filename); // TODO throw f3Exception
+                    
+                    [producer popMenu];
+                }
             }
             else
             {
-                NSLog(@"Failed load filename: %@", filename);
+                NSLog(@"Failed load filename: %@", filename); // TODO throw f3Exception
 
                 [producer popMenu];
             }

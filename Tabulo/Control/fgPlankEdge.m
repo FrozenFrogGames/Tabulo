@@ -57,20 +57,20 @@
     }
 }
 
-- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey {
-    
-    return [self init:_originKey target:_targetKey rotation:_rotationKey plank:UINT8_MAX];
+- (id)init:(f3NodeFlags)_mask origin:(NSNumber *)_originKey target:(NSNumber *)_targetKey node:(NSNumber *)_nodeKey {
+
+    return [self init:_mask origin:_originKey target:_targetKey node:_nodeKey plank:UINT8_MAX];
 }
 
-- (id)init:(NSNumber *)_originKey target:(NSNumber *)_targetKey rotation:(NSNumber *)_rotationKey plank:(uint8_t)_plank {
+- (id)init:(f3NodeFlags)_mask origin:(NSNumber *)_originKey target:(NSNumber *)_targetKey node:(NSNumber *)_nodeKey plank:(uint8_t)_plank {
 
-    self = [super init:_originKey target:_targetKey rotation:_rotationKey];
+    self = [super init:_mask origin:_originKey target:_targetKey node:_nodeKey];
 
     if (self != nil)
     {
         CGPoint originPoint = [[f3GraphNode nodeForKey:_originKey] Position];
         CGPoint targetPoint = [[f3GraphNode nodeForKey:_targetKey] Position];
-        CGPoint rotationPoint = [[f3GraphNode nodeForKey:_rotationKey] Position];
+        CGPoint rotationPoint = [[f3GraphNode nodeForKey:_nodeKey] Position];
 
         targetAngle = [f3GraphEdge angleBetween:targetPoint and:rotationPoint];
 
@@ -117,7 +117,7 @@
 
 - (void)buildGraphCommand:(f3ControlBuilder *)_builder view:(f3ViewAdaptee *)_view slowMotion:(float)_slowmo {
 
-    f3GraphNode *rotationNode = [f3GraphNode nodeForKey:rotationKey];
+    f3GraphNode *rotationNode = [f3GraphNode nodeForKey:nodeKey];
     f3GraphNode *targetNode = [f3GraphNode nodeForKey:targetKey];
     f3FloatArray *angleHandle = [f3FloatArray buildHandleForFloat32:1, FLOAT_BOX(targetAngle), nil];
 
@@ -134,18 +134,24 @@
     [_builder push:command];
 }
 
-- (f3NodeFlags)apply:(f3NodeFlags)_target origin:(f3NodeFlags)_origin {
-
-    if (_origin != 0x00000000 && (_origin & TABULO_PAWN_MASK) == 0x00000000)
+- (bool)initFlags:(const f3NodeFlags *)_data keys:(NSArray *)_keys {
+    
+    if ([_keys containsObject:originKey] && [_keys containsObject:targetKey])
     {
-        f3NodeFlags result = _origin & (TABULO_PLANK_MASK | TABULO_HOLE_MASK);
-
-        return result | orientationFlag;
+        const f3NodeFlags plankMask = 0xFFFF ^ (flagMask | TABULO_PLANK_ORIENTATION);
+        
+        const NSUInteger originIndex = [_keys indexOfObject:originKey];
+        originFlags = _data[originIndex] & plankMask;
+        
+        const NSUInteger targetIndex = [_keys indexOfObject:targetKey];
+        targetFlags = _data[targetIndex] & plankMask;
+        targetFlags |= _data[originIndex] & flagMask;
+        targetFlags |= orientationFlag;
+        
+        return true;
     }
-
-    // TODO throw f3Exception
-
-    return 0x00000000;
+    
+    return false;
 }
 
 @end
